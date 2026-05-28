@@ -1,6 +1,6 @@
 # L3 vs L4 — when to pick which (question-scope)
 
-Load when **L3 and L4 both seem plausible** or the user asks “is this L3 or L4?”. Gray-zone AskQuestion: [gray-zones.md § L3 vs L4](./gray-zones.md#l3-vs-l4-eg-migration-in-one-service-vs-many). Human (VI): [README.md § Checklist](../README.md#checklist-l2--l3-5-câu) + presets.
+Load when **L3 and L4 both seem plausible** or the user asks “is this L3 or L4?”. Gray-zone AskQuestion: [gray-zones.md § L3 vs L4](./gray-zones.md#l3-vs-l4-eg-migration-in-one-service-vs-many). Human (VI): [README.md § Gray zone — L3 vs L4](../README.md#gray-zone--chọn-l-khi-ranh-giới-mơ) + [Quick checklist below](#quick-checklist-l3-vs-l4).
 
 ## One-line rule
 

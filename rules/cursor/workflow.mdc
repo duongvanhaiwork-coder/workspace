@@ -101,7 +101,7 @@ Multiple independent failures → **`parallel-failure-domains`** (one agent per 
 | **standard** | lite + `design-approval-gate`, `implementation-plan`, `execute-inline-checkpoints`, `isolated-workspace`, `finish-branch-options`, `incoming-code-review` |
 | **power** | standard − `execute-inline-checkpoints` + `execute-via-subagents` (+ `subagent-driven-development` → `prompts/`) + `outgoing-code-review` (+ `requesting-code-review` → `prompts/code-reviewer.md`) |
 
-If a **REQUIRES** or **NEXT** rule in this file is not in your bundle, do not fake the handoff — add the skill under repo `skills/<skill-id>/` (sync with `make sync-ide`) or fall back (e.g. only `execute-inline-checkpoints`, never subagent prompt templates).
+If a **REQUIRES** or **NEXT** rule in this file is not in your bundle, do not fake the handoff — add the skill under repo `skills/<skill-id>/`, or fall back (e.g. only `execute-inline-checkpoints`, never subagent prompt templates).
 
 ## Hard gates
 

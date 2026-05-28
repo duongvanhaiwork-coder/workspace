@@ -96,3 +96,4 @@ Cross-skill (deep link to a supporting file, optional):
 ```
 
 **Cursor rules (from skills):** cite rule IDs or `@workflow` — do **not** use `rules/…` file paths. See [CONVENTIONS.md](./CONVENTIONS.md) § Referencing Cursor rules.
+

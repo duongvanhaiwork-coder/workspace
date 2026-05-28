@@ -1,0 +1,417 @@
+{
+  "schema": "question-scope-behavioral-eval/v2",
+  "scenarios": [
+    {
+      "id": "1",
+      "pressure_row": 1,
+      "name": "level_pick_l2_vs_l3_export",
+      "summary": "New export endpoint on existing API — exactly L2 vs L3, then STOP",
+      "contract_anchors": {
+        "skills/question-scope/SKILL.md": [
+          "do not auto-lock",
+          "two-option",
+          "STOP"
+        ],
+        "skills/question-scope/references/gray-zones.md": [
+          "L2 vs L3",
+          "heavier"
+        ]
+      },
+      "turns": [
+        {
+          "user": "/question-scope Add GET /users/export CSV",
+          "expect": [
+            "Idea + Suggest present",
+            "Does not auto-pick L3 or L4 and does not start Spec/Patch/Code",
+            "Exactly two options only: L2 vs L3 (not four options; export on existing users API per gray-zones)",
+            "STOP — no Spec/Patch/Code before user picks"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "4",
+      "pressure_row": 4,
+      "name": "escalation_l2_to_l3",
+      "summary": "L2 work reveals new module/worker — stop and re-present levels",
+      "contract_anchors": {
+        "skills/question-scope/SKILL.md": [
+          "Escalation",
+          "re-present",
+          "exceeds"
+        ],
+        "skills/question-scope/references/gray-zones.md": [
+          "Escalate",
+          "do not silently absorb"
+        ],
+        "skills/question-scope/templates/phases/l2/l2-patch.md": [
+          "stop",
+          "L2 vs L3"
+        ]
+      },
+      "turns": [
+        {
+          "user": "/question-scope L2 — add notifications module with email worker",
+          "expect": [
+            "Does not proceed with full L3 phased folder without escalation",
+            "Stops or runs L2 level check and flags L2 vs L3",
+            "Re-presents level choice (L2 vs L3 or four options) before heavy build"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "4b",
+      "pressure_row": 4,
+      "name": "escalation_l3_to_l4",
+      "summary": "L3 work reveals multi-service OIDC — stop and re-present L3 vs L4",
+      "contract_anchors": {
+        "skills/question-scope/SKILL.md": [
+          "Escalation",
+          "re-present"
+        ],
+        "skills/question-scope/references/gray-zones.md": [
+          "L3 vs L4",
+          "Escalate"
+        ],
+        "skills/question-scope/templates/phases/l3/l3-01-define.md": [
+          "L3 vs L4",
+          "stop"
+        ]
+      },
+      "turns": [
+        {
+          "user": "/question-scope L3 — migrate auth to OIDC across api, worker, and admin with shared session store",
+          "expect": [
+            "Does not proceed with full L4 phased folder (l4-00 through l4-05) without escalation",
+            "Stops or runs L3 level check and flags L3 vs L4",
+            "Re-presents level choice (L3 vs L4 two options preferred) before heavy L4 design"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "6",
+      "pressure_row": 6,
+      "name": "sticky_scope_l2",
+      "summary": "Second turn continues L2 without re-asking four levels",
+      "contract_anchors": {
+        "skills/question-scope/SKILL.md": [
+          "Sticky scope",
+          "until done",
+          "do not re-ask level every turn"
+        ],
+        "skills/question-scope/references/level-picker.md": [
+          "sticky scope",
+          "Do not re-ask level every turn"
+        ]
+      },
+      "turns": [
+        {
+          "user": "/question-scope L2 — fix validation on phone field (@src/routes/user.ts)",
+          "expect": [
+            "Header Level: L2",
+            "Does not present four L1-L4 options again"
+          ]
+        },
+        {
+          "user": "continue — add test for missing phone",
+          "expect": [
+            "Stays on L2 pipeline",
+            "No second four-option level picker",
+            "May reference STATUS.md or l2-patch if folder exists"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "6b",
+      "pressure_row": 6,
+      "name": "sticky_scope_l3",
+      "summary": "Second turn continues L3 without re-asking four levels",
+      "contract_anchors": {
+        "skills/question-scope/SKILL.md": [
+          "Sticky scope",
+          "until done"
+        ],
+        "skills/question-scope/references/level-picker.md": [
+          "Do not re-ask level every turn"
+        ]
+      },
+      "turns": [
+        {
+          "user": "/question-scope L3 — add GET /orders/export CSV with auth",
+          "expect": [
+            "Header Level: L3",
+            "Does not present four L1-L4 options"
+          ]
+        },
+        {
+          "user": "continue — document verify commands in phase file",
+          "expect": [
+            "Stays on L3 pipeline",
+            "No second four-option level picker"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "6c",
+      "pressure_row": 6,
+      "name": "sticky_scope_l4",
+      "summary": "Second turn continues L4 without re-asking four levels",
+      "contract_anchors": {
+        "skills/question-scope/SKILL.md": [
+          "Sticky scope",
+          "until done"
+        ],
+        "skills/question-scope/references/level-picker.md": [
+          "Do not re-ask level every turn"
+        ]
+      },
+      "turns": [
+        {
+          "user": "/question-scope L4 — platform OIDC rollout with compat window across api and worker",
+          "expect": [
+            "Header Level: L4",
+            "Does not present four L1-L4 options"
+          ]
+        },
+        {
+          "user": "continue — document validate go/no-go in phase file",
+          "expect": [
+            "Stays on L4 pipeline",
+            "No second four-option level picker"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "7",
+      "pressure_row": 7,
+      "name": "gray_zone_l1_vs_l2",
+      "summary": "Ambiguous explain vs fix — two options then STOP",
+      "contract_anchors": {
+        "skills/question-scope/SKILL.md": [
+          "two-option",
+          "STOP",
+          "Gray zone"
+        ],
+        "skills/question-scope/references/gray-zones.md": [
+          "heavier",
+          "AskQuestion",
+          "L1 vs L2"
+        ]
+      },
+      "turns": [
+        {
+          "user": "/question-scope\n\nExplain how auth works but also fix the 401 on /api/me",
+          "expect": [
+            "Idea + Suggest present",
+            "Exactly two options only: L1 (answer only) vs L2 (patch) — not four options, not auto-picked L2",
+            "STOP — no Spec/Patch/Code before user picks"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "8",
+      "pressure_row": 8,
+      "name": "opt_out_beats_scope_lx",
+      "summary": "quick: or qs:off in same message — no scope pipeline",
+      "contract_anchors": {
+        "skills/question-scope/SKILL.md": [
+          "Opt-out wins",
+          "Conflicting tokens"
+        ]
+      },
+      "turns": [
+        {
+          "user": "/question-scope L2 — fix X. quick: typo only",
+          "expect": [
+            "Does not run question-scope pipeline (no Level: Lx header from scope)",
+            "Does not present four L1-L4 options",
+            "Handles as fast path / normal chat per quick: opt-out"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "9",
+      "pressure_row": 9,
+      "name": "legacy_question_keyword_no_scope",
+      "summary": "?explain does not activate scope",
+      "contract_anchors": {
+        "skills/question-scope/SKILL.md": [
+          "? + keyword",
+          "Do not** activate"
+        ]
+      },
+      "turns": [
+        {
+          "user": "?explain how JWT refresh works",
+          "expect": [
+            "Does not run question-scope pipeline (no Level: Lx header from scope)",
+            "Does not present four L1-L4 options",
+            "Suggests /question-scope or /question-scope L1 if structured scope is wanted"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "10",
+      "pressure_row": 10,
+      "name": "legacy_level_prefix_no_scope",
+      "summary": "level L2 without /question-scope does not activate",
+      "contract_anchors": {
+        "skills/question-scope/SKILL.md": [
+          "level L1",
+          "Do not** activate"
+        ]
+      },
+      "turns": [
+        {
+          "user": "level L2 — fix validation on phone field",
+          "expect": [
+            "Does not run question-scope pipeline (no Level: Lx header from scope)",
+            "Does not present four L1-L4 options unless user also sent /question-scope",
+            "Suggests /question-scope L2 — … for scoped patch work"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "11",
+      "pressure_row": 11,
+      "name": "mid_sentence_no_activation",
+      "summary": "Mid-sentence /question-scope must not start scope pipeline",
+      "contract_anchors": {
+        "skills/question-scope/SKILL.md": [
+          "Mid-sentence",
+          "start or end"
+        ]
+      },
+      "turns": [
+        {
+          "user": "Please /question-scope fix auth",
+          "expect": [
+            "Does not run question-scope pipeline (no Level: Lx header from scope)",
+            "Tells user to put /question-scope at message start or end with a correct example"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "14",
+      "pressure_row": 14,
+      "name": "glued_l_no_preset",
+      "summary": "/question-scopeL2 invalid — hint once, needs pick, no preset L2 work",
+      "contract_anchors": {
+        "skills/question-scope/SKILL.md": [
+          "Detected /question-scopeL2",
+          "No preset level"
+        ],
+        "rules/cursor/question-scope.mdc": [
+          "Detected /question-scopeL2"
+        ]
+      },
+      "turns": [
+        {
+          "user": "/question-scopeL2 — fix validation on X",
+          "expect": [
+            "Reply once: Detected /question-scopeL2 — use /question-scope L2 (or equivalent)",
+            "Does not treat as preset L2 (no immediate L2 Spec/Patch without level pick)",
+            "Presents four options or asks user to resend with space before L; STOP before Patch"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "15",
+      "pressure_row": 15,
+      "name": "meta_audit_path",
+      "summary": "Review skills/question-scope — no scope pipeline",
+      "contract_anchors": {
+        "skills/question-scope/SKILL.md": [
+          "Meta discussion",
+          "skills/question-scope"
+        ]
+      },
+      "turns": [
+        {
+          "user": "Kiểm tra skills/question-scope và đánh giá rule",
+          "expect": [
+            "Does not run question-scope pipeline (no Level: Lx header from scope)",
+            "Does not present four L1-L4 options",
+            "Answers audit/review in normal chat"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "19",
+      "pressure_row": 19,
+      "name": "meta_audit_vi_no_path",
+      "summary": "Vietnamese audit phrase without path — no scope",
+      "contract_anchors": {
+        "skills/question-scope/SKILL.md": [
+          "đánh giá question-scope",
+          "Meta discussion"
+        ]
+      },
+      "turns": [
+        {
+          "user": "Đánh giá question-scope giúp tôi",
+          "expect": [
+            "Does not run question-scope pipeline (no Level: Lx header from scope)",
+            "Does not present four L1-L4 options"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "21",
+      "pressure_row": 21,
+      "name": "meta_beats_scope_token",
+      "summary": "/question-scope plus audit path — meta wins",
+      "contract_anchors": {
+        "skills/question-scope/SKILL.md": [
+          "Meta wins",
+          "skills/question-scope"
+        ]
+      },
+      "turns": [
+        {
+          "user": "/question-scope — kiểm tra lại về rule skills/question-scope",
+          "expect": [
+            "Does not run question-scope pipeline (no Level: Lx header from scope)",
+            "Does not present four L1-L4 options",
+            "Treats as meta/audit despite /question-scope token"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "23",
+      "pressure_row": 23,
+      "name": "explicit_qs_meta",
+      "summary": "qs:meta beats /question-scope Lx in same message",
+      "contract_anchors": {
+        "skills/question-scope/SKILL.md": [
+          "qs:meta",
+          "Opt-out wins"
+        ]
+      },
+      "turns": [
+        {
+          "user": "/question-scope L2 — fix auth. qs:meta — audit triggers only",
+          "expect": [
+            "Does not run question-scope pipeline (no Level: Lx header from scope)",
+            "Does not present four L1-L4 options",
+            "Treats qs:meta as explicit audit — scope off"
+          ]
+        }
+      ]
+    }
+  ]
+}

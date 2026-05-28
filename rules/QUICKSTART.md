@@ -2,25 +2,7 @@
 
 Short guide for Cursor/Kiro using this repo’s **English** rules and skills. Full scope contract: skill **`question-scope`** (invoke-skill). Workflow rule IDs: `@workflow` or `rules/cursor/workflow.mdc`.
 
-Human guide (Vietnamese): **`question-scope`** → `README.md`. English prompts: **`question-scope`** → `examples/sample-prompts.md`.
-
-## Sync (once / after editing rules or skills)
-
-From the Workspace root:
-
-```bash
-./scripts/sync-ide.sh    # or: make sync-ide
-```
-
-Creates directory symlinks under your **home** IDE dirs (all projects on this machine):
-
-- `~/.cursor/rules` → `rules/cursor/`
-- `~/.kiro/steering` → `rules/kiro/`
-- `~/.cursor/skills` and `~/.kiro/skills` → `skills/`
-
-Regenerates `rules/kiro/*.md` from `rules/cursor/*.mdc` in the repo. Does **not** symlink into `Workspace/.cursor/` or `Workspace/.kiro/`.
-
-Alias: `./scripts/link-global-ide.sh` (same as `make sync-ide`).
+Human guide (Vietnamese): **`question-scope`** → `README.md`. English one-pager: **`question-scope`** → `CHEATSHEET.md`. English prompts: **`question-scope`** → `examples/sample-prompts.md`.
 
 ## Two layers (one sentence)
 
@@ -58,10 +40,11 @@ Alias: `./scripts/link-global-ide.sh` (same as `make sync-ide`).
 | ----- | ---------------- | ---------------------- |
 | `qs:off` / `no-scope` | Off | Off |
 | `quick:` | Off (fast path) | Off |
+| `qs:meta` / `audit:` | Off (explicit audit) | Off |
 | `sp:off` / `no-sp` | On | Off |
 | `/question-scope L2` … `L4` | On; skip level picker | Per level table in skill |
 
-**Note:** `quick:` is **not** “L3 without design” — use `/question-scope L3` + `sp:off` for that. `level Lx` without `/question-scope` does **not** activate scope.
+**Note:** `quick:` is **not** “L3 without design” — use `/question-scope L3` + `sp:off` for that. `quick:` is **not** “L2 with light rollup MD” — use `/question-scope L2` + “Rollup MD OK.” **Audit/review** skill or rules: `qs:meta — …` or `audit: — …` (preferred over keyword-only meta). `level Lx` without `/question-scope` does **not** activate scope. Level requires a **space** (`/question-scope L2`, not `/question-scopeL2`). Reviewing the skill/rules without running work does **not** activate scope (see skill **Meta discussion**).
 
 ## On-disk docs (target repo)
 

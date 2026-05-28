@@ -1,9 +1,11 @@
 ---
 name: question-scope
-description: Use when the user sends /question-scope or /question-scope L1–L4 only. Opt-out qs:off, no-scope, quick:, sp:off, no-sp. level Lx and ?+keyword do not activate.
+description: Use when the user sends /question-scope or /question-scope L1–L4 only. Opt-out qs:off, no-scope, quick:, qs:meta, audit:, sp:off, no-sp. level Lx and ?+keyword do not activate.
 ---
 
 # Question Scope
+
+**Contract version:** `qs-2026-05-28.5` — keep in sync with `question-scope.mdc` when triggers/gates change.
 
 **Language:** English only in this file and under `references/`, `templates/`, `examples/`. The **only** Vietnamese doc in this skill is [README.md](README.md) (human guide).
 
@@ -73,15 +75,29 @@ Human guide: [README.md](README.md). **`level Lx` and `?` + keyword do not activ
 | — | `sp:off` or `no-sp` | Supplement off only when scope is active; does not activate scope |
 | — | **`level L1`…`L4` or `?` + keyword** (any form) | **Do not** activate — normal chat; ask user to send `/question-scope` or `/question-scope Lx` |
 
-### Opt-out tokens (canonical — same meaning in rule **`@workflow`** when scope is off)
+### Tokens (scope + supplement)
 
-| Token | Question-scope | Superpowers supplement |
-| ----- | ---------------- | ------------------------ |
+Same meaning in rule **`@workflow`** when scope is off. Rule **`question-scope`** summarizes; this table is canonical.
+
+| Token / entry | Question-scope | Superpowers supplement |
+| ------------- | ---------------- | ------------------------ |
 | `qs:off`, `no-scope` | Off | Off |
 | **`quick:`** | Off — fast path, **no** L1–L4 options, **no** phased `docs/work/` | Off |
+| **`qs:meta`**, **`audit:`** | Off — explicit audit/review (no L1–L4); see **Meta discussion** | Off |
 | `sp:off`, `no-sp` | On **only when scope already active**; does **not** activate scope | Off |
 | **`/question-scope`** (no `L1`…`L4` on command) | On → four options → STOP | Per level after pick |
 | `/question-scope Lx` | On (skip level picker) | Per [supplement by level](references/superpowers-supplement.md#by-level) |
+
+**Scope opt-out patterns** (off even with `/question-scope Lx` in the same message):
+
+| Token | Match |
+| ----- | ----- |
+| **`quick:`** | Message **starts with** `quick:` OR `(^|\s)quick:` (colon required) |
+| **`qs:off` / `no-scope`** | `(^|\s)(qs:off|no-scope)\b` |
+| **`qs:meta`** | Message **starts with** `qs:meta` OR `(^|\s)qs:meta\b` |
+| **`audit:`** | Message **starts with** `audit:` OR `(^|\s)audit:` (colon required) |
+
+**`quick:` is not** “skip design/plan only” while scope runs — use **`sp:off`** for that. **`quick:` is not** “L2 with light `docs/work/` rollup” — use **`/question-scope L2`** + rollup note in the task (see [README.md](README.md) § Preset **Patch nhẹ**).
 
 ### Parsing
 
@@ -89,31 +105,46 @@ Case-insensitive matching after trim unless noted. **Only** `/question-scope` fo
 
 | Pattern | Activates scope? |
 | ------- | ---------------- |
-| **`/question-scope`** token | Yes → priority 2 (four options) — match `(^|\s)/question-scope\b` **anywhere** in the message (not required at line start; e.g. `Please /question-scope fix X` **does** activate) |
-| **`/question-scope L1`…`L4`** | Yes → priority 1 — `/question-scope` + whitespace + `L1`…`L4` (`l2` → `L2`) |
+| **`/question-scope`** token | Yes → priority 2 (four options) — only at **message start or end** (after trim); **not** mid-sentence |
+| **`/question-scope L1`…`L4`** | Yes → priority 1 — same **start/end** placement; `/question-scope` + **whitespace** + `L1`…`L4` (`l2` → `L2`) |
+| **`/question-scopeL1`…`L4`** (no space before `L`) | **No** preset level — priority 2 if at start/end. **Reply once:** `Detected /question-scopeL2 — use /question-scope L2` (substitute level digit) |
+| **Mid-sentence** `/question-scope` (text before and after token) | **No** — put command at **start** or **end** (e.g. `/question-scope L2 — fix auth` or `fix auth /question-scope L2`) |
 | **`level L1`…`L4`** (without `/question-scope`) | **No** — use `/question-scope Lx` |
 | **`?` + keyword** | **No** |
 | **`sp:off` / `no-sp`** | Does not activate scope by itself |
+| **`qs:meta` / `audit:`** | **No** — explicit audit (same effect as meta below) |
+| **Meta / audit** (see below) | **No** — normal chat or doc edit |
 
-**Scope opt-out** (if any matches, scope is **off** even with `/question-scope Lx`):
+### Meta discussion (do not run scope)
 
-| Token | Match |
-| ----- | ----- |
-| **`quick:`** | Message **starts with** `quick:` OR `(^|\s)quick:` (colon required — avoids matching unrelated prose) |
-| **`qs:off` / `no-scope`** | `(^|\s)(qs:off|no-scope)\b` |
+Activate scope only when the user intends to **run** L1–L4 work on a **target repo**, not when they are **reviewing or editing** this skill or rules.
 
-**`quick:` is not** “skip design/plan only” while scope runs — use **`sp:off`** for that. **`quick:`** = normal chat + **`code-standards`** / stack rules; trivial edits only.
+**Explicit audit tokens (recommended):** Message **starts with** `qs:meta` or `audit:` (or `(^|\s)qs:meta` / `(^|\s)audit:`) — scope **off** even if `/question-scope` appears in the same message. Prefer these over keyword-only meta when reviewing rules/skills.
+
+**Meta wins over `/question-scope` in the same message** — do not activate when **any** signal below matches (path optional; EN/VI; diacritics optional):
+
+- **Path:** `skills/question-scope`, `question-scope/SKILL.md`, `question-scope.mdc`, or repo path ending in `/question-scope/`
+- **Audit / review (examples):** “check question-scope rules”, “đánh giá skill”, “đánh giá question-scope”, “đánh giá rule”, “kiểm tra lại rule”, “kiểm tra lại về rule”, “kiểm tra rule question-scope”, “rà soát skill”
+- Discussing without running: “don’t use `/question-scope` for this”, “when does `/question-scope` apply?”
+- **Quoting, teaching, or discussing** `/question-scope` **without intent to run** L1–L4 on a target repo (docs, audit, examples)
+- Editing SKILL.md / `question-scope.mdc` unless the user also sends **`/question-scope Lx`** at **start or end** for that edit task
+
+**Placement:** After trim, the `/question-scope` command must be at **message start** (`^/question-scope`) or **message end** (`/question-scope` or `/question-scope Lx` immediately before end). Mid-sentence tokens (text before and after on the same line) do **not** activate — ask user to move the command to start or end.
+
+**Signals that scope should run:** `/question-scope` or `/question-scope Lx` at **start or end**, plus task on application code, AC, or `@` repo paths outside `skills/question-scope/`.
+
+User may add **`qs:off`**, **`qs:meta`**, or **`audit:`** to be explicit. If ambiguous, ask once whether to run scope or answer in chat.
 
 ### Conflicting tokens
 
-If the same message contains **both** a scope trigger (`/question-scope` or `/question-scope Lx`) **and** a scope opt-out (`qs:off`, `no-scope`, `quick:` per table above):
+If the same message contains **both** a scope trigger (`/question-scope` or `/question-scope Lx`) **and** a scope opt-out (`qs:off`, `no-scope`, `quick:`, `qs:meta`, `audit:` per tables above):
 
 - **Opt-out wins** — do **not** activate question-scope.
-- **`/question-scope Lx` does not override** `qs:off`, `no-scope`, or `quick:` in the same message.
+- **`/question-scope Lx` does not override** `qs:off`, `no-scope`, `quick:`, `qs:meta`, or `audit:` in the same message.
 
 `sp:off` / `no-sp` with `/question-scope Lx` (and **no** scope opt-out): run question-scope at that level; supplement off per [supplement by level](references/superpowers-supplement.md#by-level).
 
-**Tests (product code only):** If triggers/gates are implemented in app code, add tests in **that repo** (not under `skills/`). Pilot spec: [examples/pressure-test-pilot.md](examples/pressure-test-pilot.md). Cover: `/question-scope`, `/question-scope Lx`, opt-outs; **`level Lx` and `?` must not activate**. Use **`generate-test`** to mirror repo patterns.
+**Product-repo parsers (optional):** If triggers are implemented in application code, mirror [references/pressure-scenarios.md](references/pressure-scenarios.md) and [examples/pressure-test-pilot.md](examples/pressure-test-pilot.md) in that repo — not under `skills/`.
 
 **Vague idea (no problem statement):** Run **`orchestra-decision`** first, then return to scope options.
 
@@ -151,7 +182,7 @@ List canonical steps 1–15 only for **L4** or when the user asks.
 
 1. **Idea** (2–4 lines): problem + expected outcome.
 2. **Suggest** one line: `Suggest: Lx — <short reason>` (heuristic only).
-3. **Present 4 options** — then **STOP**:
+3. **Level picker** — then **STOP** (one rule below).
 
 | ID  | Label                                                         |
 | --- | ------------------------------------------------------------- |
@@ -160,19 +191,21 @@ List canonical steps 1–15 only for **L4** or when the user asks.
 | L3  | Small Feature — new module/API/worker (bounded)               |
 | L4  | Large System — multi-service, MCP, AI platform, big migration |
 
-- **Cursor:** `AskQuestion` with four options when available.
-- **Kiro / fallback:** numbered list; accept `L2`, `choose L3`, etc.
+### Level picker (one rule)
 
-**Skip options** if user already set level (priority 1): message contains **`/question-scope L1`…`L4`**.
+After **Idea** + **Suggest**, present options and **STOP** — do **not** run Context / Spec / Patch / Code until the user picks **one** level:
 
-**No preset level:** If scope activated with **`/question-scope`** (no `L1`…`L4` on the command):
+| Situation | Present | Host UI |
+| --------- | ------- | ------- |
+| User sent **`/question-scope L1`…`L4`** (preset) | **Skip** picker — run that pipeline | — |
+| **Only one gray pair** fits ([gray-zones](references/gray-zones.md)) | **Exactly two** adjacent options (e.g. L2 vs L3) | Cursor: `AskQuestion` (2); Kiro: numbered list |
+| **Three or more** levels plausible, or still unclear | **Four** options (table above) | Cursor: `AskQuestion` (4); Kiro: numbered list |
 
-1. **Idea** + **Suggest** (one line).
-2. **Present exactly four options** (L1–L4 table below) — **Cursor:** `AskQuestion` with four choices when available; **Kiro:** numbered list.
-3. **STOP** — do **not** run Context / Spec / Patch / Code until the user picks **one** of L1–L4 (accept `L2`, `choose L3`, `/question-scope L3`, …).
-4. **Gray zone** (two levels both fit, user still has not picked): **two-option** AskQuestion (L1 vs L2, L2 vs L3, or L3 vs L4) instead of four — still **STOP** until pick. See [gray-zones](references/gray-zones.md).
+**Examples:** `Add GET /users/export CSV` on an **existing** users API → **L2 vs L3 only** (two options, not four). Greenfield multi-service platform → **four** options.
 
-**Sticky scope:** Keep chosen level until done or user sends `/question-scope` / `/question-scope Ly`.
+Accept: `L2`, `choose L3`, `/question-scope L3`, etc.
+
+**Sticky scope:** Keep chosen level for the **same work item** until done or user sends `/question-scope` / `/question-scope Ly`. Do **not** re-present the four-option picker mid-task. **New unrelated task** in the same chat → user must send `/question-scope` or `/question-scope Ly` again — do not carry over the previous level.
 
 **Escalation:** Work exceeds level → stop; re-present options (at least adjacent pair); continue after confirm.
 

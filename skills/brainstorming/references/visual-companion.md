@@ -32,69 +32,22 @@ The server watches a directory for HTML files and serves the newest one to the b
 
 ## Starting a Session
 
-```bash
-# Start server with persistence (mockups saved to project)
-scripts/start-server.sh --project-dir /path/to/project
+Use the **start-server** helper in this skill’s `scripts/` directory. Read its file header for flags and platform notes, then start with **`--project-dir`** set to the project root so mockups persist under `.superpowers/brainstorm/`.
 
-# Returns: {"type":"server-started","port":52341,"url":"http://localhost:52341",
-#           "screen_dir":"/path/to/project/.superpowers/brainstorm/12345-1706000000/content",
-#           "state_dir":"/path/to/project/.superpowers/brainstorm/12345-1706000000/state"}
-```
+The helper returns JSON including `port`, `url`, `screen_dir`, and `state_dir`. Save `screen_dir` and `state_dir`; tell the user to open the URL.
 
-Save `screen_dir` and `state_dir` from the response. Tell user to open the URL.
+**Finding connection info:** The server writes startup JSON to `$STATE_DIR/server-info`. If you did not capture stdout, read that file for URL and port. With `--project-dir`, the session lives under `<project>/.superpowers/brainstorm/`.
 
-**Finding connection info:** The server writes its startup JSON to `$STATE_DIR/server-info`. If you launched the server in the background and didn't capture stdout, read that file to get the URL and port. When using `--project-dir`, check `<project>/.superpowers/brainstorm/` for the session directory.
+**Note:** Without `--project-dir`, files go to `/tmp` and are cleaned up. Remind the user to add `.superpowers/` to `.gitignore` when using project persistence.
 
-**Note:** Pass the project root as `--project-dir` so mockups persist in `.superpowers/brainstorm/` and survive server restarts. Without it, files go to `/tmp` and get cleaned up. Remind the user to add `.superpowers/` to `.gitignore` if it's not already there.
+**Launching by platform:** Follow the comments in the start-server helper — macOS/Linux default backgrounds the process; Windows and some CLIs need foreground or host background execution so the server survives across turns. Read `$STATE_DIR/server-info` on the next turn when stdout was not captured.
 
-**Launching the server by platform:**
-
-**Claude Code (macOS / Linux):**
-```bash
-# Default mode works — the script backgrounds the server itself
-scripts/start-server.sh --project-dir /path/to/project
-```
-
-**Claude Code (Windows):**
-```bash
-# Windows auto-detects and uses foreground mode, which blocks the tool call.
-# Use run_in_background: true on the Bash tool call so the server survives
-# across conversation turns.
-scripts/start-server.sh --project-dir /path/to/project
-```
-When calling this via the Bash tool, set `run_in_background: true`. Then read `$STATE_DIR/server-info` on the next turn to get the URL and port.
-
-**Codex:**
-```bash
-# Codex reaps background processes. The script auto-detects CODEX_CI and
-# switches to foreground mode. Run it normally — no extra flags needed.
-scripts/start-server.sh --project-dir /path/to/project
-```
-
-**Gemini CLI:**
-```bash
-# Use --foreground and set is_background: true on your shell tool call
-# so the process survives across turns
-scripts/start-server.sh --project-dir /path/to/project --foreground
-```
-
-**Other environments:** The server must keep running in the background across conversation turns. If your environment reaps detached processes, use `--foreground` and launch the command with your platform's background execution mechanism.
-
-If the URL is unreachable from your browser (common in remote/containerized setups), bind a non-loopback host:
-
-```bash
-scripts/start-server.sh \
-  --project-dir /path/to/project \
-  --host 0.0.0.0 \
-  --url-host localhost
-```
-
-Use `--url-host` to control what hostname is printed in the returned URL JSON.
+**Remote / container:** If the URL is unreachable in the browser, use the helper’s `--host` and `--url-host` flags (documented in its header) to bind and print a reachable URL.
 
 ## The Loop
 
 1. **Check server is alive**, then **write HTML** to a new file in `screen_dir`:
-   - Before each write, check that `$STATE_DIR/server-info` exists. If it doesn't (or `$STATE_DIR/server-stopped` exists), the server has shut down — restart it with `start-server.sh` before continuing. The server auto-exits after 30 minutes of inactivity.
+   - Before each write, check that `$STATE_DIR/server-info` exists. If it doesn't (or `$STATE_DIR/server-stopped` exists), the server has shut down — restart using the start-server helper before continuing. The server auto-exits after 30 minutes of inactivity.
    - Use semantic filenames: `platform.html`, `visual-style.html`, `layout.html`
    - **Never reuse filenames** — each screen gets a fresh file
    - Use Write tool — **never use cat/heredoc** (dumps noise into terminal)
@@ -275,9 +228,7 @@ If `$STATE_DIR/events` doesn't exist, the user didn't interact with the browser 
 
 ## Cleaning Up
 
-```bash
-scripts/stop-server.sh $SESSION_DIR
-```
+Use the **stop-server** helper in this skill’s `scripts/` directory with `SESSION_DIR` (see that file’s header).
 
 If the session used `--project-dir`, mockup files persist in `.superpowers/brainstorm/` for later reference. Only `/tmp` sessions get deleted on stop.
 

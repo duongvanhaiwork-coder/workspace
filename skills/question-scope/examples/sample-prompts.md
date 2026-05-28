@@ -13,8 +13,9 @@ Copy-paste into chat. Replace `<description>`, `@path`, date/slug. Agent contrac
 | Explain only, no code | `/question-scope L1 — <question>` |
 | Unsure which level | `/question-scope` + task description → pick L1–L4 |
 | Disable scope ceremony | `qs:off — <description>` |
+| Audit/review skill or rules | `qs:meta — <description>` or `audit: — <description>` |
 | L3/L4 without SP supplement | `/question-scope L3 — <description>. sp:off` |
-| Resume session | `@docs/work/.../STATUS.md` + `continue /question-scope L3` |
+| Resume session | `@docs/work/.../STATUS.md` + `/question-scope L3 — continue` (command at **start** or **end** of message) |
 
 ## Presets
 
@@ -31,7 +32,7 @@ Full table + anti-patterns (Vietnamese): [README.md § Preset & anti-pattern](..
 | System | Multi-service / large migration | `/question-scope L4 — <description>` |
 | Pick level | Unsure L1–L4 | `/question-scope` + description (no L on command) |
 
-**Anti-patterns:** no `/question-scope` in message (scope off); `level L2 — …` without `/question-scope` (scope off); `/question-scope L2` + `quick:` same message (opt-out wins); `sp:off` alone; `?fix` without `/question-scope`.
+**Anti-patterns:** no `/question-scope` in message (scope off); `level L2 — …` without `/question-scope` (scope off); `/question-scope L2` + `quick:` same message (opt-out wins); `quick:` when you want L2 + rollup MD (use `/question-scope L2 — … Rollup MD OK.`); `sp:off` alone; `?fix` without `/question-scope`; `/question-scopeL2` (no space before L); meta audit — prefer `qs:meta — …` or `audit: — …`.
 
 **L2 vs L3 (5 questions):** any **yes** → lean L3 — see [gray-zones.md § Quick checklist](../references/gray-zones.md#quick-checklist-l2-vs-l3).
 

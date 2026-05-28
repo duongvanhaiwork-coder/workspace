@@ -12,9 +12,9 @@ After `rules/` was emptied, content was partially recreated from agent transcrip
 | `cursor/dotnet.mdc` | stub | Full .NET/EF rule (~63 lines) |
 | `cursor/java.mdc` | stub | Full Spring Boot rule (~81 lines) |
 
-Run `make sync-ide` after edits to regenerate `rules/kiro/`.
+Regenerate `rules/kiro/` from `rules/cursor/` when cursor rules change (generated 1:1 stem).
 
-**Naming (2026-05):** Kiro steering files use the **same stem** as Cursor (`code-standards.md`, not `rules-code-standards.md`). Legacy `rules-*.md` files are removed on sync.
+**Naming (2026-05):** Kiro steering files use the **same stem** as Cursor (`code-standards.md`, not `rules-code-standards.md`). Legacy `rules-*.md` prefixes are obsolete.
 
 ## Already complete (no change needed)
 

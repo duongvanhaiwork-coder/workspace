@@ -35,7 +35,7 @@ If the repo agent file says "don't use TDD" and a skill says "always use TDD," f
 | --------- | ---------- |
 | **`/question-scope`** + task (no `L1`…`L4` on the command) | Run **question-scope only**: Idea → suggest → four options → **STOP**. No Context/Spec/Patch/Code, no `design-approval-gate`, `writing-plans`, `isolated-workspace`, or full feature flow. |
 | **`/question-scope L1`…`L4`** or user picked L1–L4 after options | Run that level’s pipeline; apply **Superpowers supplement** per question-scope (L2 minimal; L3–L4 default unless `sp:off` / `no-sp`). |
-| `qs:off`, `no-scope`, or `quick:` | Question-scope off — load **`@workflow`** and use standalone feature flow if you still use Superpowers rule IDs. |
+| `qs:off`, `no-scope`, `quick:`, `qs:meta`, or `audit:` | Question-scope off — load **`@workflow`** and use standalone feature flow if you still use Superpowers rule IDs. |
 | `level Lx` or `?` + keyword (no `/question-scope`) | Question-scope **off** — ask user to send `/question-scope` or `/question-scope Lx`. |
 
 Run **`skill-check-first`** for this bundle **after** the user has a level (or **`/question-scope Lx`** on the message) — **not** instead of the scope level picker. Invoke `question-scope` when **`/question-scope`** triggers match; do not substitute brainstorming or `writing-plans` for the L1–L4 choice step.

@@ -6,6 +6,37 @@ Hướng dẫn **người dùng** chọn level, token, prompt và tài liệu tr
 
 **Liên quan:** [AGENTS.md](../../AGENTS.md) · **`superpowers`** · [STRUCTURE](../STRUCTURE.md) · rule IDs: [superpowers-supplement.md](references/superpowers-supplement.md)
 
+### Cây quyết định token (1 dòng)
+
+```text
+Cần làm gì? → Chỉ hỏi / không sửa repo → /question-scope L1
+            → Sửa nhanh, không ceremony → quick: … hoặc qs:off — …
+            → Review/audit skill hoặc rule → qs:meta — … hoặc audit: — …
+            → Patch vài file → /question-scope L2 — …
+            → Feature bounded + Regression/Ship → /question-scope L3 — …
+            → Multi-service / platform → /question-scope L4 — …
+            → Chưa chắc L → /question-scope + mô tả (agent hỏi 4L, STOP)
+            → L3/L4 nhưng bỏ worktree/plan SP → /question-scope L3 — … sp:off
+            (Không dùng level Lx hay ?fix — không bật skill.)
+```
+
+## Mục lục
+
+- [Cây quyết định token](#cây-quyết-định-token-1-dòng)
+- [Cách gọi — chỉ `/question-scope`](#cách-gọi--chỉ-question-scope)
+- [Prompt mẫu (copy-paste)](#prompt-mẫu-copy-paste)
+- [Preset & anti-pattern](#preset--anti-pattern)
+- [Một câu nhớ](#một-câu-nhớ)
+- [Chọn level (L1–L4)](#chọn-level-l1l4)
+- [Chưa gửi L trên lệnh](#chưa-gửi-l-trên-lệnh--agent-bắt-chọn-1-trong-4l)
+- [Bật / tắt & trigger](#bật--tắt--trigger)
+- [Superpowers supplement theo level](#superpowers-supplement-theo-level)
+- [Tài liệu trên disk](#tài-liệu-trên-disk)
+- [Luồng từng level](#luồng-từng-level-checklist-người-dùng)
+- [Bug (thường L2)](#bug-thường-l2)
+- [Cây quyết định nhanh](#cây-quyết-định-nhanh)
+- [File trong thư mục này](#file-trong-thư-mục-này)
+
 ---
 
 ## Cách gọi — chỉ `/question-scope`
@@ -17,9 +48,16 @@ Hướng dẫn **người dùng** chọn level, token, prompt và tài liệu tr
 | Chưa chắc L1–L4 | `/question-scope` + mô tả task → agent hỏi **chọn 1 trong 4L** → dừng chờ bạn |
 | Đã chắc level | `/question-scope L2` + mô tả (thay `L2` bằng L1/L3/L4) |
 | Không muốn ceremony 4L | `quick: …` hoặc `qs:off — …` |
+| Review/audit skill hoặc rule (không chạy L1–L4) | `qs:meta — …` hoặc `audit: — …` |
 | L3/L4 nhưng bỏ supplement SP | `/question-scope L3 — … sp:off` |
 
 **Không còn hỗ trợ:** `level L2 — …` và `?fix …` — **không** bật skill. Dùng `/question-scope` hoặc `/question-scope L2`.
+
+**Định dạng level:** bắt buộc có **khoảng trắng** — `/question-scope L2` (đúng), không `/question-scopeL2` (sai → agent hỏi lại 4L).
+
+**Vị trí lệnh:** `/question-scope` chỉ nhận ở **đầu** hoặc **cuối** tin nhắn (sau trim) — không nhận giữa câu. Ví dụ đúng: `/question-scope L2 — fix auth` hoặc `fix auth /question-scope L2`. Sai: `Please /question-scope fix auth`.
+
+**Review / audit skill** (ví dụ đường dẫn `skills/question-scope`, “đừng dùng `/question-scope` cho task này”) — **không** bật pipeline; khuyến nghị `qs:meta — …` hoặc `audit: — …` (hoặc `qs:off` nếu muốn chắc chắn).
 
 ---
 
@@ -37,7 +75,7 @@ Thay `<mô tả>`, `@path`, ngày/slug. Bản tiếng Anh (cùng nội dung): [e
 | Chưa biết chọn L nào | `/question-scope` + mô tả task |
 | Tắt ceremony scope | `qs:off — <mô tả>` |
 | L3/L4 nhưng không worktree/plan SP | `/question-scope L3 — <mô tả>. sp:off` |
-| Tiếp session cũ | `@docs/work/.../STATUS.md` + `tiếp tục /question-scope L3` |
+| Tiếp session cũ | `@docs/work/.../STATUS.md` + `/question-scope L3 — tiếp tục` (lệnh **đầu** hoặc **cuối** dòng) |
 
 ```text
 quick: đổi "teh" thành "the" trong README.md
@@ -73,17 +111,30 @@ Bản tiếng Anh: [examples/sample-prompts.md § Presets](examples/sample-promp
 
 | Preset | Khi nào | Dán vào chat |
 | ------ | ------- | ------------ |
-| **Fast** | Typo, 1 dòng, không cần L1–L4 | `quick: <mô tả>` |
+| **Fast** | Typo, 1 dòng, **tắt scope** (không L1–L4, không `docs/work/`) | `quick: <mô tả>` |
 | **Explain** | Chỉ hỏi, không sửa repo | `/question-scope L1 — <câu hỏi>` |
 | **Patch** | Sửa/bug vài file, AC rõ | `/question-scope L2 — <mô tả> (@file)` |
 | **Patch nhẹ** | L2 nhưng ít MD (một session, ≤ ~3 file) | `/question-scope L2 — <mô tả>. Rollup MD OK.` |
 | **Feature** | Module/API/worker bounded + AC | `/question-scope L3 — <mô tả>` + AC; `docs/work/YYYY-MM-DD-<slug>/` |
 | **Feature (ít SP)** | L3 nhưng không worktree/plan SP đầy đủ | `/question-scope L3 — <mô tả>. sp:off` |
 | **System** | Multi-service, migration lớn | `/question-scope L4 — <mô tả>` |
-| **Chọn L** | Chưa chắc L1–L4 — agent hỏi **4 option** | `/question-scope` + mô tả (lệnh **không** kèm L1–L4) |
-| **Tiếp session** | Đang làm dở | `@docs/work/.../STATUS.md` + `tiếp tục /question-scope L3` |
+| **Chọn L** | Chưa chắc L1–L4 — agent hỏi **4 option** (hoặc **2 option** nếu gray zone) | `/question-scope` + mô tả (lệnh **không** kèm L1–L4) |
+| **Tiếp session** | Đang làm dở | `@docs/work/.../STATUS.md` + `/question-scope L3 — tiếp tục` |
+| **Ý tưởng mơ hồ** | Chưa có problem statement / AC | `/question-scope` + mô tả rồi agent có thể chạy **orchestra-decision** trước khi hỏi 4L |
 
 **Chỉ dùng `/question-scope`** — `?fix …` **không** bật skill.
+
+### Ý tưởng mơ hồ (orchestra-decision)
+
+Khi chưa có problem statement hoặc AC, agent có thể chạy skill **`orchestra-decision`** trước khi hỏi L1–L4:
+
+```text
+/question-scope
+
+Cần upload ảnh sản phẩm — chưa rõ lưu S3 hay local, chưa có giới hạn dung lượng.
+```
+
+Sau khi có 2–4 dòng problem + outcome, agent quay lại **Suggest** + chọn L (thường L2 vs L3 hoặc 4L).
 
 ### Anti-pattern (tránh)
 
@@ -92,7 +143,10 @@ Bản tiếng Anh: [examples/sample-prompts.md § Presets](examples/sample-promp
 | `level L2 — …` (không có `/question-scope`) | Scope **không** bật | `/question-scope L2 — …` |
 | Câu dài không có `/question-scope` | Scope **không** bật | `/question-scope` hoặc `/question-scope L2 — …` |
 | `/question-scope L2` + `quick:` cùng câu | Opt-out thắng — **không** chạy scope | Chỉ một: `quick:` **hoặc** `/question-scope L2` |
+| `quick:` nhưng muốn L2 + rollup MD nhẹ | Scope **tắt** — không có STATUS/rollup | `/question-scope L2 — <mô tả>. Rollup MD OK.` (preset **Patch nhẹ**) |
 | Chỉ `sp:off` không có `/question-scope` | Scope **không** tự bật | `/question-scope L3 — … sp:off` |
+| `/question-scopeL2` (không space trước L) | Không preset L2 — agent hỏi 4L | `/question-scope L2 — …` |
+| Audit/review skill, path `skills/question-scope` | Scope **không** bật (meta) | `qs:meta — …` hoặc `audit: — …` (hoặc `qs:off — …`) |
 | Patch lớn nhưng kẹt L2 (module mới, >5 file) | Thiếu test/regression/ship | Escalate L3 hoặc gửi `/question-scope L3` |
 | L3 nhưng không ghi AC / slug `docs/work/` | Agent đoán scope | AC 3–5 bullet + folder slug trong prompt |
 
@@ -246,6 +300,7 @@ Cần API upload ảnh max 5MB, S3, URL TTL 7 ngày.
 | `/question-scope L1`…`L4` | Scope bật, **không** hỏi 4 option — **cách chuẩn khi đã biết L** |
 | `/question-scope` (không kèm L) | Idea → gợi ý → **chọn 1 trong 4L** → **STOP** |
 | `quick:` / `qs:off` / `no-scope` | **Tắt** scope (fast path hoặc chat thường) |
+| `qs:meta` / `audit:` | **Tắt** scope — audit/review skill hoặc rule (khuyến nghị khi rà soát) |
 | `sp:off` / `no-sp` | Scope **bật** (khi đã có trigger), supplement **tắt** — không tự bật scope |
 | `qs:off` + `/question-scope L2` cùng câu | **Opt-out thắng** — không chạy scope (xem SKILL § Conflicting tokens) |
 
@@ -358,9 +413,11 @@ Text: mục dưới **Một câu nhớ** + bảng L ở trên. Flowchart + IDE: 
 | File | Ai đọc |
 | ---- | ------ |
 | **README.md** (file này) | Người — preset, anti-pattern, checklist L2↔L3, Regression |
+| **CHEATSHEET.md** | Người — one-pager tiếng Anh (trigger, token, level) |
 | **examples/sample-prompts.md** | Người / agent — prompt mẫu (English) |
 | **SKILL.md** | Agent — contract, gates, pipeline (core) |
 | **references/** | Agent — gray-zone, playbooks, supplement, Kiro, testing ([index](references/README.md)) |
 | **templates/phases/** | Agent copy khi tạo `docs/work/…` ([STRUCTURE.md](../STRUCTURE.md)) |
 
 **Canonical:** Nếu README và SKILL.md lệch nhau, ưu tiên **SKILL.md** và **references/** (tiếng Anh).
+

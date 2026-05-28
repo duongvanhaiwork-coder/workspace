@@ -6,21 +6,26 @@ Use when **suggesting** level or presenting options (heuristic only — user cho
 
 ```mermaid
 flowchart TD
-  A[User message] --> B{qs:off / no-scope / quick:?}
+  A[User message] --> B{qs:off / no-scope / quick: / qs:meta / audit:?}
   B -->|yes| Z[Normal chat + code-standards rule]
-  B -->|no| C{/question-scope L1-L4 on command?}
-  C -->|yes| D[Run pipeline Lx]
-  C -->|no| E{/question-scope no L on command?}
+  B -->|no| C{Meta keywords or discuss /question-scope without run intent?}
+  C -->|yes| Z
+  C -->|no| D{/question-scope + whitespace + L1-L4?}
+  D -->|yes| RUN[Run pipeline preset Lx]
+  D -->|no| E{/question-scope at start or end?}
   E -->|no| Z
-  E -->|yes| F[Idea + Suggest Lx]
-  F --> G{Gray pair fits?}
-  G -->|no| I[4 options L1-L4 STOP]
-  G -->|L1 vs L2| H[AskQuestion 2 options STOP]
-  G -->|L2 vs L3| H
-  G -->|L3 vs L4| H
-  H --> J[User picks]
+  E -->|yes| G{/question-scopeL1-L4 glued no space?}
+  G -->|yes| WARN[4 options STOP + tell user add space before L]
+  G -->|no| F[Idea + Suggest Lx]
+  F --> H{Only one gray pair fits?}
+  H -->|no| I[4 options L1-L4 STOP]
+  H -->|L1 vs L2| T[Exactly 2 options STOP]
+  H -->|L2 vs L3| T
+  H -->|L3 vs L4| T
+  T --> J[User picks]
   I --> J
-  J --> D
+  J --> RUN
+  WARN --> J
 ```
 
 Details: [gray-zones.md](./gray-zones.md) · triggers: [SKILL.md](../SKILL.md#when-this-skill-applies)
@@ -37,4 +42,4 @@ Same skill contract ([SKILL.md](../SKILL.md)); host differs for **level pick** a
 | **Rules (IDE)** | Always-on: `question-scope`, `code-standards`. On demand: `@workflow` | Same rule IDs (host loads steering by ID) |
 | **Skills** | `question-scope` skill ID | Same skill ID (`invoke-skill`) |
 
-**Agent:** Do not re-ask level every turn (**sticky scope**). On Kiro without `AskQuestion`, never skip the STOP after presenting options.
+**Agent:** Do not re-ask level every turn (**sticky scope**) for the same work item. **New unrelated task** → user sends `/question-scope` or `/question-scope Ly` again. On Kiro without `AskQuestion`, never skip the STOP after presenting options.

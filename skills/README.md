@@ -32,7 +32,7 @@ Process / discipline skills from obra/superpowers. **Entry:** `superpowers`. **D
 
 Skills are **not executed automatically** by the IDE; clusters below are **recommended groupings**, **typical order**, and **when to read** each skill so agents and humans pick the right playbook.
 
-### AI Core (MCP — need `make health` + indexed project for graph tools; **analyze-impact** / **explain-code** document editor fallbacks when MCP is down)
+### AI Core (MCP — indexed project for graph tools; **analyze-impact** / **explain-code** document editor fallbacks when MCP is down)
 
 **Typical order on a code change**
 

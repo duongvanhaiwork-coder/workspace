@@ -159,3 +159,16 @@ if [[ "$cursor_count" != "$kiro_count" ]]; then
 fi
 echo "Linked $cursor_count .mdc → $CURSOR_DEST"
 echo "Linked $kiro_count steering files → $KIRO_DEST (1:1 stems)"
+
+QS_INSTALLED="$CURSOR_DEST/question-scope.mdc"
+if [[ -f "$QS_INSTALLED" ]]; then
+  if grep -qE '^## Triggers \(skill runs\)' "$QS_INSTALLED" 2>/dev/null; then
+    echo "ERROR: $QS_INSTALLED still has legacy '## Triggers (skill runs)' — fix rules/cursor/question-scope.mdc"
+    exit 1
+  fi
+  QS_TAG="$(grep -oE 'qs-[0-9]{4}-[0-9]{2}-[0-9]{2}\.[0-9]+' "$QS_INSTALLED" 2>/dev/null | head -1 || true)"
+  if [[ -n "$QS_TAG" ]]; then
+    echo "question-scope contract: $QS_TAG (session check: ./scripts/check-question-scope-session.sh)"
+  fi
+  echo "After rule edits: reload Cursor window or start a new chat (always-on rules cache in open sessions)."
+fi

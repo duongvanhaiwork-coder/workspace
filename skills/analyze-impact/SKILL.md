@@ -39,8 +39,8 @@ Use this when Step 2 does not yield a trustworthy graph:
 
 ## Prerequisites (full graph mode)
 
-- MCP server running and healthy (your workspace may use `make health` or equivalent)
-- Project indexed (your workspace may use `./scripts/index-all.sh`, `index_project`, or equivalent)
+- MCP server running and healthy (team health check or equivalent)
+- Project indexed (MCP `index_project`, team indexer, or equivalent)
 
 ## Do not
 

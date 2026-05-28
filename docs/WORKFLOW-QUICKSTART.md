@@ -63,10 +63,11 @@ Thêm ví dụ dài: [skills/question-scope/README.md](../skills/question-scope/
 | ----- | ---------------- | ---------------------- |
 | `qs:off`, `no-scope` | Tắt | Tắt |
 | `quick:` | Tắt (fast path) | Tắt |
+| `qs:meta` / `audit:` | Tắt (audit/review) | Tắt |
 | `sp:off`, `no-sp` | Bật | Tắt |
 | `/question-scope Lx` | Bật, bỏ bước chọn 4 option | Theo level |
 
-**Lưu ý:** `level Lx` và `?` **không** bật scope. `quick:` **không** phải “L3 nhưng bỏ design” — dùng `/question-scope L3` + `sp:off`.
+**Lưu ý:** `level Lx` và `?` **không** bật scope. Lệnh `/question-scope` chỉ ở **đầu hoặc cuối** tin nhắn (không giữa câu). Level cần **space**: `/question-scope L2` (không `/question-scopeL2`; nếu dính `L` agent nhắc `Detected /question-scopeL2 — use /question-scope L2`). Review/audit: `qs:meta — …` hoặc `audit: — …` (khuyến nghị). `quick:` **không** phải “L3 nhưng bỏ design” — dùng `/question-scope L3` + `sp:off`; **không** phải “L2 + rollup MD” — dùng `/question-scope L2` + “Rollup MD OK.”. Sau sửa contract trong repo AI Core: `make verify` (đủ cho hầu hết PR); spot-check 2–3 chat chỉ khi đổi trigger/meta (xem `behavioral-gates.md`); rồi `make sync-ide` + reload window/chat. Sau sync **không có** `scripts/` — chỉ rules + skills trong `~/.cursor/`.
 
 ## Tài liệu trên disk (repo đang sửa)
 

@@ -16,7 +16,7 @@ Load when **two levels both fit** and the user has not sent **`/question-scope L
 | No acceptance criteria for implementation | Measurable AC, repro steps, or “make it work” |
 | `@` files optional (0–2) for illustration | Symptom + likely paths; will need Spec/Patch |
 
-If **both** fit (e.g. “explain then fix”), use **four options** or ask: **L1** (answer only now) vs **L2** (patch). Do not start Patch on L1.
+If **both** fit (e.g. “explain then fix”), use **two-option** AskQuestion: **L1** (answer only now) vs **L2** (patch) — not four options. **STOP** until pick. Do not start Patch on L1.
 
 ## L2 vs L3 (e.g. “add one endpoint”)
 
@@ -47,6 +47,7 @@ Human copy (Vietnamese): [README.md § Checklist L2 ↔ L3](../README.md#checkli
 **Examples:**
 
 - `POST /users/:id/avatar` next to existing user routes, same service → **L2**.
+- `GET /users/export` CSV on existing users module/API (no new package) → **L2 vs L3** AskQuestion only — not four options.
 - New `notifications/` module + email + push interface → **L3**.
 
 ## L3 vs L4 (e.g. migration in one service vs many)

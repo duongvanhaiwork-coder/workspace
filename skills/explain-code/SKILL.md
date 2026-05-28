@@ -43,5 +43,5 @@ Before claiming tests or behavior are verified, use **`verification-before-compl
 
 ## Prerequisites
 
-- **Best:** project indexed; MCP healthy (`make health` or equivalent when your workspace documents it).
+- **Best:** project indexed; MCP healthy (per team ops docs).
 - **Fallback:** any repo with readable source — follow **Editor fallback**; do not imply you used the graph when you did not.

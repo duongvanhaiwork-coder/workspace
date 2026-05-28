@@ -21,22 +21,14 @@ Do not add Vietnamese (or other) prose inside `.mdc` rule bodies. Put localized 
 | Cursor (canonical) | `<stem>.mdc` kebab-case | `code-standards.mdc`, `question-scope.mdc` |
 | Kiro (generated) | `<stem>.md` — **same stem** | `code-standards.md`, `question-scope.md` |
 
-Do not use a `rules-` prefix in `rules/kiro/` (legacy). After sync, counts must match: one `.mdc` per steering `.md`.
+Do not use a `rules-` prefix in `rules/kiro/` (legacy). Counts must match: one `.mdc` per steering `.md`.
 
 ## Source of truth
 
 ```text
 rules/cursor/<name>.mdc     ← edit here
-        ↓ sync-ide-rules.sh
-rules/kiro/<name>.md        ← generated (same stem; in repo)
-        ↓ directory symlinks (home only)
-~/.cursor/rules/            → rules/cursor/   (whole folder)
-~/.kiro/steering/           → rules/kiro/     (whole folder)
-~/.cursor/skills/           → skills/         (whole folder)
-~/.kiro/skills/             → skills/         (whole folder)
+rules/kiro/<name>.md        ← generated (same stem)
 ```
-
-`make sync-ide` does **not** create symlinks under `Workspace/.cursor/` or `Workspace/.kiro/`.
 
 ## Frontmatter (Cursor)
 
@@ -86,6 +78,5 @@ Stack rules **detect** frameworks from the repo — they do not mandate NestJS, 
 - [ ] Change only `rules/cursor/*.mdc`
 - [ ] Body and `description` in English
 - [ ] Valid frontmatter (`description`, `alwaysApply`, `globs` if needed)
-- [ ] Run `make sync-ide` or `./scripts/sync-ide-rules.sh`
 - [ ] Do not hand-edit `rules/kiro/`
 - [ ] After bulk restore: see [RECOVERY.md](./RECOVERY.md); remove stale archives under `rules/`
