@@ -69,7 +69,7 @@ Skills are **not executed automatically** by the IDE; clusters below are **recom
 | Skill                   | Meaning |
 | ----------------------- | ------- |
 | **architect-plan**      | Implementation plan before heavy coding |
-| **question-scope**      | L1–L4 work levels + phase templates (Cursor + Kiro); human prompts: [question-scope/README.md](question-scope/README.md) (VI); `?`+keyword **tight match**; opt-out: `qs:off` / `no-scope` / `quick:` |
+| **question-scope**      | L1–L4 work levels + phase templates (Cursor + Kiro); entry **`/question-scope`** or **`/question-scope Lx`**; human guide: [question-scope/README.md](question-scope/README.md) (VI); opt-out: `qs:off` / `no-scope` / `quick:` |
 | **orchestra-decision**  | Decide design/process when inputs are still open |
 | **caveman-review**      | Terse line-oriented review |
 | **commit-message**      | Company commit + LINKID |

@@ -4,7 +4,7 @@ Instructions for agents working in this repository or in repos under `projects/`
 
 ## Workflow (default for non-trivial tasks)
 
-1. **Question-scope** — infer or ask L1–L4; sticky until done. Triggers: `level Lx`, `/question-scope`, tight-match `?` + dev keyword. Opt-out scope: `qs:off`, `no-scope`, `quick:` (same effect). Opt-out Superpowers supplement only: `sp:off`, `no-sp`.
+1. **Question-scope** — infer or ask L1–L4; sticky until done. **User entry:** `/question-scope` or `/question-scope Lx` only (`level Lx` and `?` do not activate). Opt-out scope: `qs:off`, `no-scope`, `quick:`. Opt-out Superpowers supplement only: `sp:off`, `no-sp`.
 2. **Superpowers supplement** — default on L3–L4, minimal on L2. L3 execute default: **inline checkpoints (B)**; subagents (A) only with `writing-plans`. Opt-out: `sp:off` / `no-sp`. Do not use legacy plugin IDs `superpowers:<skill-id>`; use skill IDs and rule IDs in `rules/cursor/workflow.mdc` (gates defer to question-scope when scope is on).
 3. **Code quality** — `rules/cursor/code-standards.mdc` and stack `*.mdc` by file type always apply.
 

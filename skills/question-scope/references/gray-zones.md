@@ -1,10 +1,10 @@
 # Gray-zone decisions (question-scope)
 
-Load when **two levels both fit** and the user has not sent `level Lx` / `/question-scope Lx`. Core gates stay in [SKILL.md](../SKILL.md).
+Load when **two levels both fit** and the user has not sent **`/question-scope L1`…`L4`**. Core gates stay in [SKILL.md](../SKILL.md).
 
 ## Rules
 
-- **User picks** (or sends `level Lx`). **Suggest** must name the gray zone and tradeoff in one line.
+- **User picks** (or sends **`/question-scope Lx`** only — `level Lx` does not activate). **Suggest** must name the gray zone and tradeoff in one line.
 - **Escalate** when work exceeds the chosen level — do not silently absorb L3 work inside L2.
 - **Do not** default to the **heavier** level when a lighter one is plausible.
 
@@ -20,6 +20,20 @@ If **both** fit (e.g. “explain then fix”), use **four options** or ask: **L1
 
 ## L2 vs L3 (e.g. “add one endpoint”)
 
+### Quick checklist (L2 vs L3)
+
+Answer for the **current** work item. If **any** is **yes** → prefer **L3** (or AskQuestion L2 vs L3). If **all no** → **L2** is appropriate (note in `STATUS.md` / `l2-patch.md` level check).
+
+| # | Question |
+| - | -------- |
+| 1 | **New** top-level module, package, or folder boundary? |
+| 2 | **New** worker, queue consumer, cron, or async pipeline? |
+| 3 | Likely **> ~5 files** or **multi-session** / multi-PR? |
+| 4 | **Multiple** endpoints, public contract doc, or API versioning? |
+| 5 | Need full **Regression + Ship** / rollout notes (not scoped Verify only)? |
+
+Human copy (Vietnamese): [README.md § Checklist L2 ↔ L3](../README.md#checklist-l2--l3-5-câu).
+
 | Prefer **L2** when (most true) | Prefer **L3** when (any true) |
 | ------------------------------ | ----------------------------- |
 | Extends an **existing** route/module pattern (clone neighbor handler) | **New** module, package boundary, or top-level folder |
@@ -28,7 +42,7 @@ If **both** fit (e.g. “explain then fix”), use **four options** or ask: **L1
 | Single session / single PR likely | Likely **multi-session** or needs phased `l3-*` + Regression + Ship |
 | User wants **less ceremony** (scoped Verify, no full regression gate) | User wants Plan, test-before-code gate, regression, rollout notes |
 
-**Agent:** If suggesting L3 but user may want light touch, add: `Override: level L2 — same task, less ceremony.`
+**Agent:** If suggesting L3 but user may want light touch, add: `Override: /question-scope L2 — same task, less ceremony.`
 
 **Examples:**
 
@@ -64,7 +78,7 @@ Rollup is **not** a different level — it is L2 with lighter MD.
 
 ## Gray-zone AskQuestion
 
-When **both** levels in a pair above fit and the user has **not** sent `level Lx` / `/question-scope Lx`:
+When **both** levels in a pair above fit and the user has **not** sent **`/question-scope Lx`**:
 
 - **Cursor:** `AskQuestion` with **exactly two** options (labels + one-line tradeoff each). **STOP** until the user picks.
 - **Kiro / fallback:** numbered list of the same two options; accept `L2`, `choose L3`, etc.
@@ -79,4 +93,4 @@ If **three or more** levels could fit, use the normal **four options** in [SKILL
 
 **After the user picks:** emit header `Level: Lx | Pipeline: …` and run that level only. Fill the **30-second level check** in [`l2-patch.md`](../templates/phases/l2/l2-patch.md) or [`l3-01-define.md`](../templates/phases/l3/l3-01-define.md) when creating those files.
 
-**Not AskQuestion:** user already set `level Lx`; mid-task **escalation** — explain, re-present at least the higher adjacent pair, continue after confirm.
+**Not AskQuestion:** user already set **`/question-scope Lx`**; mid-task **escalation** — explain, re-present at least the higher adjacent pair, continue after confirm.

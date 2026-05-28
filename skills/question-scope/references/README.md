@@ -4,13 +4,14 @@ Load on demand (not every turn). **Naming:** kebab-case, one topic per file; see
 
 | File | When to read |
 | ---- | ------------ |
-| [gray-zones.md](./gray-zones.md) | L1/L2, L2/L3, L3/L4; AskQuestion pairs; L2 work-folder choice |
+| [gray-zones.md](./gray-zones.md) | L1/L2, L2/L3, L3/L4; **Quick checklist L2 vs L3**; AskQuestion pairs; L2 work-folder choice |
 | [level-picker.md](./level-picker.md) | Trigger flow (mermaid) + host UI (Cursor vs Kiro) |
 | [playbooks.md](./playbooks.md) | Step-by-step L1–L4 execution |
 | [superpowers-supplement.md](./superpowers-supplement.md) | L2+ supplement, rule IDs, plan A/B |
 | [pressure-scenarios.md](./pressure-scenarios.md) | Pressure scenarios + baseline results |
+| [l3-vs-l4-diff.md](./l3-vs-l4-diff.md) | L3 vs L4 decision checklist + examples |
 
-**Vietnamese (this skill only):** [README.md](../README.md). **English prompt samples:** [examples/sample-prompts.md](../examples/sample-prompts.md).
+**Vietnamese (this skill only):** [README.md](../README.md) — presets, anti-patterns, Regression. **English prompt samples:** [examples/sample-prompts.md](../examples/sample-prompts.md). **Pressure test pilot:** [examples/pressure-test-pilot.md](../examples/pressure-test-pilot.md).
 
 ## Layout (skill root)
 

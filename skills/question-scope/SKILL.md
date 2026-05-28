@@ -1,13 +1,13 @@
 ---
 name: question-scope
-description: Use when the user sends level L1–L4, /question-scope, or ? plus a dev keyword (tight match). Opt-out qs:off, no-scope, quick:, sp:off, no-sp.
+description: Use when the user sends /question-scope or /question-scope L1–L4 only. Opt-out qs:off, no-scope, quick:, sp:off, no-sp. level Lx and ?+keyword do not activate.
 ---
 
 # Question Scope
 
 **Language:** English only in this file and under `references/`, `templates/`, `examples/`. The **only** Vietnamese doc in this skill is [README.md](README.md) (human guide).
 
-Cursor + Kiro share this skill. **Difference:** Cursor may use `AskQuestion` for level pick; Kiro uses the same labels in a numbered markdown list — wait for `L1`…`L4` or `level Lx`.
+Cursor + Kiro share this skill. **User invocation (canonical):** `/question-scope` or `/question-scope L1`…`L4` only — see [README.md](README.md). **Difference:** Cursor may use `AskQuestion` for level pick; Kiro uses a numbered list — wait for `L1`…`L4` or `/question-scope Lx`.
 
 **Deep dives (load when needed):** [references/README.md](references/README.md) — gray-zones, level-picker, playbooks, superpowers-supplement, pressure-scenarios.
 
@@ -33,7 +33,7 @@ Cursor + Kiro share this skill. **Difference:** Cursor may use `AskQuestion` for
 ## Instruction precedence
 
 1. System/developer constraints
-2. User request (`level Lx` overrides everything)
+2. User request — `/question-scope`, `/question-scope Lx`, opt-out tokens; scope opt-outs beat `/question-scope Lx` when both appear (**Conflicting tokens**)
 3. This skill (pipelines, gates, work-folder layout only)
 4. Rule **`code-standards`** and stack rules (`typescript`, `react`, `python`, …) are canonical for code style, architecture, security, SOLID, size limits, and API conventions — this skill **does not redefine** those.
 
@@ -43,7 +43,7 @@ Cursor + Kiro share this skill. **Difference:** Cursor may use `AskQuestion` for
 
 | Gate | When |
 | ---- | ---- |
-| **STOP after options** | Presented L1–L4 (or gray pair) — no Context/Spec/Patch/Code until user picks (unless `level Lx` preset) |
+| **STOP after options** | Presented L1–L4 (or gray pair) — no Context/Spec/Patch/Code until user picks (unless `/question-scope Lx` preset) |
 | **STOP before wide context (L2)** | No codebase-wide search / unbounded grep before **Spec** drafted |
 | **STOP before Patch (L2)** | Behavior/contract change without test cases in Spec; **bug** without **root cause** in Spec/`STATUS.md` |
 | **STOP before Code (L3–L4)** | **Test** (L3) or **Test Design** (L4 §8) not done — test cases listed first |
@@ -54,15 +54,24 @@ Cursor + Kiro share this skill. **Difference:** Cursor may use `AskQuestion` for
 
 Activate only when a trigger matches. Otherwise respond normally.
 
-| Priority | Trigger                                      | Action                                         |
-| -------- | -------------------------------------------- | ---------------------------------------------- |
-| 1        | `level L1`…`L4`, `/question-scope L2`   | Skip options → run pipeline for that level     |
-| 2        | `/question-scope` (no level)            | Idea → suggest level → **4 options** → STOP    |
-| 3        | `?` + dev keyword (see **tight match** below) | Same as `/question-scope` (row 2)              |
-| —        | Body contains `qs:off`, `no-scope`, or `quick:` (case-insensitive) | Do **not** activate question-scope |
-| —        | Body contains `sp:off` or `no-sp` (case-insensitive) | Skip Superpowers supplement only; scope still applies |
-| —        | `?` alone ("ok?", "done?")                  | Do **not** activate                          |
-| —        | `?` + dev keyword but **not** a tight match | Do **not** activate; answer in chat |
+### User invocation (canonical — tell users this only)
+
+| User sends | Action |
+| ---------- | ------ |
+| **`/question-scope`** + task (no `L1`…`L4` on the command) | Idea → suggest → **4 options** → **STOP** |
+| **`/question-scope L1`…`L4`** + task | Skip options → run that level’s pipeline |
+
+Human guide: [README.md](README.md). **`level Lx` and `?` + keyword do not activate** — only `/question-scope` forms below.
+
+### Triggers (agent)
+
+| Priority | Trigger | Action |
+| -------- | ------- | ------ |
+| 1 | **`/question-scope L1`…`L4`** (see **Parsing**) | Skip options → run pipeline for that level |
+| 2 | **`/question-scope`** without `L1`…`L4` on the command | Idea → suggest → **4 options** → **STOP** |
+| — | Scope **opt-out** detected (see **Parsing**) | Do **not** activate question-scope |
+| — | `sp:off` or `no-sp` | Supplement off only when scope is active; does not activate scope |
+| — | **`level L1`…`L4` or `?` + keyword** (any form) | **Do not** activate — normal chat; ask user to send `/question-scope` or `/question-scope Lx` |
 
 ### Opt-out tokens (canonical — same meaning in rule **`@workflow`** when scope is off)
 
@@ -70,16 +79,41 @@ Activate only when a trigger matches. Otherwise respond normally.
 | ----- | ---------------- | ------------------------ |
 | `qs:off`, `no-scope` | Off | Off |
 | **`quick:`** | Off — fast path, **no** L1–L4 options, **no** phased `docs/work/` | Off |
-| `sp:off`, `no-sp` | On | Off |
-| `level Lx` | On (skip level picker) | Per [supplement by level](references/superpowers-supplement.md#by-level) |
+| `sp:off`, `no-sp` | On **only when scope already active**; does **not** activate scope | Off |
+| **`/question-scope`** (no `L1`…`L4` on command) | On → four options → STOP | Per level after pick |
+| `/question-scope Lx` | On (skip level picker) | Per [supplement by level](references/superpowers-supplement.md#by-level) |
+
+### Parsing
+
+Case-insensitive matching after trim unless noted. **Only** `/question-scope` forms activate this skill.
+
+| Pattern | Activates scope? |
+| ------- | ---------------- |
+| **`/question-scope`** token | Yes → priority 2 (four options) — match `(^|\s)/question-scope\b` **anywhere** in the message (not required at line start; e.g. `Please /question-scope fix X` **does** activate) |
+| **`/question-scope L1`…`L4`** | Yes → priority 1 — `/question-scope` + whitespace + `L1`…`L4` (`l2` → `L2`) |
+| **`level L1`…`L4`** (without `/question-scope`) | **No** — use `/question-scope Lx` |
+| **`?` + keyword** | **No** |
+| **`sp:off` / `no-sp`** | Does not activate scope by itself |
+
+**Scope opt-out** (if any matches, scope is **off** even with `/question-scope Lx`):
+
+| Token | Match |
+| ----- | ----- |
+| **`quick:`** | Message **starts with** `quick:` OR `(^|\s)quick:` (colon required — avoids matching unrelated prose) |
+| **`qs:off` / `no-scope`** | `(^|\s)(qs:off|no-scope)\b` |
 
 **`quick:` is not** “skip design/plan only” while scope runs — use **`sp:off`** for that. **`quick:`** = normal chat + **`code-standards`** / stack rules; trivial edits only.
 
-**Tight match for priority 3:** After trim, `?` **and** a dev keyword **and** **either** first character is `?`, **or** the first alphanumeric token is a dev keyword (case-insensitive). Trailing-only rhetorical questions do **not** trigger.
+### Conflicting tokens
 
-**Tests (product code only):** If triggers/gates are implemented in app code, add tests in **that repo** (not under `skills/`). Cover: `level Lx` / `/question-scope`, tight-match vs non-match, opt-outs. Use **`generate-test`** to mirror repo patterns.
+If the same message contains **both** a scope trigger (`/question-scope` or `/question-scope Lx`) **and** a scope opt-out (`qs:off`, `no-scope`, `quick:` per table above):
 
-**Dev keywords (examples):** fix, add, change, implement, refactor, explain, why, naming, compare, design, api, bug, test, migrate, module, endpoint, worker.
+- **Opt-out wins** — do **not** activate question-scope.
+- **`/question-scope Lx` does not override** `qs:off`, `no-scope`, or `quick:` in the same message.
+
+`sp:off` / `no-sp` with `/question-scope Lx` (and **no** scope opt-out): run question-scope at that level; supplement off per [supplement by level](references/superpowers-supplement.md#by-level).
+
+**Tests (product code only):** If triggers/gates are implemented in app code, add tests in **that repo** (not under `skills/`). Pilot spec: [examples/pressure-test-pilot.md](examples/pressure-test-pilot.md). Cover: `/question-scope`, `/question-scope Lx`, opt-outs; **`level Lx` and `?` must not activate**. Use **`generate-test`** to mirror repo patterns.
 
 **Vague idea (no problem statement):** Run **`orchestra-decision`** first, then return to scope options.
 
@@ -129,9 +163,16 @@ List canonical steps 1–15 only for **L4** or when the user asks.
 - **Cursor:** `AskQuestion` with four options when available.
 - **Kiro / fallback:** numbered list; accept `L2`, `choose L3`, etc.
 
-**Skip options** if user already set level (priority 1).
+**Skip options** if user already set level (priority 1): message contains **`/question-scope L1`…`L4`**.
 
-**Sticky scope:** Keep chosen level until done or user sends `/question-scope` / `level Ly`.
+**No preset level:** If scope activated with **`/question-scope`** (no `L1`…`L4` on the command):
+
+1. **Idea** + **Suggest** (one line).
+2. **Present exactly four options** (L1–L4 table below) — **Cursor:** `AskQuestion` with four choices when available; **Kiro:** numbered list.
+3. **STOP** — do **not** run Context / Spec / Patch / Code until the user picks **one** of L1–L4 (accept `L2`, `choose L3`, `/question-scope L3`, …).
+4. **Gray zone** (two levels both fit, user still has not picked): **two-option** AskQuestion (L1 vs L2, L2 vs L3, or L3 vs L4) instead of four — still **STOP** until pick. See [gray-zones](references/gray-zones.md).
+
+**Sticky scope:** Keep chosen level until done or user sends `/question-scope` / `/question-scope Ly`.
 
 **Escalation:** Work exceeds level → stop; re-present options (at least adjacent pair); continue after confirm.
 
@@ -149,11 +190,11 @@ List canonical steps 1–15 only for **L4** or when the user asks.
 | Situation | Typical level | Lighter option |
 | --------- | ------------- | -------------- |
 | Explain / compare only | L1 | — |
-| Fix or extend **existing** code in a few files | L2 | `level L2` for one new endpoint if less ceremony than L3 |
+| Fix or extend **existing** code in a few files | L2 | `/question-scope L2` for one new endpoint if less ceremony than L3 |
 | New module, API contract, worker, or multi-file feature | L3 | — |
 | Multi-service, platform, large migration | L4 | — |
 
-**Gray zones (L1/L2, L2/L3, L3/L4, L2 MD):** [references/gray-zones.md](references/gray-zones.md)
+**Gray zones (L1/L2, L2/L3, L3/L4, L2 MD):** [references/gray-zones.md](references/gray-zones.md) · **L3 vs L4:** [references/l3-vs-l4-diff.md](references/l3-vs-l4-diff.md)
 
 ## Pipelines (UI)
 
@@ -162,12 +203,12 @@ List canonical steps 1–15 only for **L4** or when the user asks.
 | L1    | Context (light) → Answer → MD                                  |
 | L2    | Context → Spec (+ tests in Spec if behavior changes) → Patch → Verify → Review → MD |
 | L3    | Context → Spec → Plan → [Scaffold] → Test → Code → Verify → Regression → Review → [Iterate] → [Refine] → Ship → MD |
-| L4    | Full Flow (15 steps; skip 1–2 if `level L4` set) — [playbooks § L4](references/playbooks.md#l4--full-flow-15-steps) |
+| L4    | Full Flow (15 steps; skip 1–2 if `/question-scope L4` set) — [playbooks § L4](references/playbooks.md#l4--full-flow-15-steps) |
 
 | Step       | Meaning                                        |
 | ---------- | ---------------------------------------------- |
 | Verify     | Smoke / happy path; log commands run           |
-| Regression | Broader or full impacted suite (L3–L4)         |
+| Regression | **L3 default:** all tests under the touched **module/package** + **1-hop** integration tests that call the changed API or public surface; log commands in phase MD. **L4:** test targets for each **impacted service** per validate/plan (`analyze-impact` bounded); CI slice OK when named in phase MD. **Not** full monorepo/entire suite unless AC or user requires. **L2:** scoped Verify only (no Regression step). Human presets: [README.md § Regression](README.md#regression-l3l4) |
 | Iterate    | Fix failures from Verify / Review / Regression |
 
 **Playbooks (step detail):** [references/playbooks.md](references/playbooks.md)

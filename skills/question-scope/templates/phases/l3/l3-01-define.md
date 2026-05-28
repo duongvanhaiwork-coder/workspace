@@ -18,7 +18,7 @@ User picks **L2** → stop L3 define; switch to [`l2-patch.md`](../l2/l2-patch.m
 
 ### Need **L4** instead?
 
-If **any** is true → stop; [L3 vs L4 AskQuestion](../../../references/gray-zones.md#gray-zone-askquestion) or `level L4`:
+If **any** is true → stop; [L3 vs L4 AskQuestion](../../../references/gray-zones.md#gray-zone-askquestion) or `/question-scope L4`:
 
 - [ ] **≥ 2** services/repos must coordinate release
 - [ ] Cross-service **data migration** or shared auth platform

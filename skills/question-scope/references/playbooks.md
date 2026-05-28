@@ -13,7 +13,7 @@ Load when executing a chosen level. Pipeline summary and gates: [SKILL.md](../SK
 Use [`l2-patch.md`](../templates/phases/l2/l2-patch.md) + `STATUS.md` (or [rollup](../templates/phases/rollup/work-item.md) for tiny patches).
 
 - **Context (initial):** **Symptom** + **user-provided paths** (`@` or paths in message). No codebase-wide search before **Spec**.
-- **Context (expand):** After **Spec** — impacted paths + callers **1 hop** ([context budgets](../SKILL.md#context-budgets)); list extra paths in Spec before opening file 3+ in one turn when practical.
+- **Context (expand):** After **Spec** — impacted paths + callers **1 hop** ([context budgets](../SKILL.md#progressive-context-jit)); list extra paths in Spec before opening file 3+ in one turn when practical.
 - **Spec:** AC (bullets or Given/When/Then). **Bugs:** root cause before Patch ([Bug overlay](../SKILL.md#bug-overlay-any-level-with-a-defect)).
 - **Test gate:** Behavior/contract changes → test cases in Spec **before Patch**. Pure refactor/rename → skip new tests.
 - **Patch:** incremental edits; rule **`code-standards`** / stack rules in touched scope.
@@ -32,6 +32,7 @@ Use phased [`l3-*`](../templates/phases/l3/) + `STATUS.md`. **Regression** and *
 - **Test** before **Code** — gate: test cases listed ([Gates](../SKILL.md#gates-at-a-glance)).
 - **Code:** **`code-standards`** / stack rules.
 - **Verify** → **Regression** → **Review**; on fail → **Iterate** → **Refine** → **Ship** (`l3-03-ship.md`).
+- **Regression (default):** tests for the touched **module/package** + **1-hop** callers of the changed API/surface; record commands in `l3-02-build-prove.md`. Escalate scope in MD if AC needs wider suite.
 - **Supplement:** [superpowers-supplement.md](./superpowers-supplement.md) (default L3).
 
 ## L4 — Full Flow (15 steps)
@@ -40,7 +41,7 @@ Use phased [`l3-*`](../templates/phases/l3/) + `STATUS.md`. **Regression** and *
 
 Step **15. Document** = finalize phased MD + **Ship** in `l4-05-ship.md` (rollout, rollback, architecture/AI/delivery) — same intent as L3 **Ship**.
 
-**If user already sent `level L4`:** steps **1–2 done** — start at **3. Context**. No second Idea/Scope ceremony.
+**If user already sent `/question-scope L4`:** steps **1–2 done** — start at **3. Context**. No second Idea/Scope ceremony.
 
 Use `CreatePlan` + **`architect-plan`**. In Cursor plan mode, **extend** the existing plan file — no duplicate.
 

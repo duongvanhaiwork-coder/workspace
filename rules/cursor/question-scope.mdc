@@ -1,36 +1,47 @@
 ---
 description: >
-  Question Scope (Cursor + Kiro). /question-scope or level Lx; ?+dev keyword only with
-  tight match (leading ? or keyword-first). Opt-out qs:off, no-scope, quick:, sp:off. L2–L4:
-  phased work folder + STATUS.md — full contract in skill **question-scope**.
+  Question Scope (Cursor + Kiro). Canonical user entry /question-scope and /question-scope
+  L1-L4. Opt-out qs:off, no-scope, quick:, sp:off. L2-L4 phased work folder — skill
+  question-scope.
 alwaysApply: true
 ---
 
 # Question Scope
 
-When the user message matches a trigger below, follow the **question-scope** skill (invoke-skill). **Canonical triggers, tight match, opt-outs, and pipelines** are in that skill’s `SKILL.md` — this file is a short reminder only.
+When the user message matches a trigger below, follow the **question-scope** skill (invoke-skill). **Canonical triggers and pipelines** are in that skill’s `SKILL.md` — this file is a short reminder only.
 
-## Triggers (skill runs)
+## User entry (canonical — suggest only this)
 
-- **`level L1` … `level L4`** or **`/question-scope`** / **`/question-scope L2`** (explicit level skips the options step; see skill).
-- **`?` + dev keyword** (fix, add, explain, api, bug, test, …) **only with tight match** (see **When this skill applies** in **question-scope**): after trim, either the **first character** is `?`, or the **first alphanumeric token** is a dev keyword (case-insensitive). A keyword buried after a long sentence with only a trailing `?` does **not** activate.
+| User sends | Agent |
+| ---------- | ----- |
+| **`/question-scope`** + task (no L on command) | Idea → suggest → **4 options (L1–L4)** → **STOP** |
+| **`/question-scope L1`…`L4`** + task | Run that pipeline — **no** 4-option step |
 
-## Not a trigger / opt-out
+**Only** `/question-scope` and `/question-scope L1`…`L4` activate scope. **`level Lx` and `?` + keyword do not** — see skill **Parsing**.
 
-- **`?` alone** ("ok?", "done?") — normal reply.
-- **Body contains** `qs:off`, `no-scope`, or `quick:` (case-insensitive) — do **not** activate question-scope (`quick:` = fast path, not “skip design only”; see skill **Opt-out tokens**).
-- **Body contains** `sp:off` or `no-sp` — skip Superpowers supplement only (scope still applies).
-- **`?` + keyword without tight match** — answer in chat; user may send `/question-scope` or `level Lx`.
+## Opt-out / not a trigger
 
-## First actions
+- **`qs:off`**, **`no-scope`**, **`quick:`** — do **not** activate scope (`quick:` beats `/question-scope Lx` in the same message).
+- **`sp:off`** / **`no-sp`** — supplement off only when scope is already active.
+- **`/question-scope`** with opt-out in the same message — opt-out wins (skill **Conflicting tokens**).
 
-1. Short **Idea** (problem + outcome)
-2. **Suggest** a level — user **must choose** L1–L4 (options); skip if level already set. **Gray zone (L2↔L3 or L3↔L4):** two-option `AskQuestion` only — do not default to the heavier level (see skill **Gray-zone AskQuestion**).
-3. **STOP** until chosen — then run that level's pipeline and header `Level: Lx | Pipeline: …`
-4. **L2–L4 long work:** create `docs/work/YYYY-MM-DD-<slug>/` (or `<doc-root>/work/...` per **question-scope**) with `STATUS.md` + phase templates from **`question-scope`** → `templates/phases/`
+## No L on `/question-scope`
 
-**Superpowers supplement (L3–L4 default, L2 minimal):** Rule IDs in `@workflow` or **`question-scope`** → `references/superpowers-supplement.md`. Opt out supplement: `sp:off` / `no-sp`.
+If the user sent **`/question-scope`** without **`L1`…`L4`** on the command:
 
-**Human guide (Vietnamese):** **`question-scope`** → `README.md` — only VI file in that skill; agent contract is English (`SKILL.md`, `references/`). **Rules quickstart:** `rules/QUICKSTART.md`.
+- Present **four options** (`AskQuestion` on Cursor; numbered list on Kiro).
+- **STOP** — no Spec / Patch / Code until the user picks one level.
+- **Gray zone:** **two** options (L1↔L2, L2↔L3, L3↔L4) — still STOP.
 
-Kiro: same flow; present scope options as a numbered list if `AskQuestion` is unavailable.
+Skip when the message already has **`/question-scope L2`** (etc.).
+
+## After level is chosen
+
+1. Header `Level: Lx | Pipeline: …`
+2. **L2–L4 long work:** `docs/work/YYYY-MM-DD-<slug>/` + `STATUS.md` (see skill templates).
+
+**Superpowers supplement:** `@workflow` or skill → `references/superpowers-supplement.md`. Opt out: `sp:off` / `no-sp`.
+
+**Human guide (Vietnamese):** skill → `README.md`. **Quickstart:** `rules/QUICKSTART.md`.
+
+Kiro: numbered list if `AskQuestion` is unavailable.

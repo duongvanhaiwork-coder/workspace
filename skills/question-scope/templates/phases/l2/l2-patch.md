@@ -5,7 +5,7 @@
 
 ## Level check (~30s) — is L2 enough?
 
-Complete **before** deep Spec/Patch. If **any** box is checked → **stop**: do not patch on L2; run [gray-zone AskQuestion](../../../references/gray-zones.md#gray-zone-askquestion) (L2 vs L3) or user sends `level L3`.
+Complete **before** deep Spec/Patch. If **any** box is checked → **stop**: do not patch on L2; run [gray-zone AskQuestion](../../../references/gray-zones.md#gray-zone-askquestion) (L2 vs L3) or user sends `/question-scope L3`.
 
 - [ ] **New** top-level module, package, or folder boundary
 - [ ] **New** worker, queue consumer, cron, or async pipeline

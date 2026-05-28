@@ -119,6 +119,6 @@ Apply when the matching rule is in your bundle **and** the active workflow path 
 | Token | Effect |
 | ----- | ------ |
 | `qs:off`, `no-scope`, **`quick:`** | **Question-scope off** — no L1–L4, no phased `docs/work/`, no supplement map from this file. Trivial work only; not for multi-file features or behavior changes. |
-| `sp:off`, `no-sp` | Question-scope **on**; **Superpowers supplement off** (team plan / L2 minimal only). |
+| `sp:off`, `no-sp` | When question-scope is **already active** (trigger matched): **Superpowers supplement off** only. Does **not** activate scope by itself. Scope opt-outs (`qs:off`, `no-scope`, `quick:`) beat `/question-scope Lx` when both appear — **`question-scope`** § Conflicting tokens. |
 
 Do **not** treat `quick:` here as “skip design/plan only” while scope still runs — that meaning lives only in **question-scope** (above: scope is off). When scope is active, L2 already skips `design-approval-gate` / `implementation-plan` unless escalated; L3+ uses supplement table in **`question-scope`**.

@@ -66,17 +66,17 @@ Pick **one** plan/spec tree per repo; do not duplicate without links. See [CONVE
 ## User prompt examples
 
 ```text
-level L3 — API export CSV. Superpowers supplement: worktree, inline execute, TDD, verify.
+/question-scope L3 — API export CSV. Superpowers supplement: worktree, inline execute, TDD, verify.
 ```
 
 ```text
-level L4 — Auth migration. Superpowers: full feature flow + subagents. Phased docs/work/.
+/question-scope L4 — Auth migration. Superpowers: full feature flow + subagents. Phased docs/work/.
 ```
 
 ```text
-level L2 — Fix validation on X. Superpowers minimal: TDD + verify only.
+/question-scope L2 — Fix validation on X. Superpowers minimal: TDD + verify only.
 ```
 
 ```text
-sp:off — L3 feature, team plan only (architect-plan), no writing-plans/worktree.
+/question-scope L3 — L3 feature. sp:off — architect-plan in docs/work/, no writing-plans/worktree.
 ```

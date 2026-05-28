@@ -48,12 +48,12 @@ Không symlink vào `Workspace/.cursor/` hay `Workspace/.kiro/`. `make link-glob
 | Tình huống | Dán vào chat |
 | ---------- | ------------ |
 | Một dòng cực nhỏ | `quick: <mô tả>` |
-| Patch / bug | `level L2 — <mô tả> (@file)` |
-| Feature | `level L3 — <mô tả>` |
-| Hệ thống lớn | `level L4 — <mô tả>` |
+| Patch / bug | `/question-scope L2 — <mô tả> (@file)` |
+| Feature | `/question-scope L3 — <mô tả>` |
+| Hệ thống lớn | `/question-scope L4 — <mô tả>` |
 | Chưa chắc level | `/question-scope` + mô tả → chọn L1–L4 |
 | Tắt ceremony scope | `qs:off — <mô tả>` |
-| Có scope, không Superpowers | `level L3 — <task>. sp:off` |
+| Có scope, không Superpowers | `/question-scope L3 — <task>. sp:off` |
 
 Thêm ví dụ dài: [skills/question-scope/README.md](../skills/question-scope/README.md).
 
@@ -64,9 +64,9 @@ Thêm ví dụ dài: [skills/question-scope/README.md](../skills/question-scope/
 | `qs:off`, `no-scope` | Tắt | Tắt |
 | `quick:` | Tắt (fast path) | Tắt |
 | `sp:off`, `no-sp` | Bật | Tắt |
-| `level Lx` | Bật, bỏ bước chọn 4 option | Theo level |
+| `/question-scope Lx` | Bật, bỏ bước chọn 4 option | Theo level |
 
-**Lưu ý:** `quick:` **không** phải “L3 nhưng bỏ design” — dùng `level L3` + `sp:off`.
+**Lưu ý:** `level Lx` và `?` **không** bật scope. `quick:` **không** phải “L3 nhưng bỏ design” — dùng `/question-scope L3` + `sp:off`.
 
 ## Tài liệu trên disk (repo đang sửa)
 
@@ -81,7 +81,7 @@ Một nguồn sự thật — xem [skills/CONVENTIONS.md](../skills/CONVENTIONS.
 ## Luồng L3 điển hình
 
 ```text
-level L3 → docs/work/ + STATUS
+/question-scope L3 → docs/work/ + STATUS
   → design-approval-gate (nếu lớn)
   → implementation-plan: architect-plan trong docs/work/ (B mặc định) HOẶC writing-plans → docs/plans/ (A)
   → isolated-workspace
@@ -94,7 +94,7 @@ level L3 → docs/work/ + STATUS
 ## Bug (thường L2)
 
 ```text
-level L2 — bug: <triệu chứng> (@files)
+/question-scope L2 — bug: <triệu chứng> (@files)
 → debug-root-cause-first → tdd-failing-repro → verify-fix-evidence
 ```
 

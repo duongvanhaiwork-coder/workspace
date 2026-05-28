@@ -8,6 +8,21 @@ Hướng dẫn **người dùng** chọn level, token, prompt và tài liệu tr
 
 ---
 
+## Cách gọi — chỉ `/question-scope`
+
+Đây là **cách duy nhất** team khuyến nghị bật skill (không dùng tiền tố `level` trong prompt).
+
+| Bạn muốn | Gõ |
+| -------- | --- |
+| Chưa chắc L1–L4 | `/question-scope` + mô tả task → agent hỏi **chọn 1 trong 4L** → dừng chờ bạn |
+| Đã chắc level | `/question-scope L2` + mô tả (thay `L2` bằng L1/L3/L4) |
+| Không muốn ceremony 4L | `quick: …` hoặc `qs:off — …` |
+| L3/L4 nhưng bỏ supplement SP | `/question-scope L3 — … sp:off` |
+
+**Không còn hỗ trợ:** `level L2 — …` và `?fix …` — **không** bật skill. Dùng `/question-scope` hoặc `/question-scope L2`.
+
+---
+
 ## Prompt mẫu (copy-paste)
 
 Thay `<mô tả>`, `@path`, ngày/slug. Bản tiếng Anh (cùng nội dung): [examples/sample-prompts.md](examples/sample-prompts.md).
@@ -15,27 +30,25 @@ Thay `<mô tả>`, `@path`, ngày/slug. Bản tiếng Anh (cùng nội dung): [e
 | Tình huống | Dán vào chat |
 | ---------- | ------------ |
 | Sửa 1 dòng, không cần L1–L4 | `quick: <mô tả>` |
-| Patch / bug vài file | `level L2 — <mô tả> (@file)` |
-| Feature mới (API, module) | `level L3 — <mô tả>` |
-| Migration / nhiều service | `level L4 — <mô tả>` |
-| Chỉ hỏi, không sửa code | `level L1 — <câu hỏi>` |
+| Patch / bug vài file | `/question-scope L2 — <mô tả> (@file)` |
+| Feature mới (API, module) | `/question-scope L3 — <mô tả>` |
+| Migration / nhiều service | `/question-scope L4 — <mô tả>` |
+| Chỉ hỏi, không sửa code | `/question-scope L1 — <câu hỏi>` |
 | Chưa biết chọn L nào | `/question-scope` + mô tả task |
-| Biết L, shortcut | `/question-scope L2` + mô tả |
 | Tắt ceremony scope | `qs:off — <mô tả>` |
-| L3/L4 nhưng không worktree/plan SP | `level L3 — <mô tả>. sp:off` |
-| Tiếp session cũ | `@docs/work/.../STATUS.md` + file phase + `tiếp tục level L3` |
-| Hỏi bằng `?` (tight match) | `?fix <mô tả>` hoặc `fix <mô tả>?` |
+| L3/L4 nhưng không worktree/plan SP | `/question-scope L3 — <mô tả>. sp:off` |
+| Tiếp session cũ | `@docs/work/.../STATUS.md` + `tiếp tục /question-scope L3` |
 
 ```text
 quick: đổi "teh" thành "the" trong README.md
 ```
 
 ```text
-level L2 — fix: API trả 400 khi thiếu field phone (@src/routes/user.ts).
+/question-scope L2 — fix: API trả 400 khi thiếu field phone (@src/routes/user.ts).
 ```
 
 ```text
-level L3 — thêm endpoint GET /orders/export trả CSV.
+/question-scope L3 — thêm endpoint GET /orders/export trả CSV.
 
 AC: auth bắt buộc; max 10k dòng. docs/work/2026-05-22-order-export/
 ```
@@ -47,8 +60,73 @@ Cần upload ảnh sản phẩm max 5MB, lưu S3, URL public TTL 7 ngày.
 ```
 
 ```text
-level L2 — bug: submit form trả 500 khi email trùng (@api/register.ts).
+/question-scope L2 — bug: submit form trả 500 khi email trùng (@api/register.ts).
 ```
+
+---
+
+## Preset & anti-pattern
+
+Bản tiếng Anh: [examples/sample-prompts.md § Presets](examples/sample-prompts.md#presets). Contract agent (Regression): [SKILL.md § Pipelines](./SKILL.md#pipelines-ui).
+
+### Preset (copy-paste)
+
+| Preset | Khi nào | Dán vào chat |
+| ------ | ------- | ------------ |
+| **Fast** | Typo, 1 dòng, không cần L1–L4 | `quick: <mô tả>` |
+| **Explain** | Chỉ hỏi, không sửa repo | `/question-scope L1 — <câu hỏi>` |
+| **Patch** | Sửa/bug vài file, AC rõ | `/question-scope L2 — <mô tả> (@file)` |
+| **Patch nhẹ** | L2 nhưng ít MD (một session, ≤ ~3 file) | `/question-scope L2 — <mô tả>. Rollup MD OK.` |
+| **Feature** | Module/API/worker bounded + AC | `/question-scope L3 — <mô tả>` + AC; `docs/work/YYYY-MM-DD-<slug>/` |
+| **Feature (ít SP)** | L3 nhưng không worktree/plan SP đầy đủ | `/question-scope L3 — <mô tả>. sp:off` |
+| **System** | Multi-service, migration lớn | `/question-scope L4 — <mô tả>` |
+| **Chọn L** | Chưa chắc L1–L4 — agent hỏi **4 option** | `/question-scope` + mô tả (lệnh **không** kèm L1–L4) |
+| **Tiếp session** | Đang làm dở | `@docs/work/.../STATUS.md` + `tiếp tục /question-scope L3` |
+
+**Chỉ dùng `/question-scope`** — `?fix …` **không** bật skill.
+
+### Anti-pattern (tránh)
+
+| Sai | Hậu quả | Làm đúng |
+| --- | -------- | -------- |
+| `level L2 — …` (không có `/question-scope`) | Scope **không** bật | `/question-scope L2 — …` |
+| Câu dài không có `/question-scope` | Scope **không** bật | `/question-scope` hoặc `/question-scope L2 — …` |
+| `/question-scope L2` + `quick:` cùng câu | Opt-out thắng — **không** chạy scope | Chỉ một: `quick:` **hoặc** `/question-scope L2` |
+| Chỉ `sp:off` không có `/question-scope` | Scope **không** tự bật | `/question-scope L3 — … sp:off` |
+| Patch lớn nhưng kẹt L2 (module mới, >5 file) | Thiếu test/regression/ship | Escalate L3 hoặc gửi `/question-scope L3` |
+| L3 nhưng không ghi AC / slug `docs/work/` | Agent đoán scope | AC 3–5 bullet + folder slug trong prompt |
+
+### Checklist L2 ↔ L3 (5 câu)
+
+Dùng khi **không chắc** patch hay feature. **Một câu “có” → nghiêng L3** (hoặc chọn L2 với `Ít ceremony` nếu cố ý nhẹ).
+
+| # | Câu hỏi |
+| - | ------- |
+| 1 | Có **module/package/thư mục** top-level **mới**? |
+| 2 | Có **worker / queue / cron / pipeline async** mới? |
+| 3 | Dự kiến **> ~5 file** hoặc **nhiều session / nhiều PR**? |
+| 4 | Có **nhiều endpoint**, tài liệu contract public, hoặc **versioning** API? |
+| 5 | Cần **Regression + Ship** đầy đủ (không chỉ test vùng patch)? |
+
+**Cả 5 đều “không”** → **`/question-scope L2`** hợp lý. Agent: [gray-zones.md § Quick checklist](references/gray-zones.md#quick-checklist-l2-vs-l3) · template [`l2-patch.md`](templates/phases/l2/l2-patch.md).
+
+```text
+/question-scope L2 — thêm POST /products/export CSV (cùng pattern GET /products). Ít ceremony.
+```
+
+```text
+/question-scope L3 — module notifications/ (email + push stub), contract mới.
+```
+
+### Regression (L3/L4)
+
+| Level | Mặc định chạy gì | Không bắt buộc (trừ khi AC yêu cầu) |
+| ----- | ---------------- | ------------------------------------- |
+| **L2** | **Verify** — test/smoke vùng patch + callers 1-hop | Cả suite repo / monorepo |
+| **L3** | Test **module/package** đụng tới + integration **1-hop** gọi API/surface đổi; ghi lệnh trong `l3-02-build-prove.md` | Toàn bộ monorepo |
+| **L4** | Test theo **service bị ảnh hưởng** (plan/validate); slice CI OK nếu ghi trong phase MD | “Chạy hết mọi thứ” không tên trong plan |
+
+**L2 patch rủi ro cao** (shared lib, auth): vẫn L2 nhưng nhờ agent chạy suite rộng hơn trong Verify, hoặc chuyển **`/question-scope L3`** nếu cần Regression gate chính thức.
 
 ---
 
@@ -78,7 +156,7 @@ Hai lớc **không thay nhau**. Scope chọn “bao nhiêu”; Superpowers (khi 
 
 **Gợi ý nhanh (không khóa):** chỉ hỏi → L1 · vài file / bug → L2 · feature mới có contract → L3 · hệ thống / nhiều service → L4.
 
-**Pipeline & playbook chi tiết:** [SKILL.md § Pipelines](./SKILL.md#pipelines-ui) · [references/playbooks.md](references/playbooks.md). **L4 đã có `level L4`:** bỏ bước Idea/Scope — bắt từ Context.
+**Pipeline & playbook chi tiết:** [SKILL.md § Pipelines](./SKILL.md#pipelines-ui) · [references/playbooks.md](references/playbooks.md). **L4 đã có `/question-scope L4`:** bỏ bước Idea/Scope — bắt từ Context.
 
 **Map file phase (L2–L4):**
 
@@ -95,12 +173,12 @@ Hai lớc **không thay nhau**. Scope chọn “bao nhiêu”; Superpowers (khi 
 | **Symptom** | Bạn **viết** mô tả lỗi/AC trong chat — **không** cần `@`. |
 | **Path từ user** | File/folder bạn **`@`** hoặc gõ path trong câu. |
 
-**Lượt đầu (gợi ý):** `level Lx` + symptom; L2 thêm **0–1** `@` file nghi ngờ. Agent **mở rộng** context sau **Spec** / plan / gate — không quét repo trước Spec (L2).
+**Lượt đầu (gợi ý):** `/question-scope Lx` + symptom; L2 thêm **0–1** `@` file nghi ngờ. Agent **mở rộng** context sau **Spec** / plan / gate — không quét repo trước Spec (L2).
 
 **Ví dụ L2:**
 
 ```text
-level L2 — POST /register trả 400 khi thiếu phone.
+/question-scope L2 — POST /register trả 400 khi thiếu phone.
 
 @src/routes/register.ts
 ```
@@ -109,12 +187,12 @@ Chi tiết: [SKILL.md § Progressive context (JIT)](./SKILL.md#progressive-conte
 
 ### Ranh giới level (heuristic — bạn có thể override)
 
-Agent có thể gợi ý L3 cho “endpoint mới một file”; nếu muốn **nhẹ hơn** (ít phase, không bắt regression đầy đủ), ghi rõ **`level L2`**.
+Agent có thể gợi ý L3 cho “endpoint mới một file”; nếu muốn **nhẹ hơn** (ít phase, không bắt regression đầy đủ), ghi rõ **`/question-scope L2`**.
 
 | Tình huống | Level thường gặp | Chọn nhẹ hơn |
 | ---------- | ----------------- | ------------- |
 | Chỉ giải thích / so sánh | **L1** | — |
-| Sửa hoặc mở rộng code **đã có**, vài file | **L2** | `level L2` cả khi chỉ thêm 1 endpoint nếu không cần ceremony L3 |
+| Sửa hoặc mở rộng code **đã có**, vài file | **L2** | `/question-scope L2` cả khi chỉ thêm 1 endpoint nếu không cần ceremony L3 |
 | Module mới, API contract, worker, nhiều file | **L3** | — |
 | Nhiều service, platform, migration lớn | **L4** | — |
 
@@ -127,20 +205,37 @@ Agent **không** tự chọn level nặng hơn khi level nhẹ cũng hợp lý. 
 | Cặp | Gợi ý nhanh |
 | --- | ----------- |
 | **L1 vs L2** | Chỉ giải thích → L1 · cần sửa code / AC → L2 |
-| **L2 vs L3** | Endpoint cùng module, ≤ ~5 file → L2 · module/worker mới → L3 |
-| **L3 vs L4** | Một repo/service → L3 · nhiều service + Validate formal → L4 |
+| **L2 vs L3** | Dùng [Checklist L2 ↔ L3 (5 câu)](#checklist-l2--l3-5-câu) |
+| **L3 vs L4** | [l3-vs-l4-diff.md](references/l3-vs-l4-diff.md) · một repo → L3 · multi-service + Validate → L4 |
 
-**Prompt override:**
+**Chi tiết bảng:** [references/gray-zones.md](references/gray-zones.md) · checklist agent: [Quick checklist L2 vs L3](references/gray-zones.md#quick-checklist-l2-vs-l3).
+
+---
+
+## Chưa gửi L trên lệnh — agent bắt chọn 1 trong 4L
+
+Khi bạn gõ **`/question-scope`** + mô tả mà lệnh **không** có `L1`…`L4` (tức không phải `/question-scope L2`):
+
+1. Agent tóm **Idea** + **gợi ý** một L (không khóa).
+2. Hiện **4 lựa chọn** — bạn **phải chọn một** (Cursor: `AskQuestion`; Kiro: list đánh số).
+3. Agent **dừng** — chưa Spec / sửa code / `docs/work/` cho đến khi bạn trả lời `L2`, `chọn L3`, hoặc gửi lại `/question-scope L3 — …`
+4. **Gray zone** (L1↔L2, L2↔L3, L3↔L4): chỉ **2 option** thay vì 4 — vẫn phải chọn trước khi làm tiếp.
+
+| ID | Ý nghĩa |
+| --- | ------- |
+| **L1** | Chỉ trả lời / giải thích — không sửa repo |
+| **L2** | Patch nhỏ — vài file |
+| **L3** | Feature bounded — module, API, worker |
+| **L4** | Hệ thống lớn — multi-service, migration |
+
+**Bỏ qua bước chọn** nếu prompt đã có `/question-scope L2 — …` (hoặc L1/L3/L4) + mô tả.
 
 ```text
-level L2 — thêm POST /products/export CSV (cùng pattern GET /products). Ít ceremony.
-```
+/question-scope
 
-```text
-level L3 — module notifications/ (email + push stub), contract mới.
+Cần API upload ảnh max 5MB, S3, URL TTL 7 ngày.
+→ Agent: Idea + Suggest + 4 option → bạn trả lời L3 → mới bắt đầu pipeline L3
 ```
-
-**Chi tiết bảng:** [references/gray-zones.md](references/gray-zones.md) · checklist: [`l2-patch.md`](templates/phases/l2/l2-patch.md), [`l3-01-define.md`](templates/phases/l3/l3-01-define.md).
 
 ---
 
@@ -148,11 +243,11 @@ level L3 — module notifications/ (email + push stub), contract mới.
 
 | Token / cách | Tóm tắt |
 | ------------ | ------- |
-| `level L1`…`L4` | Scope bật, **không** hỏi 4 option — **nên dùng** |
-| `/question-scope` | Idea → gợi ý → **4 option** → **STOP** |
+| `/question-scope L1`…`L4` | Scope bật, **không** hỏi 4 option — **cách chuẩn khi đã biết L** |
+| `/question-scope` (không kèm L) | Idea → gợi ý → **chọn 1 trong 4L** → **STOP** |
 | `quick:` / `qs:off` / `no-scope` | **Tắt** scope (fast path hoặc chat thường) |
-| `sp:off` / `no-sp` | Scope **bật**, Superpowers supplement **tắt** |
-| `?` + từ khóa dev | Giống `/question-scope` nếu **tight match** (không phải `ok?` cuối câu) |
+| `sp:off` / `no-sp` | Scope **bật** (khi đã có trigger), supplement **tắt** — không tự bật scope |
+| `qs:off` + `/question-scope L2` cùng câu | **Opt-out thắng** — không chạy scope (xem SKILL § Conflicting tokens) |
 
 Bảng đầy đủ: [SKILL.md § When this skill applies](./SKILL.md#when-this-skill-applies).
 
@@ -160,7 +255,7 @@ Bảng đầy đủ: [SKILL.md § When this skill applies](./SKILL.md#when-this-
 
 ## Superpowers supplement theo level
 
-Áp dụng **sau khi** đã có `level Lx`. Tóm tắt: **L3/L4** bật đầy đủ (worktree, TDD, verify…); **L2** tối thiểu (TDD + verify khi đổi behavior); **L1** không. Tắt: `sp:off` / `no-sp`.
+Áp dụng **sau khi** đã có `/question-scope Lx`. Tóm tắt: **L3/L4** bật đầy đủ (worktree, TDD, verify…); **L2** tối thiểu (TDD + verify khi đổi behavior); **L1** không. Tắt: `sp:off` / `no-sp`.
 
 | Level | Mặc định |
 | ----- | -------- |
@@ -208,27 +303,27 @@ Template: [templates/phases/](./templates/phases/) · L1 tùy chọn: `docs/answ
 
 ### L1
 
-1. Gửi `level L1` + câu hỏi (có `@file` nếu cần, tối đa 1–2 file).
+1. Gửi `/question-scope L1` + câu hỏi (có `@file` nếu cần, tối đa 1–2 file).
 2. Nhận trả lời trong chat.
 3. (Tùy chọn) lưu `docs/answers/YYYY-MM-DD-<slug>.md`.
 
 ### L2
 
-1. `level L2` + mô tả + `@file`.
+1. `/question-scope L2` + mô tả + `@file`.
 2. Agent: Spec (AC; bug → root cause trước).
 3. Patch → chạy test vùng ảnh hưởng → review.
 4. Cập nhật `docs/work/…` (patch nhỏ có thể một file rollup).
 
 ### L3
 
-1. `level L3` + AC mong muốn.
+1. `/question-scope L3` + AC mong muốn.
 2. `docs/work/…` + define (plan) → **test cases trước code**.
 3. Code → verify → **regression** → ship (rollout/rollback).
 4. Cập nhật `STATUS.md` mỗi phase.
 
 ### L4
 
-1. `level L4` — coi bước Idea/Scope đã xong.
+1. `/question-scope L4` — coi bước Idea/Scope đã xong.
 2. Discover → Define → Build (test design trước implement) → Prove → Ship.
 3. `l4-05-ship.md`: Architecture / AI / Delivery khi áp dụng.
 
@@ -245,7 +340,7 @@ Thứ tự trong pipeline:
 Prompt:
 
 ```text
-level L2 — bug: submit form trả 500 khi email trùng (@api/register.ts).
+/question-scope L2 — bug: submit form trả 500 khi email trùng (@api/register.ts).
 ```
 
 Thêm ví dụ: mục [Prompt mẫu](#prompt-mẫu-copy-paste) ở trên.
@@ -262,7 +357,7 @@ Text: mục dưới **Một câu nhớ** + bảng L ở trên. Flowchart + IDE: 
 
 | File | Ai đọc |
 | ---- | ------ |
-| **README.md** (file này) | Người — hướng dẫn ngắn, link chi tiết |
+| **README.md** (file này) | Người — preset, anti-pattern, checklist L2↔L3, Regression |
 | **examples/sample-prompts.md** | Người / agent — prompt mẫu (English) |
 | **SKILL.md** | Agent — contract, gates, pipeline (core) |
 | **references/** | Agent — gray-zone, playbooks, supplement, Kiro, testing ([index](references/README.md)) |
