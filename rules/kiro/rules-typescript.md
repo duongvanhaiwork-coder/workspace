@@ -1,0 +1,71 @@
+---
+inclusion: fileMatch
+fileMatchPattern: "**/*.ts"
+---
+
+# TypeScript / NestJS
+
+Rules for TypeScript backend (NestJS, TypeORM). For UI, see `react.mdc`. Match existing patterns in the repo before introducing new libraries.
+
+## Type Discipline
+
+- Enable strict mode.
+- Avoid `any`; if unavoidable, add `// TODO: type properly` with reason.
+- Use type/interface for boundary data (API responses, DTOs, events).
+- Validate external API payloads at runtime when types are not guaranteed.
+- Prefer type guards over type assertions for narrowing.
+- Handle `null | undefined` explicitly.
+
+## File Naming (NestJS)
+
+| Suffix | Purpose | Example |
+| ------ | ------- | ------- |
+| `.module.ts` | Nest module | `AdminModule.module.ts` |
+| `.controller.ts` | HTTP entry | `BookingController.controller.ts` |
+| `.service.ts` | Business logic | `BookingService.service.ts` |
+| `.dto.ts` | Request/response shapes | `CreateBooking.dto.ts` |
+| `.entity.ts` | TypeORM entity | `booking.entity.ts` |
+
+Match suffix and folder layout already used in the repo (`src/admin/`, `src/core/`, etc.).
+
+## NestJS
+
+- Keep modules focused; export only what other modules need.
+- Register providers in the correct module; avoid circular module imports.
+- Controllers: routing, guards, and delegation only — no business rules.
+- Use constructor injection; do not instantiate services with `new` in controllers.
+- Enable global `ValidationPipe` (whitelist, transform) when the project already uses it.
+- Use guards for auth; use interceptors/filters for cross-cutting concerns.
+
+## DTOs and Validation
+
+- Every HTTP input uses a DTO class with `class-validator` decorators (`@IsString`, `@IsOptional`, …).
+- Do not validate request bodies manually in controllers when DTOs exist.
+- Separate request DTOs from response DTOs; do not expose entities directly.
+- Use `@ApiProperty` on DTOs when the repo uses `@nestjs/swagger`.
+
+## TypeORM
+
+- Use parameterized queries / repository APIs; never concatenate user input into SQL.
+- Prefer explicit `relations` or `QueryBuilder` to avoid N+1 loads.
+- Migrations: use the repo's script (`migration:generate`, `migration:run`); one logical change per migration.
+- Do not edit applied migrations; add a new migration to fix schema drift.
+- Keep transactions short; do not hold connections across `await` boundaries.
+
+## Data Stores
+
+- **TypeORM (Postgres/MySQL):** default for SQL repos — entities + repositories/services.
+- **Mongoose (`@nestjs/mongoose`):** only when the repo already uses it; follow existing schema and module patterns.
+
+## Async and Errors
+
+- Use async/await consistently; bounded concurrency for parallel IO.
+- Design schedulers and queue handlers to be idempotent.
+- Throw domain-appropriate HTTP exceptions from services; map to consistent error responses via filters.
+- Structured logging with correlation IDs; no `console.log` in production.
+
+## Testing
+
+- Unit tests: `TestingModule`, mock providers/repositories (`test/unit/`).
+- E2E: separate config when the repo has `test/e2e` or `jest-e2e.json`.
+- Mock external IO (S3, HTTP, DB) in unit tests.

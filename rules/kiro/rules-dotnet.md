@@ -1,0 +1,62 @@
+---
+inclusion: fileMatch
+fileMatchPattern: "**/*.cs"
+---
+
+# .NET
+
+Rules for .NET/C# APIs (e.g. layered `*.DTO` / `*.Service` solutions). Follow `.editorconfig` / StyleCop in the repo when present.
+
+## Solution Layout
+
+- Preserve existing project boundaries (`API`, `DTO`, `Service`, etc.) — do not flatten or rename layers without approval.
+- DTO/input models in the DTO project; business logic in Service; HTTP surface in the API project.
+- Do not reference infrastructure details from DTO projects.
+
+## Naming
+
+| Context                   | Convention               | Example                              |
+| ------------------------- | ------------------------ | ------------------------------------ |
+| Class, Interface, Enum    | PascalCase               | `MemberService`, `IMemberRepository` |
+| Method, property          | PascalCase               | `GetMemberById`, `IsActive`          |
+| Parameter, local variable | camelCase                | `memberId`, `totalAmount`            |
+| Constant                  | PascalCase               | `MaxRetryCount`                      |
+| Private field             | \_camelCase              | `_memberRepository`, `_logger`       |
+| File                      | PascalCase (match class) | `MemberService.cs`                   |
+| Async method              | `Async` suffix           | `GetMemberByIdAsync`                 |
+
+## Types and Nullability
+
+- Enable nullable reference types when the project uses them.
+- Avoid `null!` unless invariants are documented; prefer explicit checks or nullable annotations.
+- Use `record` for immutable DTOs when appropriate.
+
+## Architecture
+
+- Controllers/endpoints: HTTP concerns only — delegate to services.
+- Services contain business rules; no HTTP types in service signatures.
+- Constructor injection via DI; avoid service locator and static service access.
+- Interfaces for external dependencies to support testing.
+
+## Async and Cancellation
+
+- Use async for IO-bound work end-to-end (`async`/`await`, no `.Result` / `.Wait()` on request paths).
+- Accept `CancellationToken` on public async APIs and pass it through to EF/HTTP calls.
+
+## EF Core (when the repo uses it)
+
+- DbContext per bounded context; no business logic in entity classes.
+- Migrations via the repo's tooling; one logical schema change per migration.
+- Read-only queries: `AsNoTracking()` when entities are not updated.
+- Parameterized queries; no string-concatenated SQL with user input.
+
+## Cross-Cutting
+
+- Middleware for auth, logging, and correlation IDs.
+- Global exception handler / filter for consistent error responses.
+- Action filters for authorization and validation when the project already uses them.
+
+## Testing
+
+- Unit-test services with mocked dependencies; integration tests only when behavior needs real infrastructure.
+- Match existing test project layout and naming in the solution.

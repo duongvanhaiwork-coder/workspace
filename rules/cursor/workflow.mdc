@@ -1,0 +1,121 @@
+---
+description: Workflow rules — handoffs, REQUIRED/NEXT, port bundles (on demand)
+alwaysApply: false
+---
+# Workflow
+
+Registry & playbooks: `skills/SKILLS-REGISTRY.md`, `skills/CONVENTIONS.md`. **Rules below use rule IDs**; detailed steps live in matching `skills/<playbook>/` when ported.
+
+**With question-scope:** L1–L4 gates and `docs/work/…` come from `skills/question-scope/SKILL.md` (§ Superpowers supplement maps these rule IDs to L2–L4 phases). This file does not replace scope level choice. When scope is active, **level + supplement table override** the feature flow and hard gates below (e.g. L2 skips design/plan; L3 default execute is **B**).
+
+## Rule index
+
+| Rule ID | Summary |
+| ------- | ------- |
+| `skill-check-first` | Check applicable rules/playbooks before acting |
+| `design-approval-gate` | Design + user approval; no code |
+| `implementation-plan` | Bite-sized implementation plan on disk |
+| `isolated-workspace` | Branch/worktree before execution |
+| `execute-via-subagents` | Per-task subagent + reviews (ALT-A) |
+| `execute-inline-checkpoints` | Same-session execution + checkpoints (ALT-B) |
+| `tdd-during-implementation` | RED → GREEN → REFACTOR on every change |
+| `verify-before-done` | Fresh command output before “done” |
+| `finish-branch-options` | Tests green → merge \| PR \| keep \| discard |
+| `debug-root-cause-first` | Four phases; no fix before root cause |
+| `tdd-failing-repro` | Failing repro test, then fix |
+| `verify-fix-evidence` | Evidence before claiming fixed |
+| `parallel-failure-domains` | One agent per independent failure domain |
+| `outgoing-code-review` | Review after tasks / before merge |
+| `incoming-code-review` | Verify feedback; no blind implementation |
+
+| Rule ID | Playbook (optional) |
+| ------- | ------------------- |
+| `skill-check-first` | `skills/superpowers/` |
+| `design-approval-gate` | `skills/brainstorming/` |
+| `implementation-plan` | `skills/writing-plans/` |
+| `isolated-workspace` | `skills/using-git-worktrees/` |
+| `execute-via-subagents` | `skills/subagent-driven-development/` |
+| `execute-inline-checkpoints` | `skills/executing-plans/` |
+| `tdd-during-implementation` | `skills/test-driven-development/` |
+| `verify-before-done` | `skills/verification-before-completion/` |
+| `finish-branch-options` | `skills/finishing-a-development-branch/` |
+| `debug-root-cause-first` | `skills/systematic-debugging/` |
+| `tdd-failing-repro` | `skills/test-driven-development/` |
+| `verify-fix-evidence` | `skills/verification-before-completion/` |
+| `parallel-failure-domains` | `skills/dispatching-parallel-agents/` |
+| `outgoing-code-review` | `skills/requesting-code-review/` |
+| `incoming-code-review` | `skills/receiving-code-review/` |
+
+## Meta rule — `skill-check-first`
+
+Before any non-trivial task, check which rules in this file apply. **Process rules** (design, debug, plan) before **implementation rules** (execute, TDD during build).
+
+## Vocabulary
+
+| Term | Action |
+|------|--------|
+| **NEXT** | Start this rule immediately when the current rule reaches its terminal step |
+| **REQUIRES** | Must follow while executing; rule must exist in your ported bundle |
+| **ALT** | Pick exactly one branch |
+| **FORBIDDEN-NEXT** | Do not start until user approves / phase completes |
+
+**Playbook** = optional `skills/<folder>/` detail for a rule ID (see index). Do not use legacy `superpowers:<id>` in rules.
+
+## Feature flow (standalone — full Superpowers)
+
+Use this sequence when **question-scope is off** (`qs:off`, `no-scope`, `quick:`) or you are porting rules without scope. When scope is **on**, follow `skills/question-scope/SKILL.md` § Superpowers supplement instead of blindly running every step here.
+
+1. **`design-approval-gate`** — design + user approval; no code. Spec: `docs/specs/YYYY-MM-DD-<topic>-design.md`
+2. **`implementation-plan`** — plan: `docs/plans/YYYY-MM-DD-<feature>.md`
+3. **`isolated-workspace`** — isolated branch/workspace before execution
+4. **Execute (ALT — choose exactly one):**
+   - **A:** `execute-via-subagents` — per-task implementer + spec review + code quality review. **Requires** a task-level plan from **`implementation-plan`** / `writing-plans` (`docs/plans/…`). Do not pair with architect-plan-only phase files.
+   - **B (default under question-scope L3):** `execute-inline-checkpoints` — same session, checkpoints between tasks. Default when plan lives in `docs/work/…` via **`architect-plan`**.
+5. **`tdd-during-implementation`** — during every implementation step (RED → GREEN → REFACTOR)
+6. **`verify-before-done`** — run full verify command; show output before “done”
+7. **`finish-branch-options`** — tests green → user picks merge | PR | keep | discard
+
+Do not offer or run both `execute-via-subagents` and `execute-inline-checkpoints` on the same plan.
+
+## Bug / test failure flow
+
+1. **`debug-root-cause-first`** — root cause before any fix (4 phases)
+2. **`tdd-failing-repro`** — failing repro test, then fix
+3. **`verify-fix-evidence`** — evidence before claiming fixed
+
+Multiple independent failures → **`parallel-failure-domains`** (one agent per domain).
+
+## Review flow
+
+- Outgoing: **`outgoing-code-review`** after tasks / before merge
+- Incoming: **`incoming-code-review`** — verify each item; no performative agreement; clarify all items before implementing
+
+## Port bundles (enable only the rules you ship)
+
+| Bundle | Rules (see index) |
+| ------ | ----------------- |
+| **lite** | `skill-check-first`, `tdd-during-implementation`, `debug-root-cause-first`, `verify-before-done` |
+| **standard** | lite + `design-approval-gate`, `implementation-plan`, `execute-inline-checkpoints`, `isolated-workspace`, `finish-branch-options`, `incoming-code-review` |
+| **power** | standard − `execute-inline-checkpoints` + `execute-via-subagents` (+ `skills/subagent-driven-development/prompts/`) + `outgoing-code-review` (+ `skills/requesting-code-review/prompts/code-reviewer.md`) |
+
+If a **REQUIRES** or **NEXT** rule in this file is not in your bundle, do not fake the handoff — add its playbook under `skills/` or fall back (e.g. only `execute-inline-checkpoints`, never subagent prompt templates).
+
+## Hard gates
+
+Apply when the matching rule is in your bundle **and** the active workflow path requires it:
+
+- No production code before approved design → **`design-approval-gate`** (skipped at L2 default; L3 only when supplement table or user escalates — see question-scope)
+- No fix before root cause → **`debug-root-cause-first`** (bug overlay at L2+)
+- No production code before failing test → **`tdd-during-implementation`** / **`tdd-failing-repro`**
+- No completion claim without fresh command output → **`verify-before-done`** / **`verify-fix-evidence`**
+
+**Question-scope active:** STOP gates and level budgets in `skills/question-scope/SKILL.md` win over this section.
+
+## Opt-out (aligned with question-scope)
+
+| Token | Effect |
+| ----- | ------ |
+| `qs:off`, `no-scope`, **`quick:`** | **Question-scope off** — no L1–L4, no phased `docs/work/`, no supplement map from this file. Trivial work only; not for multi-file features or behavior changes. |
+| `sp:off`, `no-sp` | Question-scope **on**; **Superpowers supplement off** (team plan / L2 minimal only). |
+
+Do **not** treat `quick:` here as “skip design/plan only” while scope still runs — that meaning lives only in **question-scope** (above: scope is off). When scope is active, L2 already skips `design-approval-gate` / `implementation-plan` unless escalated; L3+ uses supplement table in `skills/question-scope/SKILL.md`.

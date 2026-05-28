@@ -1,0 +1,55 @@
+{
+  "projects": [
+    {
+      "name": "business-lounge-api",
+      "type": "nodejs",
+      "language": "typescript",
+      "path": "/workspace/projects/business-lounge-api",
+      "exclude": ["node_modules/", "dist/", "*.spec.ts", "config/", ".vs/"]
+    },
+    {
+      "name": "business-lounge-job",
+      "type": "nodejs",
+      "language": "typescript",
+      "path": "/workspace/projects/business-lounge-job",
+      "exclude": ["node_modules/", "dist/"]
+    },
+    {
+      "name": "business-lounge-portal",
+      "type": "nodejs",
+      "language": "typescript",
+      "path": "/workspace/projects/business-lounge-portal",
+      "exclude": [
+        "node_modules/",
+        "dist/",
+        ".next/",
+        "internals/",
+        "hooks/",
+        "images/",
+        "app/vendor/",
+        "nginx/"
+      ]
+    },
+    {
+      "name": "operator-api",
+      "type": "nodejs",
+      "language": "typescript",
+      "path": "/workspace/projects/operator-api",
+      "exclude": ["node_modules/", "dist/", "*.spec.ts", "db-map/", "public/", "config/"]
+    },
+    {
+      "name": "vpid-mobile-api",
+      "type": "dotnet",
+      "language": "csharp",
+      "path": "/workspace/projects/vpid-mobile-api",
+      "exclude": ["bin/", "obj/", ".vs/", "*.Designer.cs", "docs/", "plans/"]
+    },
+    {
+      "name": "my-fastapi-service",
+      "type": "python",
+      "language": "python",
+      "path": "/workspace/projects/my-fastapi-service",
+      "exclude": [".venv/", "__pycache__/", "dist/", ".pytest_cache/", "htmlcov/"]
+    }
+  ]
+}

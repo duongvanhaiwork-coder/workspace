@@ -1,0 +1,37 @@
+node_modules
+dist
+build
+
+__pycache__
+*.pyc
+.pytest_cache
+.ruff_cache
+.venv
+venv
+intelligence-engine/.venv
+
+.env
+
+# Per-developer config
+projects.json
+docker-compose.override.yml
+
+# App repos — clone into projects/ locally (see docs/ADD-PROJECT.md)
+projects/
+
+data/lancedb/*
+data/graph/*
+data/indexes/*
+*.sqlite
+*.db
+
+!.gitkeep
+
+.vscode
+.idea
+.DS_Store
+
+# IDE: commit rules/ + skills/; ignore generated IDE dirs only
+.cursor
+.kiro
+data
