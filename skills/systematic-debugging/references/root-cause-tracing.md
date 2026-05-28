@@ -101,9 +101,10 @@ If something appears during tests but you don't know which test:
 Use the bisection script [../scripts/find-polluter.sh](../scripts/find-polluter.sh):
 
 ```bash
-bash skills/systematic-debugging/scripts/find-polluter.sh '.git' 'src/**/*.test.ts'
-# or from the skill scripts directory:
-# cd skills/systematic-debugging/scripts && ./find-polluter.sh '.git' 'src/**/*.test.ts'
+# From skill root (systematic-debugging/):
+bash scripts/find-polluter.sh '.git' 'src/**/*.test.ts'
+# or:
+# cd scripts && ./find-polluter.sh '.git' 'src/**/*.test.ts'
 ```
 
 Runs tests one-by-one, stops at first polluter. See script header for usage.

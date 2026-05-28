@@ -38,7 +38,7 @@
 | `execute-via-subagents` or `execute-inline-checkpoints` (L3–L4) | |
 | `finish-branch-options` (L3–L4 ship) | |
 
-Ref: [rules/QUICKSTART.md](../../../../rules/QUICKSTART.md) (EN), `rules/workflow.mdc`.
+Ref: `AGENTS.md` · rules `question-scope`, `code-standards` · load `@workflow` for rule IDs above.
 
 ## Next actions (concrete)
 

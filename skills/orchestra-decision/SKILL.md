@@ -39,7 +39,7 @@ Then assign one quadrant:
 Create a shortlist (up to 4 sources). Priority:
 
 1. User-referenced paths (for example `@src/...`)
-2. Repo `README`, config, and Cursor rules (`.cursor/rules` or `rules/*.mdc`)
+2. Repo `README`, config, and applicable rules (`question-scope`, `code-standards`, `@workflow`, stack rules by file type)
 3. `docs/orchestra/INDEX.md` and `docs/orchestra/collect-before.md` **only if they exist**
 4. Optional workspace app manifest (e.g. `projects.json`) when the task touches indexed multi-repo setups — skip if absent.
 

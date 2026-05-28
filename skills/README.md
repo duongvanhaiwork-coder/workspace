@@ -2,14 +2,6 @@
 
 **Language:** All `SKILL.md` files and supporting docs under `skills/` are **English**, except **`question-scope/README.md` only** (Vietnamese human guide; that skill’s `examples/`, `references/`, `templates/` stay English). See [CONVENTIONS.md](CONVENTIONS.md) § Language.
 
-Edit skills here, then sync:
-
-```bash
-./scripts/sync-ide.sh    # or: make sync-ide
-```
-
-Home-level links (optional): `./scripts/link-global-ide.sh`
-
 **Directory layout (all skills):** [STRUCTURE.md](STRUCTURE.md) — `SKILL.md`, `prompts/`, `references/`, `templates/`, …
 
 **Portable conventions:** [CONVENTIONS.md](CONVENTIONS.md) — skill IDs, handoffs, paths, canonical tools. **Handoff graph:** [SKILLS-REGISTRY.md](SKILLS-REGISTRY.md).

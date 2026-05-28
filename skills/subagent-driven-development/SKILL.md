@@ -141,7 +141,7 @@ Task 1: Hook installation script
 
 Implementer: "Before I begin - should the hook be installed at user or system level?"
 
-You: "User level (~/.config/superpowers/hooks/)"
+You: "Project-level (repo hooks per `AGENTS.md` / team convention)"
 
 Implementer: "Got it. Implementing now..."
 [Later] Implementer:

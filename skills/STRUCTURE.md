@@ -39,7 +39,6 @@ skills/<skill-id>/
 2. Write `SKILL.md` with frontmatter `name` + `description` (“Use when …”) in **English**.
 3. If you add prompts, references, or templates → create the subfolder **immediately**; do not leave stray `.md` at root.
 4. Update [SKILLS-REGISTRY.md](./SKILLS-REGISTRY.md) if the skill joins the Superpowers bundle or team catalog.
-5. Run `make sync-ide`.
 
 ---
 
@@ -99,11 +98,3 @@ Cross-skill (deep link to a supporting file, optional):
 ```
 
 **Cursor rules (from skills):** cite rule IDs or `@workflow` — do **not** use `rules/…` file paths. See [CONVENTIONS.md](./CONVENTIONS.md) § Referencing Cursor rules.
-
----
-
-## IDE sync
-
-```bash
-make sync-ide
-```

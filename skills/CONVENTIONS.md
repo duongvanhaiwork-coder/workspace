@@ -40,7 +40,7 @@ Portable cross-skill rules for `SKILL.md`, `references/`, `templates/`, and `exa
 | File in **another** skill (deep link) | `` `other-skill` `` + path under that skill, e.g. `` `question-scope` `` → `references/superpowers-supplement.md`; optional markdown `../other-skill/references/foo.md` from a sibling `SKILL.md` |
 | Prompt/template owned by another skill | `` `requesting-code-review` `` → `prompts/code-reviewer.md` (skill ID + path; no `skills/` prefix) |
 
-**Do not** in skill bodies: host absolute paths (`/Users/...`, `~/.cursor/skills/...` except one-line sync notes in meta docs), repo-root `skills/<id>/SKILL.md`, `@skills/.../SKILL.md`, or `superpowers:<id>`.
+**Do not** in skill bodies: host absolute paths (`/Users/...`, `~/.cursor/...`, `~/.kiro/...`), repo-root `skills/<id>/SKILL.md`, `@skills/.../SKILL.md`, or `superpowers:<id>`.
 
 **Catalog meta** (`skills/README.md`, `SKILLS-REGISTRY.md`, `STRUCTURE.md`): may use `question-scope/references/...` paths relative to the `skills/` directory for human navigation.
 

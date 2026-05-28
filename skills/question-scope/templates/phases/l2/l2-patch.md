@@ -3,6 +3,17 @@
 - **Work folder**: `docs/work/YYYY-MM-DD-<slug>/`
 - **Pair with**: `STATUS.md` in same folder
 
+## Level check (~30s) — is L2 enough?
+
+Complete **before** deep Spec/Patch. If **any** box is checked → **stop**: do not patch on L2; run [gray-zone AskQuestion](../../../references/gray-zones.md#gray-zone-askquestion) (L2 vs L3) or user sends `level L3`.
+
+- [ ] **New** top-level module, package, or folder boundary
+- [ ] **New** worker, queue consumer, cron, or async pipeline
+- [ ] Likely **> ~5 files** or **multi-session** / multi-PR
+- [ ] Needs full **Regression + Ship** / rollout doc (not scoped Verify only)
+
+**All unchecked** → L2 is appropriate for this work item. Agent: note `Level check: L2 OK` in `STATUS.md` or below.
+
 ## Context collected
 
 - [ ] Paths / symbols touched: …

@@ -9,7 +9,7 @@ description: Use when creating new skills, editing existing skills, or verifying
 
 **Writing skills IS Test-Driven Development applied to process documentation.**
 
-**Personal skills live in the host’s skills directory** (`~/.cursor/skills` → repo `skills/` after `make sync-ide` — see [CONVENTIONS.md](../CONVENTIONS.md))
+**Skills are identified by skill ID** (kebab-case directory name under `skills/<skill-id>/`). See [CONVENTIONS.md](../CONVENTIONS.md) for layout and cross-skill cites.
 
 You write test cases (pressure scenarios with subagents), watch them fail (baseline behavior), write the skill (documentation), watch tests pass (agents comply), and refactor (close loopholes).
 
@@ -260,14 +260,14 @@ You: Searching...
 
 **Verification:**
 ```bash
-wc -w skills/path/SKILL.md
+wc -w <skill-id>/SKILL.md   # from repo skills/ directory
 # getting-started workflows: aim for <150 each
 # Other frequently-loaded: aim for <200 total
 ```
 
 **Name by what you DO or core insight:**
 - ✅ `condition-based-waiting` > `async-test-helpers`
-- ✅ `using-skills` not `skill-usage`
+- ✅ `superpowers` not `skill-usage`
 - ✅ `flatten-with-flags` > `data-structure-refactoring`
 - ✅ `root-cause-tracing` > `debugging-techniques`
 

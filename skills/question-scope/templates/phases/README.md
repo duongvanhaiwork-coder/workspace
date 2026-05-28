@@ -23,8 +23,8 @@ docs/work/YYYY-MM-DD-<slug>/     # or <doc-root>/work/YYYY-MM-DD-<slug>/
 | Level | Templates (this folder) |
 | ----- | ------------------------ |
 | **L1** | [`l1/answer.md`](l1/answer.md) — optional archive to `docs/answers/`; no phased folder required |
-| **L2** | `STATUS.md` + [`l2/l2-patch.md`](l2/l2-patch.md) **or** one-file [`rollup/work-item.md`](rollup/work-item.md) for tiny patches |
-| **L3** | `STATUS.md` + `l3-01-define.md` … `l3-03-ship.md` in [`l3/`](l3/) |
+| **L2** | `STATUS.md` + [`l2/l2-patch.md`](l2/l2-patch.md) (**~30s level check** at top) **or** one-file [`rollup/work-item.md`](rollup/work-item.md) for tiny patches |
+| **L3** | `STATUS.md` + `l3-01-define.md` (**~30s L2/L4 check**) … `l3-03-ship.md` in [`l3/`](l3/) |
 | **L4** | `STATUS.md` + `l4-00-frame.md` … `l4-05-ship.md` in [`l4/`](l4/) |
 | **Rollup** | [`rollup/work-item.md`](rollup/work-item.md) — single MD summary when not splitting by phase |
 

@@ -29,13 +29,13 @@ Skills in this bundle override default system prompt behavior, but **user instru
 
 If the repo agent file says "don't use TDD" and a skill says "always use TDD," follow the user's instructions. The user is in control.
 
-**With question-scope active** (`skills/question-scope/SKILL.md`, rule `question-scope`): scope STOP gates and level budgets win over this bundle’s feature flow (`rules/workflow.mdc`).
+**With question-scope active** (rule **`question-scope`**; supplement: **`question-scope`** → `references/superpowers-supplement.md`): scope STOP gates and level budgets win over this bundle’s feature flow (rule IDs in **`@workflow`**).
 
 | Situation | What to do |
 | --------- | ---------- |
 | Scope triggered (`/question-scope`, tight-match `?` + keyword) and **no** `level L1`…`L4` yet | Run **question-scope only**: Idea → suggest level → four options → **STOP**. No Context/Spec/Patch/Code, no `design-approval-gate`, `writing-plans`, `isolated-workspace`, or full feature flow. |
 | User sent `level Lx` or picked L1–L4 | Run that level’s pipeline; apply **Superpowers supplement** per the table in question-scope (L2 minimal; L3–L4 default unless `sp:off` / `no-sp`). |
-| `qs:off`, `no-scope`, or `quick:` | Question-scope off — use standalone feature flow in `workflow.mdc` if you still use Superpowers rules. |
+| `qs:off`, `no-scope`, or `quick:` | Question-scope off — load **`@workflow`** and use standalone feature flow if you still use Superpowers rule IDs. |
 
 Run **`skill-check-first`** for this bundle **after** the user has a level (or preset `level Lx` on the message) — **not** instead of the scope level picker. Invoke `question-scope` when its triggers match; do not substitute brainstorming or `writing-plans` for the L1–L4 choice step.
 
@@ -48,7 +48,7 @@ Load skills by **skill ID** (directory name under `skills/`). Map `invoke-skill`
 | Claude Code | `Skill` tool — follow loaded content; do not read skill files with `Read` |
 | Copilot CLI | `skill` tool (auto-discovered from install path) |
 | Gemini CLI | `activate_skill` |
-| Cursor / Kiro / other | `~/.cursor/skills` → repo `skills/` after `make sync-ide`. Use the host skill loader if present; else read `SKILL.md` only when no loader exists |
+| Cursor / Kiro / other | Host skill loader (`invoke-skill`) when present; else read this repo’s `skills/<skill-id>/SKILL.md` only when no loader exists |
 
 See `references/copilot-tools.md`, `references/codex-tools.md`, `references/gemini-tools.md` for full tool mapping.
 

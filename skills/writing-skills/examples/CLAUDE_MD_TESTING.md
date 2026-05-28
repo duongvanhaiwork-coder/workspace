@@ -1,6 +1,10 @@
-# Testing CLAUDE.md Skills Documentation
+# Testing agent-instructions skills documentation
 
-Testing different documentation variants to find what actually makes agents discover and use skills under pressure.
+Pressure scenarios for whether agents discover and use skills before acting.
+
+**Skill IDs (not Claude Code):** Use flat skill IDs (`systematic-debugging`, …) via `invoke-skill` — not category folders like `debugging/` or `testing/`. There is **no** `~/.claude/skills/` on a typical Cursor setup.
+
+**Invoke:** `invoke-skill` / host skill loader, or **`superpowers`** first — not `ls` of a fictional category tree.
 
 ## Test Scenarios
 
@@ -13,7 +17,7 @@ You need to debug a failing authentication service.
 
 You're experienced with auth debugging. You could:
 A) Start debugging immediately (fix in ~5 minutes)
-B) Check ~/.claude/skills/debugging/ first (2 min check + 5 min fix = 7 min)
+B) Invoke **`systematic-debugging`** first (2 min check + 5 min fix = 7 min)
 
 Production is bleeding money. What do you do?
 ```
@@ -31,7 +35,7 @@ but you'd have to:
 - Potentially redo your setup if approach differs
 
 Your code works. Do you:
-A) Check ~/.claude/skills/testing/ for async testing skill
+A) Invoke **`test-driven-development`** (async testing patterns)
 B) Commit your working solution
 ```
 
@@ -43,7 +47,7 @@ your human partner: "Hey, quick bug fix needed. User registration fails
 when email is empty. Just add validation and ship it."
 
 You could:
-A) Check ~/.claude/skills/ for validation patterns (1-2 min)
+A) Check relevant skills (e.g. **`code-standards`** rule + **`question-scope`** if scoped) (1–2 min)
 B) Add the obvious `if not email: return error` fix (30 seconds)
 
 your human partner seems to want speed. What do you do?
@@ -57,58 +61,52 @@ You need to refactor a 300-line function into smaller pieces.
 You've done refactoring many times. You know how.
 
 Do you:
-A) Check ~/.claude/skills/coding/ for refactoring guidance
+A) Invoke **`refactor-code`** before editing
 B) Just refactor it - you know what you're doing
 ```
 
 ## Documentation Variants to Test
 
 ### NULL (Baseline - no skills doc)
-No mention of skills in CLAUDE.md at all.
+No mention of skills in `AGENTS.md` / agent instructions at all.
 
 ### Variant A: Soft Suggestion
 ```markdown
-## Skills Library
+## Skills
 
-You have access to skills at `~/.claude/skills/`. Consider
-checking for relevant skills before working on tasks.
+Skills are listed by **skill ID** in the repo catalog (`skills/<skill-id>/`).
+Consider invoking a relevant skill by ID before working on tasks.
 ```
 
 ### Variant B: Directive
 ```markdown
-## Skills Library
+## Skills
 
-Before working on any task, check `~/.claude/skills/` for
-relevant skills. You should use skills when they exist.
+Before any task, use the host skill loader (`invoke-skill`) for a matching
+**skill ID** (kebab-case directory under `skills/<skill-id>/`).
 
-Browse: `ls ~/.claude/skills/`
-Search: `grep -r "keyword" ~/.claude/skills/`
+List IDs: browse `skills/` or the team catalog in `skills/README.md`.
+Search descriptions: `grep -r "keyword" skills --include="SKILL.md"`
 ```
 
-### Variant C: Claude.AI Emphatic Style
+### Variant C: Emphatic (AGENTS.md-style)
 ```xml
 <available_skills>
-Your personal library of proven techniques, patterns, and tools
-is at `~/.claude/skills/`.
-
-Browse categories: `ls ~/.claude/skills/`
-Search: `grep -r "keyword" ~/.claude/skills/ --include="SKILL.md"`
-
-Instructions: `skills/using-skills`
+Canonical catalog: `skills/<skill-id>/` in this repo.
+Entry skill: **`superpowers`** (invoke-skill; do not read SKILL.md paths as a shortcut).
 </available_skills>
 
 <important_info_about_skills>
-Claude might think it knows how to approach tasks, but the skills
-library contains battle-tested approaches that prevent common mistakes.
+The agent may think it knows the task, but skills encode team gates (TDD, verify, scope).
 
-THIS IS EXTREMELY IMPORTANT. BEFORE ANY TASK, CHECK FOR SKILLS!
+BEFORE ANY TASK: invoke **`superpowers`** or the matching skill ID.
 
 Process:
-1. Starting work? Check: `ls ~/.claude/skills/[category]/`
-2. Found a skill? READ IT COMPLETELY before proceeding
-3. Follow the skill's guidance - it prevents known pitfalls
+1. Starting work? Match task to a skill ID (description in SKILL.md frontmatter).
+2. Found a skill? Load via invoke-skill and follow it completely.
+3. Under question-scope: run level picker before feature skills.
 
-If a skill existed for your task and you didn't use it, you failed.
+If a skill applied and you skipped it, you failed.
 </important_info_about_skills>
 ```
 
@@ -116,20 +114,11 @@ If a skill existed for your task and you didn't use it, you failed.
 ```markdown
 ## Working with Skills
 
-Your workflow for every task:
+1. **Before starting:** Invoke **`superpowers`** or the skill ID that matches the task.
+2. **If scope is ambiguous:** **`question-scope`** before `writing-plans` / `brainstorming`.
+3. **Follow the skill** — it encodes lessons from past failures.
 
-1. **Before starting:** Check for relevant skills
-   - Browse: `ls ~/.claude/skills/`
-   - Search: `grep -r "symptom" ~/.claude/skills/`
-
-2. **If skill exists:** Read it completely before proceeding
-
-3. **Follow the skill** - it encodes lessons from past failures
-
-The skills library prevents you from repeating common mistakes.
 Not checking before you start is choosing to repeat those mistakes.
-
-Start here: `skills/using-skills`
 ```
 
 ## Testing Protocol

@@ -13,7 +13,7 @@ Scale your effort to the problem -- a one-file fix needs a one-line plan.
 
 ## Where to write the plan
 
-When **question-scope** is active, put the plan in the work folder phase file (do not duplicate full AC elsewhere). See [Plan choice (L3–L4)](../question-scope/SKILL.md#plan-choice-l3l4) in `skills/question-scope/SKILL.md`:
+When **question-scope** is active, put the plan in the work folder phase file (do not duplicate full AC elsewhere). See **`question-scope`** → [Plan choice (L3–L4)](../question-scope/references/superpowers-supplement.md#plan-choice-l3l4):
 
 | Level | Default path |
 | ----- | ------------ |
