@@ -12,15 +12,15 @@ Load on demand (not every turn). **Naming:** kebab-case, one topic per file; see
 | [behavioral-gates.md](./behavioral-gates.md) | Behavioral fixtures + live-paste eval runbook |
 | [behavioral-eval-fixtures.json](./behavioral-eval-fixtures.json) | Optional agent spot-check turns (schema v2) |
 | [l3-vs-l4-diff.md](./l3-vs-l4-diff.md) | L3 vs L4 decision checklist + examples |
+| [CHEATSHEET.md](./CHEATSHEET.md) | Human one-pager (English): triggers, tokens, levels |
 
-**Vietnamese (this skill only):** [README.md](../README.md) — presets, anti-patterns, Regression. **English one-pager:** [CHEATSHEET.md](../CHEATSHEET.md). **English prompt samples:** [examples/sample-prompts.md](../examples/sample-prompts.md). **Pressure test pilot:** [examples/pressure-test-pilot.md](../examples/pressure-test-pilot.md).
+**Vietnamese (this skill only):** [README.md](../README.md) — presets, anti-patterns, Regression. **English one-pager:** [CHEATSHEET.md](./CHEATSHEET.md). **English prompt samples:** [examples/sample-prompts.md](../examples/sample-prompts.md). **Pressure test pilot:** [examples/pressure-test-pilot.md](../examples/pressure-test-pilot.md).
 
 ## Layout (skill root)
 
 | Path | Role |
 | ---- | ---- |
 | `SKILL.md` | Agent contract (English) |
-| `CHEATSHEET.md` | Human one-pager (English) |
 | `README.md` | Human guide (Vietnamese only) |
 | `examples/sample-prompts.md` | Copy-paste prompts (English) |
 | `references/*.md` | Deep dives (this folder) |

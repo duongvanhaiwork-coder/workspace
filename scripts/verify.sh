@@ -8,6 +8,8 @@ echo "== AI Core verify =="
 echo "Repo: $ROOT"
 echo ""
 
+bash "$ROOT/scripts/verify-skills-structure.sh"
+echo ""
 bash "$ROOT/scripts/verify-question-scope-triggers.sh"
 echo ""
 bash "$ROOT/scripts/verify-question-scope-behavior.sh"

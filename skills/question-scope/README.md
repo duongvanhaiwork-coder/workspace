@@ -413,7 +413,7 @@ Text: mục dưới **Một câu nhớ** + bảng L ở trên. Flowchart + IDE: 
 | File | Ai đọc |
 | ---- | ------ |
 | **README.md** (file này) | Người — preset, anti-pattern, checklist L2↔L3, Regression |
-| **CHEATSHEET.md** | Người — one-pager tiếng Anh (trigger, token, level) |
+| **references/CHEATSHEET.md** | Người — one-pager tiếng Anh (trigger, token, level) |
 | **examples/sample-prompts.md** | Người / agent — prompt mẫu (English) |
 | **SKILL.md** | Agent — contract, gates, pipeline (core) |
 | **references/** | Agent — gray-zone, playbooks, supplement, Kiro, testing ([index](references/README.md)) |

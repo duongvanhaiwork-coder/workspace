@@ -9,7 +9,7 @@ Rules for React UI. Match the repo's stack before adding libraries. For TypeScri
 
 ## Match Existing Stack
 
-- **Redux + redux-saga** (e.g. business-lounge-portal): keep actions → saga → API → reducer flow; do not migrate to React Query/SWR unless explicitly requested.
+- **Redux + redux-saga** (legacy container/saga repos): keep actions → saga → API → reducer flow; do not migrate to React Query/SWR unless explicitly requested.
 - **React Query / SWR:** use only when the repo already depends on them.
 - Prefer the repo's React major version (e.g. React 17 patterns) — do not use APIs from newer versions without upgrading the project.
 

@@ -5,7 +5,7 @@ fileMatchPattern: "**/*.ts"
 
 # TypeScript / NestJS
 
-Rules for TypeScript backend (NestJS, TypeORM). For UI, see `react.mdc`. Match existing patterns in the repo before introducing new libraries.
+Rules for TypeScript (`.ts`). Applies to backend and shared utilities — for React UI (`.tsx`/`.jsx`), see `react.mdc`. **NestJS / TypeORM sections apply only when the repo already uses them**; otherwise match the repo's existing layout and libraries.
 
 ## Type Discipline
 
@@ -16,14 +16,16 @@ Rules for TypeScript backend (NestJS, TypeORM). For UI, see `react.mdc`. Match e
 - Prefer type guards over type assertions for narrowing.
 - Handle `null | undefined` explicitly.
 
-## File Naming (NestJS)
+## File Naming (NestJS — when the repo uses Nest)
+
+Use kebab-case stem + role suffix (do not repeat the class name in the filename):
 
 | Suffix | Purpose | Example |
 | ------ | ------- | ------- |
-| `.module.ts` | Nest module | `AdminModule.module.ts` |
-| `.controller.ts` | HTTP entry | `BookingController.controller.ts` |
-| `.service.ts` | Business logic | `BookingService.service.ts` |
-| `.dto.ts` | Request/response shapes | `CreateBooking.dto.ts` |
+| `.module.ts` | Nest module | `admin.module.ts` |
+| `.controller.ts` | HTTP entry | `booking.controller.ts` |
+| `.service.ts` | Business logic | `booking.service.ts` |
+| `.dto.ts` | Request/response shapes | `create-booking.dto.ts` |
 | `.entity.ts` | TypeORM entity | `booking.entity.ts` |
 
 Match suffix and folder layout already used in the repo (`src/admin/`, `src/core/`, etc.).

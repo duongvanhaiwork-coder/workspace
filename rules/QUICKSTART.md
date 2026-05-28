@@ -2,7 +2,7 @@
 
 Short guide for Cursor/Kiro using this repo’s **English** rules and skills. Full scope contract: skill **`question-scope`** (invoke-skill). Workflow rule IDs: `@workflow` or `rules/cursor/workflow.mdc`.
 
-Human guide (Vietnamese): **`question-scope`** → `README.md`. English one-pager: **`question-scope`** → `CHEATSHEET.md`. English prompts: **`question-scope`** → `examples/sample-prompts.md`.
+Human guide (Vietnamese): **`question-scope`** → `README.md`. English one-pager: **`question-scope`** → `references/CHEATSHEET.md`. English prompts: **`question-scope`** → `examples/sample-prompts.md`.
 
 ## Two layers (one sentence)
 
@@ -83,5 +83,6 @@ Cursor: `@workflow` or read `rules/cursor/workflow.mdc`.
 ## References
 
 - Rules layout: [CONVENTIONS.md](./CONVENTIONS.md)
+- Sync after rule edits: `make sync-ide` then reload Cursor window or new chat ([README.md](./README.md) § Sync to IDE)
 - Skills layout: [../skills/STRUCTURE.md](../skills/STRUCTURE.md)
 - Agent policy: [../AGENTS.md](../AGENTS.md)

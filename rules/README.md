@@ -45,11 +45,35 @@ Details: [CONVENTIONS.md](./CONVENTIONS.md).
 | `code-standards.mdc` | `true` | — | Shared defaults (all files) |
 | `question-scope.mdc` | `true` | — | Question Scope triggers → skill **`question-scope`** |
 | `typescript.mdc` | `false` | `**/*.ts` | Backend / shared TS |
-| `react.mdc` | `false` | `**/*.tsx`, `**/*.jsx` | React UI |
+| `react.mdc` | `false` | `**/*.tsx`, `**/*.jsx`, `**/app/**/*.js` | React UI |
 | `python.mdc` | `false` | `**/*.py` | Python services/workers |
 | `dotnet.mdc` | `false` | `**/*.cs` | .NET / C# |
 | `java.mdc` | `false` | `**/*.java` | Java backend |
 | `workflow.mdc` | `false` | — | Workflow rule IDs & handoffs (on demand; Kiro: load `workflow.md` steering) |
+
+## Supported stacks & gaps
+
+Stack rules **detect** what the repo uses — they do not mandate a framework. Current file-scoped coverage:
+
+| Stack rule | Primary patterns | Not covered (add a rule if the team needs it) |
+| ---------- | ---------------- | --------------------------------------------- |
+| `typescript.mdc` | NestJS, TypeORM, Node backend TS | Go, Rust, Kotlin, Vue/Svelte |
+| `react.mdc` | Redux Saga, legacy `app/containers/` | Next.js App Router-only repos without saga |
+| `python.mdc` | FastAPI, async workers | Django-only layouts |
+| `dotnet.mdc` | Layered .NET, EF Core | — |
+| `java.mdc` | Spring Boot, JPA | — |
+
+No rule yet for shell (`scripts/**/*.sh`), SQL migrations, or Terraform — follow `code-standards.mdc` and repo conventions.
+
+## Sync to IDE
+
+After editing `rules/cursor/*.mdc`, run from the workspace root:
+
+```bash
+make sync-ide
+```
+
+Then **reload the Cursor window** or start a **new chat** — always-on rules are cached in open sessions.
 
 ## Layout
 

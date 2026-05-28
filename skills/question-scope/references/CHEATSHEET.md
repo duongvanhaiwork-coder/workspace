@@ -1,6 +1,6 @@
 # Question Scope — one-page cheat sheet (English)
 
-Full contract: [SKILL.md](./SKILL.md). Vietnamese guide: [README.md](./README.md).
+Full contract: [SKILL.md](../SKILL.md). Vietnamese guide: [README.md](../README.md).
 
 ## Activate scope (only these)
 
