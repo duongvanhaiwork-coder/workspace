@@ -6,6 +6,10 @@ description: >
   downstream impact, "what breaks if I change X", or before large refactors.
 ---
 
+**Announce when applying:** `Using analyze-impact for <symbol>.`
+
+If MCP is down, follow **Search-only fallback** and state results are bounded — not graph-complete.
+
 ## When to use
 
 - User will modify, rename, or delete a function, class, or exported symbol

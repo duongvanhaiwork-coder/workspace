@@ -35,15 +35,23 @@ Map rule IDs from **`@workflow`** (invoke skill ID in the Playbook column):
 
 Run **`superpowers`** (`skill-check-first`) once per session when the supplement applies — **after** level is chosen, not instead of scope options.
 
-## Plan choice (L3–L4)
+## Plan path decision (L3–L4)
 
-| Situation | Use |
-| --------- | --- |
-| Bounded feature; plan fits one phase file | **`architect-plan`** in `l3-01-define.md` / L4 define phase (default) → **execute-inline-checkpoints** (B) |
-| Many tasks/files; zero-context handoff | **`writing-plans`** → `docs/plans/YYYY-MM-DD-<feature>.md`; link from work folder → may use **execute-via-subagents** (A) |
-| L4 | Often **both**: architect framing in phase MD + `writing-plans` for execution tasks |
+Use this table after design approval (`brainstorming` or spec in phase file). **One primary plan location** — link elsewhere; do not duplicate full task lists.
 
-Do not run both execute ALT branches on the same plan. **Do not** use execute (A) with only `architect-plan` and no `writing-plans` — `subagent-driven-development` requires a task-level plan file.
+| Situation | Plan skill | Plan lives at | Execute |
+| --------- | ---------- | ------------- | ------- |
+| Bounded L3; tasks fit one phase file | **`architect-plan`** | `docs/work/…/l3-01-define.md` (checkbox tasks + paths) | **`executing-plans`** (B) default |
+| Many tasks/files; zero-context handoff | **`writing-plans`** | `docs/plans/YYYY-MM-DD-<feature>.md` | User picks **B** or **A** |
+| User wants subagents per task | **`writing-plans`** (required) | `docs/plans/…` | **`subagent-driven-development`** (A) |
+| L4 large | **`architect-plan`** + often **`writing-plans`** | Phase MD + `docs/plans/…` linked from `STATUS.md` | B and/or A per plan header |
+
+**After `brainstorming`:** default **NEXT** is **`architect-plan`** when question-scope L3 bounded; **`writing-plans`** when the row above requires `docs/plans/…`.
+
+**Rules:**
+- Do not run both execute ALT branches on the same plan.
+- **Do not** use execute (A) with only **`architect-plan`** and no `docs/plans/…` — **`subagent-driven-development`** requires a task-level plan file.
+- **`sp:off`:** team may use **`architect-plan`** only in work folder without worktree/`writing-plans` (see examples below).
 
 ## Where files live
 

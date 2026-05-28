@@ -78,7 +78,7 @@ One source of truth — see `skills/CONVENTIONS.md`.
 ```text
 level L3 → docs/work/ + STATUS
   → design-approval-gate (if large)
-  → architect-plan in phase OR writing-plans → docs/plans/
+  → implementation-plan: architect-plan in docs/work/ (B default) OR writing-plans → docs/plans/ (A)
   → isolated-workspace
   → execute-inline-checkpoints (B, default) OR execute-via-subagents (A, needs docs/plans/)
   → tdd-during-implementation

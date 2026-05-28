@@ -85,11 +85,12 @@ fi
 git -C "$ROOT" check-ignore -q "$WORKTREE_DIR" || {
   echo "$WORKTREE_DIR/" >> "$ROOT/.gitignore"
   git -C "$ROOT" add .gitignore
-  git -C "$ROOT" commit -m "chore: ignore $WORKTREE_DIR for git worktrees"
 }
 ```
 
-Skip the commit if the user forbids commits or hooks block it — still add to `.gitignore` and confirm `git check-ignore` passes before `worktree add`.
+**Commit `.gitignore` only when the user explicitly asks** (or team convention requires it). Otherwise leave staged/uncommitted and tell the user: *"Added `$WORKTREE_DIR/` to `.gitignore` — commit when ready."*
+
+If hooks block staging, still ensure the path is listed and `git check-ignore -q "$WORKTREE_DIR"` passes before `worktree add`.
 
 #### 3. Branch name
 

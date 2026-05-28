@@ -64,12 +64,10 @@ skills/<skill-id>/
 | requesting-code-review | — | ✓ | — | — | — | — |
 | systematic-debugging | — | — | ✓ | — | — | ✓ |
 | test-driven-development | — | — | ✓ | — | — | — |
-| writing-skills | — | — | ✓ | — | ✓ | — * |
+| writing-skills | — | — | ✓ | — | ✓ | ✓ |
 | commit-message | — | — | — | ✓ | — | — |
 | caveman, caveman-commit, caveman-review, cavecrew | ✓ | — | — | — | — | — |
 | architect-plan, analyze-impact, explain-code, refactor-code, generate-test, orchestra-decision, executing-plans, dispatching-parallel-agents, using-git-worktrees, verification-before-completion, finishing-a-development-branch, receiving-code-review | — | — | — | — | — | — |
-
-\* `writing-skills/render-graphs.js` remains at skill root (tool); may move to `scripts/` later.
 
 **Minimal skills** (`SKILL.md` only): sufficient for short playbooks — no empty subfolders required.
 

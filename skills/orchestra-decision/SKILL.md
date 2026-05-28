@@ -15,6 +15,8 @@ Always apply instructions in this order:
 
 If higher-level instructions conflict with this skill, follow higher-level instructions and adapt the workflow.
 
+**vs `brainstorming`:** **`orchestra-decision`** picks direction fast (Q1–Q4, 2–5 options, one decision) when the problem is still fuzzy. **`brainstorming`** produces an approved **design spec** section-by-section — use after scope/level is clear or when building a new feature needs full design gate.
+
 ## Quick start
 
 When a request arrives, avoid jumping into broad implementation immediately. Run this pipeline first and keep retrieval/clarification loops minimal.

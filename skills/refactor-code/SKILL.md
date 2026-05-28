@@ -6,6 +6,10 @@ description: >
   "extract", "rename", or reducing duplication.
 ---
 
+**Announce when applying:** `Using refactor-code for <scope>.`
+
+For shared symbols, run **`analyze-impact`** first (or search fallback). After edits, run tests; before claiming pass, use **`verification-before-completion`**.
+
 ## When to use
 
 - User wants structure improved without changing outward behavior

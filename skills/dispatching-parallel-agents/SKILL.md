@@ -66,12 +66,14 @@ Each agent gets:
 ### 3. Dispatch in Parallel
 
 ```typescript
-// In Claude Code / AI environment
+// Claude Code — multiple Task calls in one message
 Task("Fix agent-tool-abort.test.ts failures")
 Task("Fix batch-completion-behavior.test.ts failures")
 Task("Fix tool-approval-race-conditions.test.ts failures")
 // All three run concurrently
 ```
+
+**Cursor:** Dispatch multiple **Task** invocations in one message (`subagent_type` e.g. `generalPurpose` or `shell` per domain). Same pattern: one focused prompt per independent failure domain, no shared mutable state between agents.
 
 ### 4. Review and Integrate
 

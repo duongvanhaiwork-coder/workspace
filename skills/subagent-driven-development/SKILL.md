@@ -268,8 +268,9 @@ Done!
 
 **Required workflow skills:**
 - **REQUIRES:** `using-git-worktrees` — isolated workspace (create or verify)
-- **REQUIRES:** `writing-plans` — plan file this skill executes
-- **REQUIRES:** `requesting-code-review` — templates for reviewer subagents (`prompts/code-reviewer.md`)
+- **REQUIRES:** `writing-plans` — task-level plan at `docs/plans/YYYY-MM-DD-<feature>.md` (do **not** use this skill with **`architect-plan`**-only phase files — use **`executing-plans`** instead)
+- **REQUIRES (per-task review):** Bundled prompts in this skill — `prompts/implementer-prompt.md`, `prompts/spec-reviewer-prompt.md`, `prompts/code-quality-reviewer-prompt.md`
+- **RECOMMENDED (ad-hoc / whole-branch review):** `requesting-code-review` → `prompts/code-reviewer.md` — not required for every task when spec + code-quality reviewer prompts already ran
 - **NEXT:** `finishing-a-development-branch` — after all tasks
 
 **Subagents should use:**

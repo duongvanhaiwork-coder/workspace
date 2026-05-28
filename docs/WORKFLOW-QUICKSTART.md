@@ -83,7 +83,7 @@ Một nguồn sự thật — xem [skills/CONVENTIONS.md](../skills/CONVENTIONS.
 ```text
 level L3 → docs/work/ + STATUS
   → design-approval-gate (nếu lớn)
-  → architect-plan trong phase HOẶC writing-plans → docs/plans/
+  → implementation-plan: architect-plan trong docs/work/ (B mặc định) HOẶC writing-plans → docs/plans/ (A)
   → isolated-workspace
   → execute-inline-checkpoints (B, mặc định) HOẶC execute-via-subagents (A, cần docs/plans/)
   → tdd-during-implementation

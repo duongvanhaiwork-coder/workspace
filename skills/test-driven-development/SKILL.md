@@ -5,7 +5,13 @@ description: Use when implementing any feature or bugfix, before writing impleme
 
 # Test-Driven Development (TDD)
 
+## Instruction precedence
+
+Explicit **user** instructions and repo agent policy (e.g. `AGENTS.md`) override this skill — e.g. user says "skip TDD for this spike". Otherwise follow this skill. See **`superpowers`** § Instruction Priority and [CONVENTIONS.md](../CONVENTIONS.md).
+
 ## Overview
+
+**Announce when applying:** `Using test-driven-development to <write failing test | implement fix>.`
 
 Write the test first. Watch it fail. Write minimal code to pass.
 

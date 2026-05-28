@@ -1,6 +1,6 @@
 ---
 name: brainstorming
-description: "You MUST use this before any creative work - creating features, building components, adding functionality, or modifying behavior. Explores user intent, requirements and design before implementation."
+description: "Use before creative work (features, behavior changes). Design + approved spec; then architect-plan (bounded) or writing-plans (large handoff). No code until design approved."
 ---
 
 # Brainstorming Ideas Into Designs
@@ -26,10 +26,10 @@ You MUST create a task for each of these items and complete them in order:
 3. **Ask clarifying questions** — one at a time, understand purpose/constraints/success criteria
 4. **Propose 2-3 approaches** — with trade-offs and your recommendation
 5. **Present design** — in sections scaled to their complexity, get user approval after each section
-6. **Write design doc** — save to `docs/specs/YYYY-MM-DD-<topic>-design.md` and commit
+6. **Write design doc** — save to `docs/specs/YYYY-MM-DD-<topic>-design.md` (or link from `docs/work/…` when **question-scope** is active)
 7. **Spec self-review** — quick inline check for placeholders, contradictions, ambiguity, scope (see below)
 8. **User reviews written spec** — ask user to review the spec file before proceeding
-9. **Transition to implementation** — invoke writing-plans skill to create implementation plan
+9. **Transition to implementation** — choose plan skill (see **Plan handoff** below)
 
 ## Process Flow
 
@@ -45,7 +45,7 @@ digraph brainstorming {
     "Write design doc" [shape=box];
     "Spec self-review\n(fix inline)" [shape=box];
     "User reviews spec?" [shape=diamond];
-    "Invoke writing-plans skill" [shape=doublecircle];
+    "Plan handoff\n(architect-plan or writing-plans)" [shape=doublecircle];
 
     "Explore project context" -> "Visual questions ahead?";
     "Visual questions ahead?" -> "Offer Visual Companion\n(own message, no other content)" [label="yes"];
@@ -59,11 +59,11 @@ digraph brainstorming {
     "Write design doc" -> "Spec self-review\n(fix inline)";
     "Spec self-review\n(fix inline)" -> "User reviews spec?";
     "User reviews spec?" -> "Write design doc" [label="changes requested"];
-    "User reviews spec?" -> "Invoke writing-plans skill" [label="approved"];
+    "User reviews spec?" -> "Plan handoff\n(architect-plan or writing-plans)" [label="approved"];
 }
 ```
 
-**The terminal state is invoking writing-plans.** Do NOT invoke frontend-design, mcp-builder, or any other implementation skill. The ONLY skill you invoke after brainstorming is writing-plans.
+**Terminal state: plan handoff only** — invoke **`architect-plan`** or **`writing-plans`** per **Plan handoff** below. Do NOT invoke frontend-design, mcp-builder, or any other implementation skill.
 
 ## The Process
 
@@ -110,8 +110,8 @@ digraph brainstorming {
 
 - Write the validated design (spec) to `docs/specs/YYYY-MM-DD-<topic>-design.md`
   - (User preferences for spec location override this default)
-- Use elements-of-style:writing-clearly-and-concisely skill if available
-- Commit the design document to git
+  - When **question-scope** L3–L4 is active: link from the phase define file; avoid duplicating full AC in two places (see **`question-scope`** → `references/superpowers-supplement.md`)
+- **Do not** `git commit` the spec unless the user explicitly asks — offer to commit after they approve
 
 **Spec Self-Review:**
 After writing the spec document, look at it with fresh eyes:
@@ -126,14 +126,19 @@ Fix any issues inline. No need to re-review — just fix and move on.
 **User Review Gate:**
 After the spec review loop passes, ask the user to review the written spec before proceeding:
 
-> "Spec written and committed to `<path>`. Please review it and let me know if you want to make any changes before we start writing out the implementation plan."
+> "Spec written to `<path>`. Please review it and let me know if you want any changes before we create the implementation plan."
 
 Wait for the user's response. If they request changes, make them and re-run the spec review loop. Only proceed once the user approves.
 
-**Implementation:**
+**Plan handoff (pick one):**
 
-- Invoke the writing-plans skill to create a detailed implementation plan
-- Do NOT invoke any other skill. writing-plans is the next step.
+| Situation | **NEXT** |
+| --------- | -------- |
+| **question-scope** L3 bounded / plan fits one phase file | **`architect-plan`** in `docs/work/…/l3-01-define.md` (or L4 define phase) → default **`executing-plans`** (B) |
+| Many tasks/files, zero-context handoff, or user wants subagents | **`writing-plans`** → `docs/plans/YYYY-MM-DD-<feature>.md` → may use **`subagent-driven-development`** (A) |
+| L4 large scope | Often **both**: **`architect-plan`** framing in phase MD + **`writing-plans`** for task-level execution |
+
+See **`question-scope`** → `references/superpowers-supplement.md` § Plan path decision. Do not create `docs/plans/…` when **`architect-plan`** in the work folder is enough.
 
 ## Key Principles
 

@@ -56,7 +56,7 @@ Team skills live under `skills/<id>/`. They complement the Superpowers table abo
 | `caveman` | Communication | Ultra-terse reply mode |
 | `cavecrew` | Communication | When to delegate locate / build / review subagents |
 
-**Typical order (code change):** `explain-code` → `analyze-impact` (if large touch) → `refactor-code` → `generate-test`. **With scope:** pick L1–L4 first via `question-scope`, then layer Superpowers supplement per level.
+**Typical order (code change):** `explain-code` → `analyze-impact` (if large touch) → `refactor-code` → `generate-test`. **With scope:** pick L1–L4 first via `question-scope`, then layer Superpowers supplement per level. **Plan routing (L3–L4):** see **`question-scope`** → `references/superpowers-supplement.md` § Plan path decision.
 
 ## Handoff graph (feature workflow)
 
@@ -64,7 +64,8 @@ Team skills live under `skills/<id>/`. They complement the Superpowers table abo
 superpowers (always check skills first)
     │
     ▼
-brainstorming ──NEXT──► writing-plans
+brainstorming ──NEXT──► architect-plan (bounded L3 / work phase)
+    │                 └──► writing-plans (large handoff / subagents)
     │                      │
     │ FORBIDDEN: any       ├── ALT-A ──NEXT──► subagent-driven-development
     │ implementation       │                      │
@@ -103,7 +104,7 @@ Optional: `dispatching-parallel-agents` when multiple **independent** failure do
 - **Priority:** process skills before implementation skills
 
 ### `brainstorming`
-- **NEXT:** `writing-plans` only
+- **NEXT:** `architect-plan` (bounded L3 / `docs/work/…` phase) **or** `writing-plans` (`docs/plans/…` — large handoff / subagents). See **`question-scope`** → `references/superpowers-supplement.md` § Plan path decision.
 - **FORBIDDEN-NEXT:** any implementation skill, code, scaffold
 - **Optional:** `references/visual-companion.md` + `scripts/` (browser mockups)
 
@@ -113,15 +114,16 @@ Optional: `dispatching-parallel-agents` when multiple **independent** failure do
 - **Artifacts:** `docs/plans/YYYY-MM-DD-<feature>.md` (see CONVENTIONS.md)
 
 ### `subagent-driven-development`
-- **REQUIRES:** `writing-plans` (plan exists), `using-git-worktrees`, `test-driven-development`, `requesting-code-review` (reviewer templates)
+- **REQUIRES:** `writing-plans` (`docs/plans/…` task file), `using-git-worktrees`, `test-driven-development`
+- **REQUIRES (per-task review):** bundled `prompts/implementer-prompt.md`, `prompts/spec-reviewer-prompt.md`, `prompts/code-quality-reviewer-prompt.md`
+- **RECOMMENDED:** `requesting-code-review` for ad-hoc / whole-branch review (not every task)
 - **NEXT:** `finishing-a-development-branch`
-- **ALT:** `executing-plans` (different session / no subagents)
-- **Bundled prompts:** `prompts/implementer-prompt.md`, `prompts/spec-reviewer-prompt.md`, `prompts/code-quality-reviewer-prompt.md`
+- **ALT:** `executing-plans` (different session / no subagents / architect-plan-only phase plan)
 
 ### `executing-plans`
-- **REQUIRES:** `writing-plans`, `using-git-worktrees`, `test-driven-development`
+- **REQUIRES:** written plan (`writing-plans` **or** `architect-plan` in `docs/work/…`), `using-git-worktrees`, `test-driven-development`
 - **NEXT:** `finishing-a-development-branch`
-- **RECOMMENDED instead when possible:** `subagent-driven-development`
+- **RECOMMENDED instead when possible:** `subagent-driven-development` (only with `docs/plans/…`)
 
 ### `finishing-a-development-branch`
 - **REQUIRES:** tests passing (`verification-before-completion` immediately before)

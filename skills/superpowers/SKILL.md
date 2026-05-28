@@ -1,6 +1,6 @@
 ---
 name: superpowers
-description: Use when starting any conversation - establishes how to find and use skills, requiring invoke-skill before ANY response including clarifying questions
+description: Check applicable skills first (invoke-skill) for non-trivial work. Skip for pure catalog/meta or explain-only requests. Question-scope and opt-outs in skill body.
 ---
 
 <SUBAGENT-STOP>
@@ -8,11 +8,11 @@ If you were dispatched as a subagent to execute a specific task, skip this skill
 </SUBAGENT-STOP>
 
 <EXTREMELY-IMPORTANT>
-If you think there is even a 1% chance a skill might apply to what you are doing, you ABSOLUTELY MUST invoke the skill.
+For **implementation, bugs, refactors, tests, or phased delivery**: if there is even a 1% chance a skill applies, you MUST invoke it before acting.
 
-IF A SKILL APPLIES TO YOUR TASK, YOU DO NOT HAVE A CHOICE. YOU MUST USE IT.
+IF A SKILL APPLIES TO THAT WORK, YOU DO NOT HAVE A CHOICE. YOU MUST USE IT.
 
-This is not negotiable. This is not optional. You cannot rationalize your way out of this.
+**Exception:** catalog/meta, policy-only, or explain-only requests — see **When skills are optional** below; do not invoke brainstorming, writing-plans, or full feature flow for those.
 </EXTREMELY-IMPORTANT>
 
 ## Conventions (read first)
@@ -60,7 +60,9 @@ Skill bodies use **canonical** names (`invoke-skill`, `task-tracker`, `subagent`
 
 ## The Rule
 
-**Invoke relevant or requested skills BEFORE any response or action.** Even a 1% chance a skill might apply means that you should invoke the skill to check. If an invoked skill turns out to be wrong for the situation, you don't need to use it.
+**Before non-trivial work**, invoke relevant or requested skills (or read this skill for the check). If a skill might apply, invoke it to verify. If it does not fit (including **When skills are optional**), answer without forcing the playbook.
+
+**Question-scope** when triggered: run level picker first — do not substitute other process skills for the L1–L4 STOP.
 
 ```dot
 digraph skill_flow {
@@ -92,13 +94,25 @@ digraph skill_flow {
 }
 ```
 
+## When skills are optional (do not over-invoke)
+
+Skip the full skill-check loop when the request is clearly **non-implementation**:
+
+| Request type | Examples | Use skills? |
+| ------------ | -------- | ----------- |
+| Catalog / meta | "What does each skill do?", skill audit, README review | Answer from docs; no `brainstorming` / `writing-plans` |
+| Pure explanation | "How does X work?" with no code change | **`explain-code`** if code-heavy; otherwise normal answer |
+| Policy / docs only | Edit `SKILL.md`, conventions, no product code | Relevant meta skill only (`writing-skills` when authoring skills) |
+
+**Still invoke** when any implementation, bugfix, refactor, test, or phased delivery applies — or when the user names a skill / `level Lx` / `/question-scope`.
+
 ## Red Flags
 
 These thoughts mean STOP—you're rationalizing:
 
 | Thought | Reality |
 |---------|---------|
-| "This is just a simple question" | Questions are tasks. Check for skills. |
+| "This is just a simple question" | If it's explain-only, use **When skills are optional**; if it changes code, check skills. |
 | "I need more context first" | Skill check comes BEFORE clarifying questions. |
 | "Let me explore the codebase first" | Skills tell you HOW to explore. Check first. |
 | "I can check git/files quickly" | Files lack conversation context. Check for skills. |

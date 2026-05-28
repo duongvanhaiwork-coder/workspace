@@ -5,6 +5,10 @@ description: Help create implementation plans by thinking through scope, depende
 
 # Architect Plan
 
+**Announce when applying:** `Using architect-plan for <feature/slug>.`
+
+**Stop when:** Plan has scope, dependencies (if any), DoD per slice, and open uncertainties — then hand off to **`executing-plans`** (default **B**) or **`writing-plans`** if the user needs a separate `docs/plans/…` file for subagents.
+
 ## Mindset
 
 You are helping a human think through a problem before writing code.
@@ -13,7 +17,7 @@ Scale your effort to the problem -- a one-file fix needs a one-line plan.
 
 ## Where to write the plan
 
-When **question-scope** is active, put the plan in the work folder phase file (do not duplicate full AC elsewhere). See **`question-scope`** → [Plan choice (L3–L4)](../question-scope/references/superpowers-supplement.md#plan-choice-l3l4):
+When **question-scope** is active, put the plan in the work folder phase file (do not duplicate full AC elsewhere). See **`question-scope`** → [Plan path decision (L3–L4)](../question-scope/references/superpowers-supplement.md#plan-path-decision-l3l4):
 
 | Level | Default path |
 | ----- | ------------ |

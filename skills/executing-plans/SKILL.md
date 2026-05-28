@@ -20,7 +20,12 @@ Load plan, review critically, execute all tasks, report when complete.
 ## The Process
 
 ### Step 1: Load and Review Plan
-1. Read plan file
+
+**Plan source (one of):**
+- `docs/plans/YYYY-MM-DD-<feature>.md` from **`writing-plans`**, or
+- **`architect-plan`** output in `docs/work/YYYY-MM-DD-<slug>/` phase file (`l3-01-define.md`, L4 define phase, etc.) with checkbox tasks and file paths
+
+1. Read the active plan (file above)
 2. Review critically - identify any questions or concerns about the plan
 3. If concerns: Raise them with your human partner before starting
 4. If no concerns: Create **task-tracker** items and proceed (map per `superpowers/references/`)
@@ -70,5 +75,5 @@ After all tasks complete and verified:
 
 **Required workflow skills:**
 - **REQUIRES:** `using-git-worktrees` — isolated workspace (create or verify)
-- **REQUIRES:** `writing-plans` — produces the plan this skill executes
+- **REQUIRES (plan):** A written plan with executable tasks — from **`writing-plans`** (`docs/plans/…`) **or** **`architect-plan`** in `docs/work/…` (default L3 **B** path; see **`question-scope`** → `references/superpowers-supplement.md`)
 - **NEXT:** `finishing-a-development-branch` — after all tasks

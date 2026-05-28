@@ -31,7 +31,15 @@ HEAD_SHA=$(git rev-parse HEAD)
 
 **2. Dispatch code reviewer subagent:**
 
-Use Task tool with `general-purpose` type, fill template at `prompts/code-reviewer.md`
+Fill template at `prompts/code-reviewer.md`. Map **subagent** to your platform:
+
+| Platform | Mechanism |
+| -------- | --------- |
+| Cursor | **Task** tool — `subagent_type: generalPurpose` (or team reviewer preset) |
+| Claude Code | **Task** tool with reviewer type |
+| Other | Isolated agent with prompt body from the template |
+
+**Note:** **`subagent-driven-development`** uses its own `prompts/spec-reviewer-prompt.md` and `prompts/code-quality-reviewer-prompt.md` per task — use **this** skill for ad-hoc or whole-branch review, not as a hard duplicate of every task review.
 
 **Placeholders:**
 - `{DESCRIPTION}` - Brief summary of what you built

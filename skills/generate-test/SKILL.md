@@ -6,6 +6,10 @@ description: >
   existing test framework and patterns.
 ---
 
+**Announce when applying:** `Using generate-test for <module/symbol>.`
+
+Run the project's test command before claiming success — **`verification-before-completion`**.
+
 ## When to use
 
 - Behavior or contract changed (tests required)

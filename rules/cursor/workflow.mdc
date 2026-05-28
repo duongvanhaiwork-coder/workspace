@@ -14,7 +14,7 @@ Registry & playbooks: `skills/SKILLS-REGISTRY.md`, `skills/CONVENTIONS.md`. **Ru
 | ------- | ------- |
 | `skill-check-first` | Check applicable rules/playbooks before acting |
 | `design-approval-gate` | Design + user approval; no code |
-| `implementation-plan` | Bite-sized implementation plan on disk |
+| `implementation-plan` | Bite-sized plan on disk (`docs/plans/…` and/or `docs/work/…` phase) |
 | `isolated-workspace` | Branch/worktree before execution |
 | `execute-via-subagents` | Per-task subagent + reviews (ALT-A) |
 | `execute-inline-checkpoints` | Same-session execution + checkpoints (ALT-B) |
@@ -32,7 +32,7 @@ Registry & playbooks: `skills/SKILLS-REGISTRY.md`, `skills/CONVENTIONS.md`. **Ru
 | ------- | ------------------- |
 | `skill-check-first` | `superpowers` |
 | `design-approval-gate` | `brainstorming` |
-| `implementation-plan` | `writing-plans` |
+| `implementation-plan` | `writing-plans` \| `architect-plan` (see Plan path below) |
 | `isolated-workspace` | `using-git-worktrees` |
 | `execute-via-subagents` | `subagent-driven-development` |
 | `execute-inline-checkpoints` | `executing-plans` |
@@ -65,8 +65,11 @@ Before any non-trivial task, check which rules in this file apply. **Process rul
 
 Use this sequence when **question-scope is off** (`qs:off`, `no-scope`, `quick:`) or you are porting rules without scope. When scope is **on**, follow **`question-scope`** → `references/superpowers-supplement.md` instead of blindly running every step here.
 
-1. **`design-approval-gate`** — design + user approval; no code. Spec: `docs/specs/YYYY-MM-DD-<topic>-design.md`
-2. **`implementation-plan`** — plan: `docs/plans/YYYY-MM-DD-<feature>.md`
+1. **`design-approval-gate`** — design + user approval; no code. Spec: `docs/specs/YYYY-MM-DD-<topic>-design.md` (link from `docs/work/…` when question-scope is on)
+2. **`implementation-plan`** — written plan on disk (pick one primary location; link elsewhere):
+   - **`writing-plans`** → `docs/plans/YYYY-MM-DD-<feature>.md` — large handoff / **execute-via-subagents (A)**
+   - **`architect-plan`** → `docs/work/YYYY-MM-DD-<slug>/` phase file (`l3-01-define.md`, L4 define, …) — bounded feature / **execute-inline-checkpoints (B)** default under question-scope L3
+   - Routing table: **`question-scope`** → `references/superpowers-supplement.md` § Plan path decision
 3. **`isolated-workspace`** — isolated branch/workspace before execution
 4. **Execute (ALT — choose exactly one):**
    - **A:** `execute-via-subagents` — per-task implementer + spec review + code quality review. **Requires** a task-level plan from **`implementation-plan`** / `writing-plans` (`docs/plans/…`). Do not pair with architect-plan-only phase files.

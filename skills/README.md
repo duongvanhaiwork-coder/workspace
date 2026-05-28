@@ -58,7 +58,7 @@ Skills are **not executed automatically** by the IDE; clusters below are **recom
 
 | Flow | Suggested order |
 | ---- | ---------------- |
-| **Large feature / task** | **question-scope** L3/L4 + Superpowers supplement (default) — or **architect-plan** alone if `sp:off` → **AI Core** / execute → **generate-test** → commit pair |
+| **Large feature / task** | **question-scope** L3/L4 + Superpowers supplement (default) — plan path: [superpowers-supplement § Plan path decision](question-scope/references/superpowers-supplement.md#plan-path-decision-l3l4) — or **architect-plan** alone if `sp:off` → **AI Core** / execute → **generate-test** → commit pair |
 | **Scoped answer → patch → full delivery** | **question-scope** (L1→L4) + **Superpowers supplement** on L2–L4 (`question-scope` → `references/superpowers-supplement.md`; rule IDs via `@workflow`) |
 | **Ambiguous design / SOP / prompt** | **orchestra-decision** (Q1–Q4 matrix, narrow before coding) — may run **before** `architect-plan` or **replace** the “frame the problem” step when the problem is fuzzy |
 | **PR / diff review** | **caveman-review** (after you have a diff; independent of commit style) |

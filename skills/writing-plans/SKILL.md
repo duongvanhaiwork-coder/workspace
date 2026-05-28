@@ -18,6 +18,8 @@ Assume they are a skilled developer, but know almost nothing about our toolset o
 **Save plans to:** `docs/plans/YYYY-MM-DD-<feature-name>.md`
 - (User preferences for plan location override this default)
 
+**With question-scope L3 (default):** Bounded features often use **`architect-plan`** in `docs/work/YYYY-MM-DD-<slug>/l3-01-define.md` and **`executing-plans`** (inline checkpoints **B**) — **do not** create a separate `docs/plans/…` file unless the supplement table or user asks for a large handoff or subagents (**A**). See **`question-scope`** → `references/superpowers-supplement.md` § Plan path decision.
+
 ## Scope Check
 
 If the spec covers multiple independent subsystems, it should have been broken into sub-project specs during brainstorming. If it wasn't, suggest breaking this into separate plans — one per subsystem. Each plan should produce working, testable software on its own.
@@ -150,3 +152,5 @@ After saving the plan, offer execution choice:
 **If Inline Execution chosen:**
 - **REQUIRES:** `executing-plans`
 - Batch execution with checkpoints for review
+
+**If question-scope L3 bounded and plan already lives in `docs/work/…`:** Skip this skill; use **`architect-plan`** + **`executing-plans`** on the phase file instead.

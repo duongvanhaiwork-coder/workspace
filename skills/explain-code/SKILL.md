@@ -6,6 +6,10 @@ description: >
   walkthrough before editing unfamiliar code.
 ---
 
+**Announce when applying:** `Using explain-code to walk through <feature/symbol>.`
+
+Before claiming tests or behavior are verified, use **`verification-before-completion`** when the user asked for proof — this skill is read-only explanation.
+
 ## When to use
 
 - User wants understanding, not a code change yet
