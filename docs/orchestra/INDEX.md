@@ -5,6 +5,6 @@ Human-maintained pointers for **`skills/orchestra-decision`**. Agents use this f
 | Doc | Purpose |
 | --- | ------- |
 | [collect-before.md](./collect-before.md) | Minimum context to collect before choosing Q1–Q4 |
-| [../skills/orchestra-decision/SKILL.md](../skills/orchestra-decision/SKILL.md) | Full agent playbook (canonical) |
+| Skill **`orchestra-decision`** (`skills/orchestra-decision/SKILL.md`) | Full agent playbook (canonical) |
 
 If a topic is not listed here, rely on repo `README`, `rules/cursor/*.mdc`, and user `@` paths.

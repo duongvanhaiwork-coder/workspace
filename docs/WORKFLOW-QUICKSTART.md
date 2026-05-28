@@ -5,8 +5,8 @@ Hướng dẫn ngắn khi làm task trong Cursor/Kiro với skills/rules của r
 | Tài liệu | Ngôn ngữ | Đối tượng |
 | -------- | -------- | --------- |
 | [rules/QUICKSTART.md](../rules/QUICKSTART.md) | English | Rules + prompt ngắn |
-| [skills/question-scope/README.md](../skills/question-scope/README.md) | Tiếng Việt | Prompt copy-paste đầy đủ |
-| [skills/question-scope/SKILL.md](../skills/question-scope/SKILL.md) | English | Contract agent (L1–L4) |
+| [skills/question-scope/README.md](../skills/question-scope/README.md) | Tiếng Việt | Prompt copy-paste (`question-scope` → `README.md`) |
+| Skill **`question-scope`** (`skills/question-scope/SKILL.md`) | English | Contract agent L1–L4 (invoke-skill) |
 | [rules/cursor/workflow.mdc](../rules/cursor/workflow.mdc) | English | Rule ID Superpowers (`@workflow`) |
 | [AGENTS.md](../AGENTS.md) | English | Chính sách agent workspace |
 

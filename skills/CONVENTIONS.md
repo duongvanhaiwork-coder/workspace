@@ -11,10 +11,38 @@ Canonical rules for **all** skills under `skills/<skill-id>/` in this repo (Supe
 | `skills/**/SKILL.md` | **English only** (body, headings, YAML `description`) |
 | `skills/**/README.md` | **English** (default) |
 | `skills/question-scope/README.md` | **Vietnamese** (team exception — human prompt cheat sheet) |
-| `prompts/`, `references/`, `templates/` under skills | **English** |
-| Optional Vietnamese; prefer [rules/QUICKSTART.md](../rules/QUICKSTART.md) for English workflow |
+| `prompts/`, `references/`, `templates/`, `examples/` under skills | **English** |
+| Optional Vietnamese; human workflow: `AGENTS.md`, rule `@workflow` (on demand) |
 
-Do not add Vietnamese (or other languages) to `SKILL.md` or supporting skill docs except **`question-scope/README.md`**. User prompts in chat may be any language; skill contracts stay English for agents.
+Do not add Vietnamese (or other languages) to `SKILL.md` or supporting skill docs except **`skills/question-scope/README.md`** (that path only — not `question-scope/examples/`, `references/`, or `templates/`). User messages in chat may be any language; skill contracts stay English for agents.
+
+## Referencing Cursor rules (from skills)
+
+Do **not** embed `rules/…` or `../rules/…` file paths in `SKILL.md`, `references/`, `templates/`, or `examples/`. Rules are loaded by the IDE; skills cite **rule IDs** or **@mentions**:
+
+| Need | Cite |
+| ---- | ---- |
+| L1–L4 scope, opt-outs, phased `docs/work/` | Rule **`question-scope`** (always on) + this skill’s `SKILL.md` |
+| Workflow handoffs, Superpowers rule IDs | **`@workflow`** (on demand) or rule ID (`design-approval-gate`, …) |
+| Code style, security, APIs | Rule **`code-standards`** (always on) + stack rules by file type (`typescript`, `react`, …) |
+| Human English quickstart | `AGENTS.md` — not duplicated inside skills |
+
+Phase → rule ID map: **`question-scope`** → `references/superpowers-supplement.md`.
+
+## Referencing other skills
+
+Portable cross-skill rules for `SKILL.md`, `references/`, `templates/`, and `examples/`:
+
+| Need | Cite |
+| ---- | ---- |
+| Run / hand off another skill | `` `skill-id` `` + `**REQUIRES:**` / `**NEXT:**` / `**ALT:**` (invoke via `invoke-skill`; do not link to `SKILL.md`) |
+| File in **this** skill | `references/foo.md`, `prompts/bar.md`, `templates/...` (relative to skill root) |
+| File in **another** skill (deep link) | `` `other-skill` `` + path under that skill, e.g. `` `question-scope` `` → `references/superpowers-supplement.md`; optional markdown `../other-skill/references/foo.md` from a sibling `SKILL.md` |
+| Prompt/template owned by another skill | `` `requesting-code-review` `` → `prompts/code-reviewer.md` (skill ID + path; no `skills/` prefix) |
+
+**Do not** in skill bodies: host absolute paths (`/Users/...`, `~/.cursor/skills/...` except one-line sync notes in meta docs), repo-root `skills/<id>/SKILL.md`, `@skills/.../SKILL.md`, or `superpowers:<id>`.
+
+**Catalog meta** (`skills/README.md`, `SKILLS-REGISTRY.md`, `STRUCTURE.md`): may use `question-scope/references/...` paths relative to the `skills/` directory for human navigation.
 
 ## Skill directory layout
 
@@ -56,7 +84,7 @@ Default layout (override via user request or repo `AGENTS.md` / team rules):
 
 Legacy upstream path `docs/superpowers/{specs,plans}/` is equivalent if the team already uses it — pick **one** tree per repo and stay consistent.
 
-**question-scope** work folders (`docs/work/...`) are the team workflow for L2–L4 phased work. Superpowers does not replace them. When both apply, see `skills/question-scope/SKILL.md` § **Superpowers supplement** and `rules/workflow.mdc` (rule IDs). Opt out supplement only: `sp:off` / `no-sp` (not `superpowers:<id>`).
+**question-scope** work folders (`docs/work/...`) are the team workflow for L2–L4 phased work. Superpowers does not replace them. When both apply, see **`question-scope`** → `references/superpowers-supplement.md` and load **`@workflow`** for rule IDs. Opt out supplement only: `sp:off` / `no-sp` (not `superpowers:<id>`).
 
 ### One source of truth (avoid drift)
 
@@ -93,7 +121,7 @@ When changing any skill:
 
 - [ ] Body and `description` in English (except `question-scope/README.md`)
 - [ ] Layout matches [STRUCTURE.md](./STRUCTURE.md) (supporting `.md` in `prompts/`, `references/`, or `templates/`)
-- [ ] References use `` `skill-id` `` or `**REQUIRES:**` / `**NEXT:**`, not `superpowers:…`
+- [ ] Cross-skill: `` `skill-id` `` or `**REQUIRES:**` / `**NEXT:**`; not `../other/SKILL.md`, `skills/<id>/`, `@skills/…`, or `superpowers:…`
 - [ ] Paths use `docs/specs/` and `docs/plans/` defaults (or doc-root override pattern)
 - [ ] Tool names are canonical or “map per references/”
 - [ ] Examples are labeled as examples, not requirements

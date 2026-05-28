@@ -58,7 +58,7 @@ skills/<skill-id>/
 | skill-id | README | prompts | references | templates | examples | scripts |
 | -------- | ------ | ------- | ---------- | --------- | -------- | ------- |
 | superpowers | — | — | ✓ | — | — | — |
-| question-scope | ✓ (VI) | — | — | ✓ phases | — | — |
+| question-scope | ✓ (VI) | — | ✓ | ✓ phases | ✓ sample-prompts | — |
 | brainstorming | — | ✓ | ✓ | — | — | ✓ |
 | writing-plans | — | ✓ | — | — | — | — |
 | subagent-driven-development | — | ✓ | — | — | — | — |
@@ -86,11 +86,19 @@ Dispatch: [prompts/implementer-prompt.md](prompts/implementer-prompt.md).
 Output format: [templates/TEMPLATE.md](templates/TEMPLATE.md).
 ```
 
-Cross-skill:
+Cross-skill (handoff):
 
 ```markdown
-`skills/requesting-code-review/prompts/code-reviewer.md`
+**REQUIRES:** `requesting-code-review` — use `prompts/code-reviewer.md` in that skill.
 ```
+
+Cross-skill (deep link to a supporting file, optional):
+
+```markdown
+`question-scope` → `references/superpowers-supplement.md`
+```
+
+**Cursor rules (from skills):** cite rule IDs or `@workflow` — do **not** use `rules/…` file paths. See [CONVENTIONS.md](./CONVENTIONS.md) § Referencing Cursor rules.
 
 ---
 

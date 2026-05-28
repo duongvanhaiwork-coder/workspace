@@ -126,7 +126,7 @@ verify.sh        →  độc lập, không cần Docker
 
 **Làm gì:**
 
-1. `rules/cursor/*.mdc` → sinh `rules/kiro/rules-*.md` (trong repo)
+1. `rules/cursor/<stem>.mdc` → sinh `rules/kiro/<stem>.md` (cùng tên, trong repo)
 2. Symlink **chỉ** thư mục home IDE:
    - `~/.cursor/rules/` → `rules/cursor/`
    - `~/.kiro/steering/` → `rules/kiro/`
@@ -161,7 +161,7 @@ verify.sh        →  độc lập, không cần Docker
 | Bước | Chi tiết |
 |------|----------|
 | 1 | Đọc `rules/cursor/*.mdc` (frontmatter: `globs`, `alwaysApply`, …) |
-| 2 | Sinh `rules/kiro/rules-*.md` (frontmatter Kiro: `inclusion`, `fileMatchPattern`) |
+| 2 | Sinh `rules/kiro/<stem>.md` (1:1 với cursor; frontmatter Kiro: `inclusion`, `fileMatchPattern`) |
 | 3 | Symlink `~/.cursor/rules` → `rules/cursor/` |
 | 4 | Symlink `~/.kiro/steering` → `rules/kiro/` |
 

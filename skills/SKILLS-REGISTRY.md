@@ -2,7 +2,7 @@
 
 Canonical map for skill IDs, handoffs, and dependency strength. Use this when forking, porting a subset, or editing cross-references in `SKILL.md` files.
 
-**With question-scope (this repo):** L1–L4 gates and `docs/work/…` are owned by `skills/question-scope/`; Superpowers playbooks layer on L2–L4 per § Superpowers supplement in that skill. Rule IDs in `rules/workflow.mdc` mirror handoffs below.
+**With question-scope (this repo):** L1–L4 gates and `docs/work/…` are owned by **`question-scope`**; Superpowers playbooks layer on L2–L4 per `question-scope/references/superpowers-supplement.md`. Rule IDs (load `@workflow`) mirror handoffs below.
 
 **Skill ID** = directory name under `skills/` (e.g. `writing-plans`).
 **In skill bodies:** use skill ID + `**NEXT:**` / `**REQUIRES:**` only — see [CONVENTIONS.md](CONVENTIONS.md).

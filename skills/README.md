@@ -1,6 +1,6 @@
 # Skills (canonical)
 
-**Language:** All `SKILL.md` files and supporting docs under `skills/` are **English**, except **[question-scope/README.md](question-scope/README.md)** (Vietnamese human guide). See [CONVENTIONS.md](CONVENTIONS.md) § Language.
+**Language:** All `SKILL.md` files and supporting docs under `skills/` are **English**, except **`question-scope/README.md` only** (Vietnamese human guide; that skill’s `examples/`, `references/`, `templates/` stay English). See [CONVENTIONS.md](CONVENTIONS.md) § Language.
 
 Edit skills here, then sync:
 
@@ -14,7 +14,7 @@ Home-level links (optional): `./scripts/link-global-ide.sh`
 
 **Portable conventions:** [CONVENTIONS.md](CONVENTIONS.md) — skill IDs, handoffs, paths, canonical tools. **Handoff graph:** [SKILLS-REGISTRY.md](SKILLS-REGISTRY.md).
 
-**Rules quickstart (English):** [../rules/QUICKSTART.md](../rules/QUICKSTART.md) **Agent policy:** [../AGENTS.md](../AGENTS.md)
+**Agent policy:** [../AGENTS.md](../AGENTS.md) · **Workflow rules:** load `@workflow` on demand · **Always-on:** `question-scope`, `code-standards` (+ stack rules by file type)
 
 ## Superpowers bundle (14 skills)
 
@@ -67,7 +67,7 @@ Skills are **not executed automatically** by the IDE; clusters below are **recom
 | Flow | Suggested order |
 | ---- | ---------------- |
 | **Large feature / task** | **question-scope** L3/L4 + Superpowers supplement (default) — or **architect-plan** alone if `sp:off` → **AI Core** / execute → **generate-test** → commit pair |
-| **Scoped answer → patch → full delivery** | **question-scope** (L1→L4) + **Superpowers supplement** on L2–L4 (see `skills/question-scope/SKILL.md` § Superpowers supplement; rules: `workflow.mdc`) |
+| **Scoped answer → patch → full delivery** | **question-scope** (L1→L4) + **Superpowers supplement** on L2–L4 (`question-scope` → `references/superpowers-supplement.md`; rule IDs via `@workflow`) |
 | **Ambiguous design / SOP / prompt** | **orchestra-decision** (Q1–Q4 matrix, narrow before coding) — may run **before** `architect-plan` or **replace** the “frame the problem” step when the problem is fuzzy |
 | **PR / diff review** | **caveman-review** (after you have a diff; independent of commit style) |
 | **Commit** | Pick **one**: **commit-message** (LINKID + template) **or** **caveman-commit** (short Conventional) — see **Pairs** |

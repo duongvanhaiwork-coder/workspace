@@ -30,5 +30,5 @@ Workspace/
 ├── rules/
 │   ├── cursor/            # Cursor rules .mdc (sửa tại đây)
 │   └── kiro/              # Kiro steering (tự sinh)
-└── .cursor/               # rules/ + skills/ = symlink → rules/, skills/
+└── .cursor/               # MCP config; rules/skills → `make sync-ide` → ~/.cursor/, ~/.kiro/
 ```
