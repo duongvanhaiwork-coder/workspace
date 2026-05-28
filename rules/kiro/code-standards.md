@@ -2,7 +2,7 @@
 inclusion: always
 ---
 
-# General Rules
+# Code standards
 
 Universal principles for every language and framework. For stack-specific patterns, see `typescript.mdc`, `react.mdc`, `python.mdc`, `dotnet.mdc`, or `java.mdc`. Match the repo's existing layout and libraries before introducing new ones.
 

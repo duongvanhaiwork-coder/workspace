@@ -1,8 +1,8 @@
 # Rules quickstart — question-scope + Superpowers
 
-Short guide for Cursor/Kiro using this repo’s **English** rules and skills. Full scope contract: `skills/question-scope/SKILL.md`. Workflow rule IDs: `rules/cursor/workflow.mdc`.
+Short guide for Cursor/Kiro using this repo’s **English** rules and skills. Full scope contract: skill **`question-scope`** (invoke-skill). Workflow rule IDs: `@workflow` or `rules/cursor/workflow.mdc`.
 
-Human prompt examples (any language): `skills/question-scope/README.md`.
+Human guide (Vietnamese): **`question-scope`** → `README.md`. English prompts: **`question-scope`** → `examples/sample-prompts.md`.
 
 ## Sync (once / after editing rules or skills)
 

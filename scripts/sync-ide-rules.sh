@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Canonical: rules/cursor/*.mdc → generate rules/kiro/*.md → symlink ~/.cursor/rules + ~/.kiro/steering
+# Canonical: rules/cursor/<name>.mdc → rules/kiro/<name>.md (1:1 stems) → symlink ~/.cursor/rules + ~/.kiro/steering
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
@@ -23,10 +23,35 @@ root = Path(os.environ["ROOT"])
 cursor_src = root / "rules" / "cursor"
 kiro_src = root / "rules" / "kiro"
 
-for mdc in sorted(cursor_src.glob("*.mdc")):
-    text = mdc.read_text(encoding="utf-8")
-    body = text
+KIRO_README = """# Kiro steering (generated)
+
+**Do not edit files in this folder by hand.** They are regenerated from `rules/cursor/*.mdc` on every `make sync-ide`.
+
+| Cursor (canonical) | Kiro (this folder) | `inclusion` |
+| ------------------ | ------------------ | ----------- |
+{rows}
+
+Body text matches the Cursor rule; only frontmatter differs (`alwaysApply`/`globs` → `inclusion`/`fileMatchPattern`).
+
+Edit **`rules/cursor/<name>.mdc`** only. See [../README.md](../README.md) and [../CONVENTIONS.md](../CONVENTIONS.md).
+"""
+
+CURSOR_README = """# Cursor rules (canonical)
+
+Edit **`*.mdc` here only.** Kiro copies are generated under `../kiro/<same-stem>.md` by `make sync-ide`.
+
+| File | `alwaysApply` | `globs` | Kiro output |
+| ---- | ------------- | ------- | ----------- |
+{rows}
+
+Naming: **kebab-case** stem; same basename in `rules/kiro/` (`.md`). See [../CONVENTIONS.md](../CONVENTIONS.md).
+"""
+
+
+def parse_mdc(path: Path) -> tuple[dict[str, str], str]:
+    text = path.read_text(encoding="utf-8")
     front: dict[str, str] = {}
+    body = text
     if text.startswith("---"):
         parts = text.split("---", 2)
         if len(parts) >= 3:
@@ -35,11 +60,28 @@ for mdc in sorted(cursor_src.glob("*.mdc")):
                     k, v = line.split(":", 1)
                     front[k.strip()] = v.strip()
             body = parts[2].lstrip("\n")
+    return front, body
 
-    kiro_lines: list[str] = []
+
+def kiro_inclusion_label(front: dict[str, str]) -> str:
     if front.get("alwaysApply", "false").lower() == "true":
+        return "always"
+    if front.get("globs"):
+        return "fileMatch"
+    return "manual"
+
+
+mdc_files = sorted(cursor_src.glob("*.mdc"))
+stems = {p.stem for p in mdc_files}
+table_rows: list[tuple[str, str, str, str, str]] = []
+
+for mdc in mdc_files:
+    front, body = parse_mdc(mdc)
+    inclusion = kiro_inclusion_label(front)
+    kiro_lines: list[str] = []
+    if inclusion == "always":
         kiro_lines.append("inclusion: always")
-    elif front.get("globs"):
+    elif inclusion == "fileMatch":
         raw = front["globs"].strip().strip('"').strip("'")
         patterns = [p.strip().strip('"').strip("'") for p in raw.split(",") if p.strip()]
         kiro_lines.append("inclusion: fileMatch")
@@ -52,17 +94,39 @@ for mdc in sorted(cursor_src.glob("*.mdc")):
         kiro_lines.append("inclusion: manual")
 
     out = "---\n" + "\n".join(kiro_lines) + "\n---\n\n" + body
-    out_path = kiro_src / f"rules-{mdc.stem}.md"
+    out_path = kiro_src / f"{mdc.stem}.md"
     out_path.write_text(out, encoding="utf-8")
     print(f"  rules/cursor/{mdc.name} → rules/kiro/{out_path.name}")
 
-stems = {p.stem for p in cursor_src.glob("*.mdc")}
-for stale in kiro_src.glob("rules-*.md"):
-    if stale.stem.removeprefix("rules-") not in stems:
-        stale.unlink()
-        print(f"  removed stale {stale.name}")
+    always = front.get("alwaysApply", "false")
+    globs = front.get("globs", "—")
+    table_rows.append((mdc.name, always, globs, f"{mdc.stem}.md", inclusion))
 
-print(f"Generated Kiro rules in {kiro_src}")
+# Remove stale Kiro files (old rules-* prefix or deleted cursor rules)
+for md in kiro_src.glob("*.md"):
+    if md.name == "README.md":
+        continue
+    if md.stem not in stems:
+        md.unlink()
+        print(f"  removed stale {md.name}")
+
+kiro_table = "\n".join(
+    f"| `{c}` | `{k}` | `{inc}` |" for c, _a, _g, k, inc in table_rows
+)
+(kiro_src / "README.md").write_text(
+    KIRO_README.format(rows=kiro_table), encoding="utf-8"
+)
+
+cursor_table = "\n".join(
+    f"| `{c}` | `{a}` | `{g}` | `{k}` |"
+    for c, a, g, k, _inc in table_rows
+)
+(cursor_src / "README.md").write_text(
+    CURSOR_README.format(rows=cursor_table), encoding="utf-8"
+)
+
+print(f"Generated {len(mdc_files)} Kiro steering file(s) in {kiro_src}")
+print(f"Updated {cursor_src / 'README.md'} and {kiro_src / 'README.md'}")
 PY
 
 link_dir() {
@@ -88,6 +152,10 @@ link_dir "$CURSOR_DEST" "$CURSOR_SRC"
 link_dir "$KIRO_DEST" "$KIRO_SRC"
 
 cursor_count=$(find "$CURSOR_SRC" -mindepth 1 -maxdepth 1 -name '*.mdc' 2>/dev/null | wc -l | tr -d ' ')
-kiro_count=$(find "$KIRO_SRC" -mindepth 1 -maxdepth 1 -name 'rules-*.md' 2>/dev/null | wc -l | tr -d ' ')
+kiro_count=$(find "$KIRO_SRC" -mindepth 1 -maxdepth 1 -name '*.md' ! -name 'README.md' 2>/dev/null | wc -l | tr -d ' ')
+if [[ "$cursor_count" != "$kiro_count" ]]; then
+  echo "Warning: cursor .mdc count ($cursor_count) != kiro steering count ($kiro_count)"
+  exit 1
+fi
 echo "Linked $cursor_count .mdc → $CURSOR_DEST"
-echo "Linked $kiro_count steering files → $KIRO_DEST"
+echo "Linked $kiro_count steering files → $KIRO_DEST (1:1 stems)"

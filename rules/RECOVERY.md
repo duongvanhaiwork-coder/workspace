@@ -14,9 +14,11 @@ After `rules/` was emptied, content was partially recreated from agent transcrip
 
 Run `make sync-ide` after edits to regenerate `rules/kiro/`.
 
+**Naming (2026-05):** Kiro steering files use the **same stem** as Cursor (`code-standards.md`, not `rules-code-standards.md`). Legacy `rules-*.md` files are removed on sync.
+
 ## Already complete (no change needed)
 
-- `general.mdc`, `question-scope.mdc`, `workflow.mdc` — match transcript recovery
+- `code-standards.mdc` (formerly `general.mdc`), `question-scope.mdc`, `workflow.mdc` — match transcript recovery
 - `README.md`, `CONVENTIONS.md`, `QUICKSTART.md` — current tree is canonical
 
 ## Not restored (by design)

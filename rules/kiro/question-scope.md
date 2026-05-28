@@ -1,9 +1,5 @@
 ---
-description: >
-  Question Scope (Cursor + Kiro). /question-scope or level Lx; ?+dev keyword only with
-  tight match (leading ? or keyword-first). Opt-out qs:off, no-scope, quick:, sp:off. L2–L4:
-  phased work folder + STATUS.md — full contract in skill **question-scope**.
-alwaysApply: true
+inclusion: always
 ---
 
 # Question Scope

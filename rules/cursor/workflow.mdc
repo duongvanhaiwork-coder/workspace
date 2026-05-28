@@ -4,9 +4,9 @@ alwaysApply: false
 ---
 # Workflow
 
-Registry & playbooks: `skills/SKILLS-REGISTRY.md`, `skills/CONVENTIONS.md`. **Rules below use rule IDs**; detailed steps live in matching `skills/<playbook>/` when ported.
+Registry & playbooks: `skills/SKILLS-REGISTRY.md`, `skills/CONVENTIONS.md`. **Rules below use rule IDs**; detailed steps live in the matching **skill ID** (invoke-skill).
 
-**With question-scope:** L1–L4 gates and `docs/work/…` come from `skills/question-scope/SKILL.md` (§ Superpowers supplement maps these rule IDs to L2–L4 phases). This file does not replace scope level choice. When scope is active, **level + supplement table override** the feature flow and hard gates below (e.g. L2 skips design/plan; L3 default execute is **B**).
+**With question-scope:** L1–L4 gates and `docs/work/…` come from **`question-scope`**; supplement map: **`question-scope`** → `references/superpowers-supplement.md`. This file does not replace scope level choice. When scope is active, **level + supplement table override** the feature flow and hard gates below (e.g. L2 skips design/plan; L3 default execute is **B**).
 
 ## Rule index
 
@@ -28,23 +28,23 @@ Registry & playbooks: `skills/SKILLS-REGISTRY.md`, `skills/CONVENTIONS.md`. **Ru
 | `outgoing-code-review` | Review after tasks / before merge |
 | `incoming-code-review` | Verify feedback; no blind implementation |
 
-| Rule ID | Playbook (optional) |
+| Rule ID | Playbook (skill ID) |
 | ------- | ------------------- |
-| `skill-check-first` | `skills/superpowers/` |
-| `design-approval-gate` | `skills/brainstorming/` |
-| `implementation-plan` | `skills/writing-plans/` |
-| `isolated-workspace` | `skills/using-git-worktrees/` |
-| `execute-via-subagents` | `skills/subagent-driven-development/` |
-| `execute-inline-checkpoints` | `skills/executing-plans/` |
-| `tdd-during-implementation` | `skills/test-driven-development/` |
-| `verify-before-done` | `skills/verification-before-completion/` |
-| `finish-branch-options` | `skills/finishing-a-development-branch/` |
-| `debug-root-cause-first` | `skills/systematic-debugging/` |
-| `tdd-failing-repro` | `skills/test-driven-development/` |
-| `verify-fix-evidence` | `skills/verification-before-completion/` |
-| `parallel-failure-domains` | `skills/dispatching-parallel-agents/` |
-| `outgoing-code-review` | `skills/requesting-code-review/` |
-| `incoming-code-review` | `skills/receiving-code-review/` |
+| `skill-check-first` | `superpowers` |
+| `design-approval-gate` | `brainstorming` |
+| `implementation-plan` | `writing-plans` |
+| `isolated-workspace` | `using-git-worktrees` |
+| `execute-via-subagents` | `subagent-driven-development` |
+| `execute-inline-checkpoints` | `executing-plans` |
+| `tdd-during-implementation` | `test-driven-development` |
+| `verify-before-done` | `verification-before-completion` |
+| `finish-branch-options` | `finishing-a-development-branch` |
+| `debug-root-cause-first` | `systematic-debugging` |
+| `tdd-failing-repro` | `test-driven-development` |
+| `verify-fix-evidence` | `verification-before-completion` |
+| `parallel-failure-domains` | `dispatching-parallel-agents` |
+| `outgoing-code-review` | `requesting-code-review` |
+| `incoming-code-review` | `receiving-code-review` |
 
 ## Meta rule — `skill-check-first`
 
@@ -59,11 +59,11 @@ Before any non-trivial task, check which rules in this file apply. **Process rul
 | **ALT** | Pick exactly one branch |
 | **FORBIDDEN-NEXT** | Do not start until user approves / phase completes |
 
-**Playbook** = optional `skills/<folder>/` detail for a rule ID (see index). Do not use legacy `superpowers:<id>` in rules.
+**Playbook** = optional skill ID detail for a rule (see index; invoke-skill). Do not use legacy `superpowers:<id>` or `skills/<id>/SKILL.md` paths in rules.
 
 ## Feature flow (standalone — full Superpowers)
 
-Use this sequence when **question-scope is off** (`qs:off`, `no-scope`, `quick:`) or you are porting rules without scope. When scope is **on**, follow `skills/question-scope/SKILL.md` § Superpowers supplement instead of blindly running every step here.
+Use this sequence when **question-scope is off** (`qs:off`, `no-scope`, `quick:`) or you are porting rules without scope. When scope is **on**, follow **`question-scope`** → `references/superpowers-supplement.md` instead of blindly running every step here.
 
 1. **`design-approval-gate`** — design + user approval; no code. Spec: `docs/specs/YYYY-MM-DD-<topic>-design.md`
 2. **`implementation-plan`** — plan: `docs/plans/YYYY-MM-DD-<feature>.md`
@@ -96,9 +96,9 @@ Multiple independent failures → **`parallel-failure-domains`** (one agent per 
 | ------ | ----------------- |
 | **lite** | `skill-check-first`, `tdd-during-implementation`, `debug-root-cause-first`, `verify-before-done` |
 | **standard** | lite + `design-approval-gate`, `implementation-plan`, `execute-inline-checkpoints`, `isolated-workspace`, `finish-branch-options`, `incoming-code-review` |
-| **power** | standard − `execute-inline-checkpoints` + `execute-via-subagents` (+ `skills/subagent-driven-development/prompts/`) + `outgoing-code-review` (+ `skills/requesting-code-review/prompts/code-reviewer.md`) |
+| **power** | standard − `execute-inline-checkpoints` + `execute-via-subagents` (+ `subagent-driven-development` → `prompts/`) + `outgoing-code-review` (+ `requesting-code-review` → `prompts/code-reviewer.md`) |
 
-If a **REQUIRES** or **NEXT** rule in this file is not in your bundle, do not fake the handoff — add its playbook under `skills/` or fall back (e.g. only `execute-inline-checkpoints`, never subagent prompt templates).
+If a **REQUIRES** or **NEXT** rule in this file is not in your bundle, do not fake the handoff — add the skill under repo `skills/<skill-id>/` (sync with `make sync-ide`) or fall back (e.g. only `execute-inline-checkpoints`, never subagent prompt templates).
 
 ## Hard gates
 
@@ -109,7 +109,7 @@ Apply when the matching rule is in your bundle **and** the active workflow path 
 - No production code before failing test → **`tdd-during-implementation`** / **`tdd-failing-repro`**
 - No completion claim without fresh command output → **`verify-before-done`** / **`verify-fix-evidence`**
 
-**Question-scope active:** STOP gates and level budgets in `skills/question-scope/SKILL.md` win over this section.
+**Question-scope active:** STOP gates and level budgets in **`question-scope`** win over this section.
 
 ## Opt-out (aligned with question-scope)
 
@@ -118,4 +118,4 @@ Apply when the matching rule is in your bundle **and** the active workflow path 
 | `qs:off`, `no-scope`, **`quick:`** | **Question-scope off** — no L1–L4, no phased `docs/work/`, no supplement map from this file. Trivial work only; not for multi-file features or behavior changes. |
 | `sp:off`, `no-sp` | Question-scope **on**; **Superpowers supplement off** (team plan / L2 minimal only). |
 
-Do **not** treat `quick:` here as “skip design/plan only” while scope still runs — that meaning lives only in **question-scope** (above: scope is off). When scope is active, L2 already skips `design-approval-gate` / `implementation-plan` unless escalated; L3+ uses supplement table in `skills/question-scope/SKILL.md`.
+Do **not** treat `quick:` here as “skip design/plan only” while scope still runs — that meaning lives only in **question-scope** (above: scope is off). When scope is active, L2 already skips `design-approval-gate` / `implementation-plan` unless escalated; L3+ uses supplement table in **`question-scope`**.
