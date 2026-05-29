@@ -1,7 +1,5 @@
 # Session continuity (L2–L4)
 
-Contract qs-2026-05-29.3.
-
 ## Session continuity — phased `.md` files (L2–L4)
 
 **Approach:** `docs/work/YYYY-MM-DD-<slug>/` with **`STATUS.md`** (read first in new sessions) + **one file per phase**. Files are source of truth for decisions, AC, commands, blockers.

@@ -1,6 +1,6 @@
 # Parsing and token patterns
 
-Moved from `skills/question-scope/SKILL.md` (contract qs-2026-05-29.3).
+Moved from `skills/question-scope/SKILL.md`.
 
 ### Parsing
 

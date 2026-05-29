@@ -67,13 +67,7 @@ No rule yet for shell (`scripts/**/*.sh`), SQL migrations, or Terraform — foll
 
 ## Sync to IDE
 
-After editing `rules/cursor/*.mdc`, run from the workspace root:
-
-```bash
-make sync-ide
-```
-
-Then **reload the Cursor window** or start a **new chat** — always-on rules are cached in open sessions.
+Sau khi sửa `rules/cursor/*.mdc`: lệnh và bước reload — **[README.md](../README.md)** (mục *Đồng bộ skills & rules vào IDE*).
 
 ## Layout
 

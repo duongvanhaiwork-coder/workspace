@@ -1,6 +1,6 @@
 # Four phases (root cause first)
 
-Moved from `skills/systematic-debugging/SKILL.md` (contract qs-2026-05-29.2).
+Moved from `skills/systematic-debugging/SKILL.md`.
 
 ## The Four Phases
 

@@ -305,14 +305,18 @@ check_readme_human() {
 check_repo_docs() {
   echo "== Repo doc consistency =="
 
-  local qs_rule_tag qs_skill_tag
-  qs_rule_tag="$(grep -oE 'qs-[0-9]{4}-[0-9]{2}-[0-9]{2}\.[0-9]+' "$RULE" 2>/dev/null | head -1)"
-  qs_skill_tag="$(grep -oE 'qs-[0-9]{4}-[0-9]{2}-[0-9]{2}\.[0-9]+' "$SKILL" 2>/dev/null | head -1)"
   tests=$((tests + 1))
-  if [[ -n "$qs_rule_tag" && "$qs_rule_tag" == "$qs_skill_tag" ]]; then
-    pass "contract tag synced in SKILL + rule ($qs_rule_tag)"
+  if ! grep -qE 'qs-[0-9]{4}-[0-9]{2}-[0-9]{2}\.[0-9]+' "$RULE" 2>/dev/null \
+    && ! grep -qE 'qs-[0-9]{4}-[0-9]{2}-[0-9]{2}\.[0-9]+' "$SKILL" 2>/dev/null; then
+    pass "no qs-… version tags in rule or SKILL (mirror by content)"
   else
-    fail "contract tag mismatch — rule=$qs_rule_tag skill=$qs_skill_tag"
+    fail "remove qs-YYYY-MM-DD.N version tags from rule + SKILL — use CONTRACT-SYNC.md"
+  fi
+  tests=$((tests + 1))
+  if grep -q 'question-scope' "$RULE" && grep -q 'Mirror rule' "$SKILL"; then
+    pass "rule + skill mirror cross-reference"
+  else
+    fail "rule or SKILL missing mirror cross-reference"
   fi
   tests=$((tests + 1))
   if [[ -f "$ROOT/scripts/check-question-scope-session.sh" ]]; then

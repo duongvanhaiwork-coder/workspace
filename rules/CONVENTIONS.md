@@ -23,6 +23,10 @@ Do not add Vietnamese (or other) prose inside `.mdc` rule bodies. Put localized 
 
 Do not use a `rules-` prefix in `rules/kiro/` (legacy). Counts must match: one `.mdc` per steering `.md`.
 
+## Runnable commands
+
+Do **not** document `make …`, `./scripts/…`, or other workspace shell entrypoints in `.mdc` bodies, `rules/*.md`, or `skills/`. Operators use repo [README.md](../README.md) § *Lệnh chạy*.
+
 ## Source of truth
 
 ```text
@@ -88,7 +92,7 @@ Always-on rules stay **short**. Full pipelines live in **skills** (`skills/<id>/
 2. Up to **five** scoped negatives (legacy signals, meta, token conflicts, default path when no trigger).
 3. **Precedence** line if the rule can conflict with `code-standards`, scope STOP, or `@workflow`.
 4. **Pointer** to the skill ID — do not duplicate multi-step pipelines in the rule body.
-5. Bump **contract version** in rule + skill when triggers, gates, or default/precedence semantics change (`question-scope`).
+5. Edit **rule + skill** in the same change set when triggers, gates, or default/precedence semantics change (`question-scope` — see skill `CONTRACT-SYNC.md`).
 
 **Do not:** paste full L3/L4 pipelines into `.mdc`; set `workflow.mdc` to `alwaysApply: true` without team agreement; add Vietnamese prose in rule bodies (see **Language** above).
 

@@ -53,8 +53,10 @@ Phase → rule ID map: **`question-scope`** → `references/superpowers-suppleme
 
 | Layer | Edit | Holds |
 | ----- | ---- | ----- |
-| **Rules** | `rules/cursor/*.mdc` only → `make sync-ide` | Triggers, STOP, hard gates, short WHEN→THEN tables |
+| **Rules** | `rules/cursor/*.mdc` only — sync via repo [README.md](../README.md) | Triggers, STOP, hard gates, short WHEN→THEN tables |
 | **Skills** | `skills/<skill-id>/SKILL.md` | Multi-step playbooks, TC tables, pressure scenarios |
+
+**Runnable commands:** Do **not** put `make …`, `./scripts/…`, or workspace shell entrypoints in `skills/` or `rules/`. Canonical list: repo [README.md](../README.md) § *Lệnh chạy*. Skills/rules may say “run repo verification” or link README — not copy commands.
 
 **Polarity (negative vs positive phrasing):** [rules/CONVENTIONS.md](../rules/CONVENTIONS.md) § **Rule authoring** — goal→polarity table, templates, anti-patterns. When trimming a skill, move gates into rules; keep steps in skills.
 

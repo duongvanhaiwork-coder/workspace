@@ -1,6 +1,6 @@
 # Kiro steering (generated)
 
-**Do not edit files in this folder by hand.** They are regenerated from `rules/cursor/*.mdc` on every `make sync-ide`.
+**Do not edit files in this folder by hand.** They are regenerated from `rules/cursor/*.mdc` on IDE sync — [README.md](../../README.md).
 
 | Cursor (canonical) | Kiro (this folder) | `inclusion` |
 | ------------------ | ------------------ | ----------- |

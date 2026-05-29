@@ -44,13 +44,13 @@ Fixtures **1, 4, 4b, 6, 6b, 6c, 7, 8, 9, 10, 11, 14, 15, 19, 21, 23, 24, 25, 26,
 | ----- | ----- |
 | Parsing | [SKILL.md § Parsing](../SKILL.md#parsing) |
 | Behavioral | [behavioral-eval-fixtures.json](./behavioral-eval-fixtures.json) |
-| Contract tag | `qs-…` in SKILL.md + `question-scope.mdc` (same version) |
+| Rule + skill mirror | `question-scope.mdc` + `SKILL.md` edited together — see [CONTRACT-SYNC.md](./CONTRACT-SYNC.md) |
 
 ## Behavioral eval log (manual)
 
-**Default:** `make verify` in AI Core repo (trigger parser + anchors). **Optional** log below — spot-check **#1, #6, #8/#21** in new chats when Parsing/Meta/tokens change; full 16 only for major releases. After `make sync-ide`, no scripts — paste from [behavioral-eval-fixtures.json](./behavioral-eval-fixtures.json) if spot-checking.
+**Default:** repo verification in AI Core ([README.md](../../../README.md)). **Optional** log below — spot-check **#1, #6, #8/#21** in new chats when Parsing/Meta/tokens change; full 16 only for major releases. After IDE sync ([README.md](../../../README.md)), no scripts in IDE — paste from [behavioral-eval-fixtures.json](./behavioral-eval-fixtures.json) if spot-checking.
 
 | Date | Agent / chat | Scenarios | Result | Notes |
 | ---- | ------------ | --------- | ------ | ----- |
 | 2026-05-28 | meta audit chat | 15, 19, 21 | PASS (meta) | Path + VI audit phrases — scope correctly off |
-| 2026-05-29 | contract sim (`qs-2026-05-29.3`) | Parsing #1–#24 + fixtures 1–42 | PASS (sim) | Full log: [SIMULATION-RUN.md](./SIMULATION-RUN.md); parser: `verify-question-scope-triggers.sh`; spot-check text #1, #6, #7, #8, #14 |
+| 2026-05-29 | contract sim | Parsing #1–#24 + fixtures 1–42 | PASS (sim) | Full log: [SIMULATION-RUN.md](./SIMULATION-RUN.md); parser: repo verification ([README.md](../../../README.md)); spot-check text #1, #6, #7, #8, #14 |

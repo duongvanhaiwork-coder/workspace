@@ -1,6 +1,6 @@
 # RED → GREEN → REFACTOR cycle
 
-Moved from `skills/test-driven-development/SKILL.md` (contract qs-2026-05-29.2).
+Moved from `skills/test-driven-development/SKILL.md`.
 
 ## Red-Green-Refactor
 

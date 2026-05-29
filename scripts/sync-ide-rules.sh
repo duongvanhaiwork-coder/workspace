@@ -25,7 +25,7 @@ kiro_src = root / "rules" / "kiro"
 
 KIRO_README = """# Kiro steering (generated)
 
-**Do not edit files in this folder by hand.** They are regenerated from `rules/cursor/*.mdc` on every `make sync-ide`.
+**Do not edit files in this folder by hand.** They are regenerated from `rules/cursor/*.mdc` on IDE sync — [README.md](../../README.md).
 
 | Cursor (canonical) | Kiro (this folder) | `inclusion` |
 | ------------------ | ------------------ | ----------- |
@@ -38,7 +38,7 @@ Edit **`rules/cursor/<name>.mdc`** only. See [../README.md](../README.md) and [.
 
 CURSOR_README = """# Cursor rules (canonical)
 
-Edit **`*.mdc` here only.** Kiro copies are generated under `../kiro/<same-stem>.md` by `make sync-ide`.
+Edit **`*.mdc` here only.** Kiro copies are generated under `../kiro/<same-stem>.md` on IDE sync — [README.md](../../README.md).
 
 | File | `alwaysApply` | `globs` | Kiro output |
 | ---- | ------------- | ------- | ----------- |
@@ -166,9 +166,6 @@ if [[ -f "$QS_INSTALLED" ]]; then
     echo "ERROR: $QS_INSTALLED still has legacy '## Triggers (skill runs)' — fix rules/cursor/question-scope.mdc"
     exit 1
   fi
-  QS_TAG="$(grep -oE 'qs-[0-9]{4}-[0-9]{2}-[0-9]{2}\.[0-9]+' "$QS_INSTALLED" 2>/dev/null | head -1 || true)"
-  if [[ -n "$QS_TAG" ]]; then
-    echo "question-scope contract: $QS_TAG (session check: ./scripts/check-question-scope-session.sh)"
-  fi
+  echo "question-scope: session check → ./scripts/check-question-scope-session.sh"
   echo "After rule edits: reload Cursor window or start a new chat (always-on rules cache in open sessions)."
 fi

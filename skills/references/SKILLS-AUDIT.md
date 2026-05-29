@@ -2,7 +2,7 @@
 
 Audit of all **26** skills under `skills/<skill-id>/SKILL.md` using the same frame as [rules/CONVENTIONS.md](../../rules/CONVENTIONS.md) § Rule authoring and [skills/CONVENTIONS.md](../CONVENTIONS.md) § Rules vs skills.
 
-**Status:** P0–P4 + post-P3 polish **complete**. **You run:** `make sync-ide` + reload Cursor after **rule** edits only (P4 was skills-only; see [Post-P3 operator steps](#post-p3-operator-steps)).
+**Status:** P0–P4 + post-P3 polish **complete**. **IDE sync:** [README.md](../../README.md) after rule edits (P4 was skills-only; see [Post-P3 operator steps](#post-p3-operator-steps)).
 
 ---
 
@@ -14,7 +14,7 @@ Audit of all **26** skills under `skills/<skill-id>/SKILL.md` using the same fra
 - **Discipline skills** (`systematic-debugging`, `test-driven-development`, `verification-before-completion`) use **negative-heavy** gates (Iron Law, Red Flags) — correct polarity for “block wrong completion.”
 - **Process skills** (`executing-plans`, `brainstorming`) pair STOP gates with positive step lists.
 - Shared composition mistakes live in [invocation-anti-patterns.md](./invocation-anti-patterns.md) — good single source of truth.
-- **`question-scope`** is the intentional canonical contract; `question-scope.mdc` is a short mirror (`qs-2026-05-29.3`).
+- **`question-scope`** is the intentional canonical contract; `question-scope.mdc` is a short mirror (edit with SKILL — [CONTRACT-SYNC.md](../question-scope/references/CONTRACT-SYNC.md)).
 
 ### Top 5 risks (remediated)
 
@@ -22,7 +22,7 @@ Audit of all **26** skills under `skills/<skill-id>/SKILL.md` using the same fra
 2. **Composition quick ref** — **26/26** skills link [invocation-anti-patterns.md](./invocation-anti-patterns.md).
 3. **Rules duplication** — git gates in `code-standards`; skills cite rule IDs / one-liners.
 4. **Handoff holes** — NEXT/Stop when added on key skills (verify → finish → receiving, generate-test → worktree, etc.).
-5. **Contract sync** — `qs-2026-05-29.3`; [CONTRACT-SYNC.md](../question-scope/references/CONTRACT-SYNC.md).
+5. **Contract sync** — [CONTRACT-SYNC.md](../question-scope/references/CONTRACT-SYNC.md) (rule + skill same change set).
 
 ---
 
@@ -50,7 +50,7 @@ Audit of all **26** skills under `skills/<skill-id>/SKILL.md` using the same fra
 | `dispatching-parallel-agents` | 219 | Balanced | Yes | Yes | When NOT | Done |
 | `architect-plan` | 137 | Mixed | Yes | Yes | Yes | Done (P4) |
 | `brainstorming` | 113 | Balanced | Yes | Yes | spec OK | Done (P4) |
-| `question-scope` | 257 | Mixed | Yes | Yes | STOP | Done (P3, `qs-2026-05-29.3`) |
+| `question-scope` | 257 | Mixed | Yes | Yes | STOP | Done (P3) |
 | `finishing-a-development-branch` | 85 | Neg-heavy | Yes | Yes | Red flags | Done (P2+P4) |
 | `using-git-worktrees` | 138 | Neg-heavy | Yes | Yes | Red flags | Done (P2+P4) |
 | `receiving-code-review` | 106 | Neg-heavy | Yes | Yes | verify | Done (P4) |
@@ -71,7 +71,7 @@ Audit of all **26** skills under `skills/<skill-id>/SKILL.md` using the same fra
 ### `question-scope` (255 lines after P3)
 
 - **Polarity:** Mixed — STOP/level picker (negative) + pipelines (positive).
-- **Contract:** `qs-2026-05-29.3` — [CONTRACT-SYNC.md](../question-scope/references/CONTRACT-SYNC.md).
+- **Contract:** rule + SKILL mirror — [CONTRACT-SYNC.md](../question-scope/references/CONTRACT-SYNC.md).
 - **P3:** Parsing, session, JIT, level-picker runtime → `references/`.
 
 ### `writing-skills` (~673 lines)
@@ -211,7 +211,7 @@ Audit of all **26** skills under `skills/<skill-id>/SKILL.md` using the same fra
 | **P1** | Handoffs / Stop when / gates | 6–8 skills (see table) |
 | **P2** | Split long sections to `references/` | `writing-skills`, `test-driven-development`, `question-scope`, `using-git-worktrees`, `finishing-a-development-branch` |
 | **Follow-up** | Dedup CONVENTIONS lines, Announce/Stop/NEXT, git gates, TDD/debug pressure refs | 2026-05-29 second pass |
-| **P3** | Contract `qs-2026-05-29.3`; trim SKILL → `references/` | question-scope, TDD, systematic-debugging, writing-skills |
+| **P3** | Contract trim SKILL → `references/` | question-scope, TDD, systematic-debugging, writing-skills |
 
 ### P3 line counts (SKILL.md)
 
@@ -231,27 +231,17 @@ Audit of all **26** skills under `skills/<skill-id>/SKILL.md` using the same fra
 | `systematic-debugging` | `four-phases.md` (+ existing `debugging-pressure.md`) |
 | `writing-skills` | `skill-md-skeleton.md` (+ existing `discipline-cso-and-checklist.md`) |
 
-Run `make sync-ide` after rule contract bump so `~/.cursor/rules/question-scope.mdc` shows `qs-2026-05-29.3`.
+After rule edits, sync to IDE per [README.md](../../README.md) so `~/.cursor/rules/question-scope.mdc` matches repo.
 
 ---
 
 ## Post-P3 operator steps
 
-**You (manual):**
+**You (manual):** IDE sync + reload — [README.md](../../README.md) (Đồng bộ skills & rules).
 
-```bash
-cd /Users/chanh/workspace && make sync-ide
-```
+Optional session check: [README.md](../../README.md) § Script tùy chọn.
 
-Then reload the Cursor window or start a new chat.
-
-Optional:
-
-```bash
-./scripts/check-question-scope-session.sh
-```
-
-**Agent-completed:** P0–P4 (announce lines, reference splits, composition quick refs, contract `qs-2026-05-29.3`). [question-scope/references/README.md](../question-scope/references/README.md) indexes P3 files.
+**Agent-completed:** P0–P4 (announce lines, reference splits, composition quick refs). [question-scope/references/README.md](../question-scope/references/README.md) indexes P3 files.
 
 ---
 
@@ -289,8 +279,8 @@ When editing any skill:
 - [ ] § Invocation modes + Composition quick ref → anti-patterns
 - [ ] Negatives for gates; positives for steps; cite **`code-standards`** / rule IDs instead of restating
 - [ ] Bump `question-scope` contract in rule + skill together if triggers change
-- [ ] Run `make sync-ide` after rule edits only (not required for skill-only changes)
+- [ ] IDE sync after rule edits ([README.md](../../README.md); skill-only changes still need sync if skills changed)
 
-**Verification:** [SKILLS-VERIFY.md](./SKILLS-VERIFY.md) — `make verify` OK after P4 + script updates.
+**Verification:** [SKILLS-VERIFY.md](./SKILLS-VERIFY.md) — repo verification OK after P4 ([README.md](../../README.md)).
 
 **Related:** [SKILLS-REGISTRY.md](../SKILLS-REGISTRY.md) · [COMPOSITION.md](../COMPOSITION.md) · [STRUCTURE.md](../STRUCTURE.md)

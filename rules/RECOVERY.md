@@ -35,9 +35,4 @@ Transcript snapshot `rules/_recover_from_transcript/` was removed after merge in
 
 ## Prevent repeat loss
 
-Commit `rules/` and `skills/` (`.gitignore` no longer ignores them). Example:
-
-```bash
-git add rules/ skills/
-git commit -m "chore: restore and track rules and skills"
-```
+Commit `rules/` and `skills/` to your repo (`.gitignore` no longer ignores them). Use your normal git workflow.

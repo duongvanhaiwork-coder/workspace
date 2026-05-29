@@ -1,6 +1,6 @@
 # Pipelines & skill map (question-scope)
 
-**Contract version:** `qs-2026-05-29.3` (keep in sync with [SKILL.md](../SKILL.md) when pipelines change).
+Keep in sync with [SKILL.md](../SKILL.md) when pipelines change.
 
 > **Token discipline:** Do **not** read this entire file (~700 lines) each session.  
 > **Default during work:** [pipelines-quickref.md](./pipelines-quickref.md) (~120 lines).  

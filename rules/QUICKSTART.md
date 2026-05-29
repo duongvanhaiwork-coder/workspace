@@ -96,6 +96,6 @@ Cursor: `@workflow` or read `rules/cursor/workflow.mdc`.
 ## References
 
 - Rules layout: [CONVENTIONS.md](./CONVENTIONS.md)
-- Sync after rule edits: `make sync-ide` then reload Cursor window or new chat ([README.md](./README.md) § Sync to IDE)
+- Sync after rule edits: [README.md](../README.md) (Đồng bộ skills & rules vào IDE) — then reload Cursor window or new chat
 - Skills layout: [../skills/STRUCTURE.md](../skills/STRUCTURE.md)
 - Agent policy: [../AGENTS.md](../AGENTS.md)

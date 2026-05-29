@@ -4,7 +4,7 @@ Instructions for agents working in this repository or in repos under `projects/`
 
 ## Workflow (default for non-trivial tasks)
 
-1. **Question-scope** — activates **only** when the user sends `/question-scope` or `/question-scope Lx` at **message start or end**; then suggest or ask L1–L4 (sticky until done). **`level Lx` and `?` do not activate.** Stale cached rules: reload window or new chat (`make sync-ide` after rule edits). Opt-out scope: `qs:off`, `no-scope`, `quick:`, `qs:meta`, `audit:`. Opt-out Superpowers supplement only: `sp:off`, `no-sp`. Contract edits in this repo: `make verify` is the default gate; optional 2–3 chat spot-checks only when Parsing/Meta/tokens change (see skill `references/behavioral-gates.md`). After sync, only rules/skills are installed — no `scripts/`.
+1. **Question-scope** — activates **only** when the user sends `/question-scope` or `/question-scope Lx` at **message start or end**; then suggest or ask L1–L4 (sticky until done). **`level Lx` and `?` do not activate.** Stale cached rules: reload window or new chat after IDE sync ([README.md](README.md)). Opt-out scope: `qs:off`, `no-scope`, `quick:`, `qs:meta`, `audit:`. Opt-out Superpowers supplement only: `sp:off`, `no-sp`. Contract edits in this repo: repo verification is the default gate ([README.md](README.md)); optional 2–3 chat spot-checks when Parsing/Meta/tokens change (skill `question-scope` → `references/behavioral-gates.md`). After IDE sync, only rules/skills are installed — no `scripts/`.
 2. **Superpowers supplement** — default on L3–L4, minimal on L2. L3 execute default: **inline checkpoints (B)**; subagents (A) only with `writing-plans`. Opt-out: `sp:off` / `no-sp`. Do not use legacy plugin IDs `superpowers:<skill-id>`; use skill IDs and rule IDs in `rules/cursor/workflow.mdc` (gates defer to question-scope when scope is on).
 3. **Code quality** — `rules/cursor/code-standards.mdc` and stack `*.mdc` by file type always apply.
 
@@ -37,11 +37,11 @@ Use the same L2–L4 convention under **`Workspace/docs/work/…`** when the cha
 
 | Path | Role |
 | ---- | ---- |
-| `skills/` | Canonical skills (English; except `skills/question-scope/README.md` VI); layout: `skills/STRUCTURE.md`; edit here, then `make sync-ide` |
+| `skills/` | Canonical skills (English; except `skills/question-scope/README.md` VI); layout: `skills/STRUCTURE.md`; IDE sync: [README.md](README.md) |
 | `rules/cursor/` | Canonical Cursor rules |
 | `rules/kiro/` | Generated from cursor — do not edit by hand |
-| `~/.cursor/rules/`, `~/.cursor/skills/` | Symlinks after `make sync-ide` → this repo’s `rules/cursor/`, `skills/` |
-| `~/.kiro/steering/`, `~/.kiro/skills/` | Same sync → `rules/kiro/`, `skills/` |
+| `~/.cursor/rules/`, `~/.cursor/skills/` | Symlinks after IDE sync → this repo’s `rules/cursor/`, `skills/` ([README.md](README.md)) |
+| `~/.kiro/steering/`, `~/.kiro/skills/` | Same → `rules/kiro/`, `skills/` |
 
 ## User overrides
 

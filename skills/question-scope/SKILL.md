@@ -7,7 +7,7 @@ description: Use when the user sends /question-scope or /question-scope L1–L4 
 
 **Announce when applying:** `Using question-scope — <Lx or level picker>.`
 
-**Contract version:** `qs-2026-05-29.3` — keep in sync with `question-scope.mdc` when triggers/gates change. Maintainer checklist: [references/CONTRACT-SYNC.md](references/CONTRACT-SYNC.md).
+**Mirror rule:** always-on **`question-scope`** rule — when triggers/gates change, edit rule + skill in one change set. Maintainer checklist: [references/CONTRACT-SYNC.md](references/CONTRACT-SYNC.md).
 
 **Language:** English only in this skill (`SKILL.md`, [README.md](README.md), `references/`, `templates/`, `examples/`).
 
@@ -98,7 +98,7 @@ No `/question-scope` at **message start or end** (after trim) → **normal chat*
 - **Do not** infer L1–L4 from task size, file count, or “sounds like L3”.
 - **Do not** create `docs/work/…` or run phased pipelines unless the user chose scope (`/question-scope` / `/question-scope Lx`) or explicitly asked for phased docs.
 
-Rule reminder (always-on mirror): **`question-scope`** rule § Default, § Precedence — keep in sync with this skill contract (`qs-2026-05-29.3`).
+Rule reminder (always-on mirror): **`question-scope`** rule § Default, § Precedence — keep in sync with this skill (see **Mirror rule** above and [CONTRACT-SYNC.md](references/CONTRACT-SYNC.md)).
 
 ### User invocation (canonical — tell users this only)
 

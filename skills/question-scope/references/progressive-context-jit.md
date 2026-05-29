@@ -1,6 +1,6 @@
 # Progressive context (JIT)
 
-Contract qs-2026-05-29.3. Load when expanding `@` files per level.
+Load when expanding `@` files per level.
 
 ## Progressive context (JIT)
 

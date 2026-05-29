@@ -1,7 +1,5 @@
 # TDD verification checklist and when stuck
 
-Contract qs-2026-05-29.2.
-
 ## Verification Checklist
 
 Before marking work complete:

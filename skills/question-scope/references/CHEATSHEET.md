@@ -123,4 +123,4 @@ docs/work/YYYY-MM-DD-<slug>/
 
 ## Stale Cursor rules?
 
-After `make sync-ide`, only rules/skills install — **no scripts**. Reload window or new chat if chat shows old triggers (`level Lx`, `?` + keyword). In AI Core repo: `./scripts/check-question-scope-session.sh`.
+After IDE sync ([README.md](../../../README.md)), only rules/skills install — **no scripts**. Reload window or new chat if chat shows old triggers (`level Lx`, `?` + keyword). Session check: [README.md](../../../README.md) § Script tùy chọn.

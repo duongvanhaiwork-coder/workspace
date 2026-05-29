@@ -1,8 +1,8 @@
 # Skills verification report
 
-Full pass over **26** skills under `skills/`. Automated gates: `make verify` (structure + audit + question-scope contract + behavior anchors).
+Full pass over **26** skills under `skills/`. Automated gates: repo verification ([README.md](../../README.md)) — structure + audit + question-scope contract + behavior anchors.
 
-**Result:** `make verify` → **OK** (after P3/P4 reference splits reflected in verify scripts).
+**Result:** repo verification → **OK** (after P3/P4 reference splits reflected in verify scripts).
 
 ---
 
@@ -14,9 +14,9 @@ Full pass over **26** skills under `skills/`. Automated gates: `make verify` (st
 | § Invocation modes + § Composition quick ref | `verify-skills-audit.sh` | 26/26 PASS |
 | Relative links + local `prompts/` | `verify-skills-audit.sh` | 26/26 PASS |
 | No `rules/` paths in SKILL (except `writing-skills` polarity link) | audit | PASS |
-| question-scope contract + cross-skill behavioral anchors | `verify-question-scope-*.sh` | PASS |
+| question-scope contract + cross-skill behavioral anchors | repo verification (question-scope scripts) | PASS |
 
-**New/updated scripts:** `scripts/verify-skills-audit.sh`, `scripts/lib/question-scope-contract.sh` (grep SKILL + key `references/` for moved P3 content).
+**Verify tooling:** see [README.md](../../README.md) § Lệnh chạy (includes skills audit + question-scope scripts).
 
 ---
 
@@ -81,6 +81,6 @@ Full pass over **26** skills under `skills/`. Automated gates: `make verify` (st
 
 ## Optional manual spot-checks (LLM)
 
-Not required for `make verify`. See `question-scope/references/behavioral-gates.md` — fixtures **#1, #6, #8/#21, #24–#42** in a **new chat** after `make sync-ide`.
+Not required for repo verification. See `question-scope/references/behavioral-gates.md` — fixtures **#1, #6, #8/#21, #24–#42** in a **new chat** after IDE sync ([README.md](../../README.md)).
 
 **Related:** [SKILLS-AUDIT.md](./SKILLS-AUDIT.md) · [STRUCTURE.md](../STRUCTURE.md)

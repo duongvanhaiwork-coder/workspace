@@ -1,7 +1,5 @@
 # SKILL.md skeleton template
 
-Contract qs-2026-05-29.2.
-
 ## SKILL.md Structure
 
 **Frontmatter (YAML):**

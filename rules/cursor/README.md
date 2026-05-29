@@ -1,6 +1,6 @@
 # Cursor rules (canonical)
 
-Edit **`*.mdc` here only.** Kiro copies are generated under `../kiro/<same-stem>.md` by `make sync-ide`.
+Edit **`*.mdc` here only.** Kiro copies are generated under `../kiro/<same-stem>.md` on IDE sync — [README.md](../../README.md).
 
 | File | `alwaysApply` | `globs` | Kiro output |
 | ---- | ------------- | ------- | ----------- |

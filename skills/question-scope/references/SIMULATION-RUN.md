@@ -1,7 +1,7 @@
-# question-scope simulation run (qs-2026-05-29.3)
+# question-scope simulation run
 
 **Source of truth:** [SKILL.md](../SKILL.md) + references (not legacy `.2` audit framing).  
-**Parser gate:** `bash scripts/verify-question-scope-triggers.sh` — all message fixtures **PASS**.  
+**Parser gate:** repo verification ([README.md](../../../README.md)) — all message fixtures **PASS**.  
 **Agent simulation:** Contract-following responses for spot-check fixtures #1, #6, #7, #8, #14 (this run).
 
 ---
@@ -99,7 +99,7 @@ Simulated against [behavioral-gates.md](./behavioral-gates.md) + [behavioral-eva
 
 ## Part 3 — Spot-check agent simulation (fixtures #1, #6, #7, #8, #14)
 
-These blocks are **simulated agent turns** following `qs-2026-05-29.3` (not a live Cursor chat). Use to compare future LLM spot-checks.
+These blocks are **simulated agent turns** following the question-scope contract (not a live Cursor chat). Use to compare future LLM spot-checks.
 
 ### §1 — Fixture #1 / pressure #1
 
@@ -234,7 +234,7 @@ STOP — I have **not** started Patch; glued form did not preset L2.
 | ---- | -------- | ------ |
 | [level-picker.md](./level-picker.md) mermaid glued branch | **Fixed** | `Hint once` → Idea + Suggest → picker 2 or 4 (matches SKILL § Triggers) |
 | Parser does not encode gray zone | By design | Agent reads task after `needs_pick` |
-| Live LLM spot-check | Optional | Re-paste §1–§14 in **new chat** after `make sync-ide` |
+| Live LLM spot-check | Optional | Re-paste §1–§14 in **new chat** after IDE sync ([README.md](../../../README.md)) |
 
 ---
 
@@ -242,4 +242,4 @@ STOP — I have **not** started Patch; glued form did not preset L2.
 
 - [pressure-scenarios.md](./pressure-scenarios.md)
 - [behavioral-gates.md](./behavioral-gates.md)
-- [CONTRACT-SYNC.md](./CONTRACT-SYNC.md) (`qs-2026-05-29.3`)
+- [CONTRACT-SYNC.md](./CONTRACT-SYNC.md)

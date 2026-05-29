@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-# Compare installed Cursor question-scope rule vs repo contract version.
-# Use after make sync-ide when a chat may have stale always-on rule cache.
+# Compare installed Cursor question-scope rule vs repo (content, not version tags).
+# Use after IDE sync when a chat may have stale always-on rule cache (see README.md).
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
@@ -10,38 +10,24 @@ CURSOR_RULE="${CURSOR_RULES:-$HOME/.cursor/rules}/question-scope.mdc"
 
 failures=0
 
-qs_extract_tag() {
-  local file="$1"
-  grep -oE 'qs-[0-9]{4}-[0-9]{2}-[0-9]{2}\.[0-9]+' "$file" 2>/dev/null | head -1
-}
-
-CANONICAL_TAG="$(qs_extract_tag "$RULE_REPO")"
-if [[ -z "$CANONICAL_TAG" ]]; then
-  echo "ERROR: no qs-… contract tag in $RULE_REPO" >&2
-  exit 1
-fi
-TAG="$CANONICAL_TAG"
-
 echo "== question-scope session check =="
-echo "Canonical contract: $TAG"
 echo ""
 
 echo "Stale always-on rule — if ANY appear in this chat's injected rules, reload window or new chat:"
 echo "  - Section: ## Triggers (skill runs)"
 echo "  - level L1 … L4 listed as triggers (without 'do not activate')"
 echo "  - ? + keyword / tight match as a trigger"
-echo "  - Missing contract line: **Contract:** \`$TAG\`"
 echo "  - /question-scope matched mid-sentence (contract requires start or end only)"
 echo ""
 echo "Disk contract uses explicit audit tokens: qs:meta, audit: (see SKILL § Meta)."
-echo "After qs-… bump in AI Core repo: make verify; optional spot-check #1, #6, #8/#21 (behavioral-gates.md)."
+echo "After rule/skill edits: see README.md § Lệnh chạy (verify, sync, optional spot-check #1, #6, #8/#21)."
 echo ""
 
 qs_rule_is_legacy() {
   grep -qE '^## Triggers \(skill runs\)' "$1" 2>/dev/null
 }
 
-check_file_version() {
+check_file_legacy() {
   local label="$1"
   local file="$2"
   if [[ ! -f "$file" ]]; then
@@ -54,23 +40,29 @@ check_file_version() {
     failures=$((failures + 1))
     return
   fi
-  if grep -qF "$TAG" "$file"; then
-    echo "OK:   $label contains $TAG"
-  else
-    echo "FAIL: $label missing $TAG — update rule/skill and run make sync-ide"
-    failures=$((failures + 1))
-  fi
+  echo "OK:   $label has no legacy Triggers section"
 }
 
-check_file_version "repo rule" "$RULE_REPO"
-check_file_version "installed rule" "$CURSOR_RULE"
+check_file_legacy "repo rule" "$RULE_REPO"
+check_file_legacy "installed rule" "$CURSOR_RULE"
 
-skill_tag="$(qs_extract_tag "$SKILL_REPO")"
-if [[ "$skill_tag" != "$TAG" ]]; then
-  echo "FAIL: SKILL.md tag ($skill_tag) != rule tag ($TAG)"
+if [[ -f "$RULE_REPO" && -f "$CURSOR_RULE" ]]; then
+  if cmp -s "$RULE_REPO" "$CURSOR_RULE"; then
+    echo "OK:   installed rule matches repo file"
+  else
+    echo "FAIL: installed rule differs from repo — run IDE sync (README.md)"
+    failures=$((failures + 1))
+  fi
+elif [[ ! -f "$CURSOR_RULE" ]]; then
+  echo "WARN: installed rule not found: $CURSOR_RULE (run IDE sync — README.md)"
   failures=$((failures + 1))
+fi
+
+if grep -q 'Mirror rule' "$SKILL_REPO" 2>/dev/null; then
+  echo "OK:   SKILL.md references mirror rule"
 else
-  echo "OK:   SKILL.md tag matches rule ($TAG)"
+  echo "FAIL: SKILL.md missing Mirror rule section"
+  failures=$((failures + 1))
 fi
 
 if [[ -L "$CURSOR_RULE" ]]; then
@@ -80,7 +72,7 @@ fi
 
 echo ""
 if [[ "$failures" -gt 0 ]]; then
-  echo "Session check: $failures issue(s). Run: make sync-ide && $0"
+  echo "Session check: $failures issue(s). See README.md § Lệnh chạy, then re-run: $0"
   echo "Then reload Cursor window or start a new chat."
   exit 1
 fi

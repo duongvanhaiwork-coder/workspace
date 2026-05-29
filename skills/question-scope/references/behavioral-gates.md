@@ -1,6 +1,6 @@
 # Behavioral gates (question-scope)
 
-**Parsing** (one message): [SKILL.md § Parsing](../SKILL.md#parsing) and [pressure-scenarios.md](./pressure-scenarios.md). Automated in AI Core repo via `make verify` → `verify-question-scope-triggers.sh`.
+**Parsing** (one message): [SKILL.md § Parsing](../SKILL.md#parsing) and [pressure-scenarios.md](./pressure-scenarios.md). Automated in the AI Core repo via **repo verification** ([README.md](../../../README.md) — trigger parser + contract anchors).
 
 **Behavioral** (multi-turn, LLM): [behavioral-eval-fixtures.json](./behavioral-eval-fixtures.json). **Optional** spot-check — not required for every PR.
 
@@ -10,14 +10,14 @@
 
 | Where | Action |
 | ----- | ------ |
-| **AI Core repo** (has `scripts/`) | `make verify` — trigger parser + contract anchors (~70 checks). **Sufficient** for README, CHEATSHEET, templates, playbooks, sticky-scope wording, etc. |
-| **After `make sync-ide`** | Only rules + skills land in `~/.cursor/` — **no** `scripts/`, **no** `make verify`. Reload window or open a **new chat** if injected rules look stale (`level Lx`, `?` + keyword as triggers). |
+| **AI Core repo** (has `scripts/`) | **Repo verification** ([README.md](../../../README.md)) — sufficient for README, CHEATSHEET, templates, playbooks, sticky-scope wording, etc. |
+| **After IDE sync** | Only rules + skills land in `~/.cursor/` — **no** `scripts/`, **no** repo verification from IDE. Sync: [README.md](../../../README.md). Reload window or **new chat** if rules look stale (`level Lx`, `?` + keyword as triggers). |
 
-Do **not** require `./scripts/run-question-scope-behavioral-eval.sh` for routine merges.
+Do **not** require optional behavioral-eval helper script for routine merges ([README.md](../../../README.md)).
 
 ## Optional agent spot-check (trigger / meta / large contract)
 
-Run only when a PR touches **Parsing, Meta, Scope Level, tokens**, `rules/cursor/question-scope.mdc`, or `references/gray-zones.md`, or bumps **`qs-…`**.
+Run only when a PR touches **Parsing, Meta, Scope Level, tokens**, `rules/cursor/question-scope.mdc`, or `references/gray-zones.md`.
 
 **Minimum (2–3 chats)** — paste `user` lines from [behavioral-eval-fixtures.json](./behavioral-eval-fixtures.json); tick `expect` bullets:
 
@@ -29,22 +29,22 @@ Run only when a PR touches **Parsing, Meta, Scope Level, tokens**, `rules/cursor
 
 Full 16 scenarios: optional before a **major** contract release; log in [pressure-scenarios.md § Behavioral eval log](./pressure-scenarios.md#behavioral-eval-log-manual) if you run them.
 
-Repo helper (optional): `./scripts/run-question-scope-behavioral-eval.sh` prints the checklist — only in AI Core workspace, not after sync.
+Optional repo helper prints the checklist — AI Core workspace only, not installed in IDE ([README.md](../../../README.md)).
 
 ## PR / contract-change checklist
 
 | Change type | Required |
 | ----------- | -------- |
-| Docs, CHEATSHEET, templates, playbooks (no trigger/meta) | `make verify` in repo **or** spot-review diff |
-| Parsing, Meta, tokens, `question-scope.mdc`, gray-zones | `make verify` + **optional** spot-check **#1, #6, #8/#21** in new chat |
-| Bump `qs-…` tag | Same as row above + sync tag in SKILL + rule |
+| Docs, CHEATSHEET, templates, playbooks (no trigger/meta) | Repo verification **or** spot-review diff |
+| Parsing, Meta, tokens, `question-scope.mdc`, gray-zones | Repo verification + **optional** spot-check **#1, #6, #8/#21** in new chat |
+| Rule + skill trigger change | Same as row above + edit rule + SKILL together |
 
 Steps when editing contract in **AI Core repo**:
 
-1. `make verify`
+1. Repo verification ([README.md](../../../README.md))
 2. (Optional) spot-check 2–3 fixtures above in a **new** chat
-3. `make sync-ide` + reload Cursor if rules changed
-4. Bump `qs-…` in SKILL.md + `question-scope.mdc` when triggers/tokens change
+3. IDE sync + reload Cursor if rules changed ([README.md](../../../README.md))
+4. Edit SKILL.md + `question-scope.mdc` together when triggers/tokens change
 
 ## Gates
 
@@ -86,6 +86,6 @@ Steps when editing contract in **AI Core repo**:
 | **41** | Incoming PR verify | **No** blind implement — **`receiving-code-review`** / verify before fix |
 | **42** | Incoming PR clarify | **Clarify** unclear items before claiming full review addressed |
 
-Parsing rows **8–11, 14, 15, 19, 21, 23** are covered by `verify-question-scope-triggers.sh` — no manual paste needed for those alone.
+Parsing rows **8–11, 14, 15, 19, 21, 23** are covered by the automated trigger parser in repo verification — no manual paste needed for those alone.
 
 **Supplement routing (#24–#42):** optional spot-check when editing execute/verify/ship/review/impact skills or L4 templates.

@@ -34,7 +34,9 @@ Chi tiết: **[docs/SETUP.md](docs/SETUP.md)**
 | `.cursor/rules/`, `.cursor/skills/` | Symlink → `rules/`, `skills/` |
 | `.kiro/steering/`, `.kiro/skills/` | Symlink → `rules/kiro/`, `skills/` |
 
-## Lệnh Make
+## Lệnh chạy (nguồn duy nhất)
+
+**Chính sách:** Mọi lệnh `make …`, `./scripts/…`, và shell entrypoint cho repo AI Core **chỉ ghi ở README này**. **`skills/`** và **`rules/`** mô tả hành vi agent (trigger, STOP, pipeline) — **không** lặp lệnh; chỉ trỏ về mục này khi cần vận hành repo.
 
 Chạy từ **thư mục gốc** `Workspace/` (nơi có `Makefile`):
 
@@ -48,6 +50,49 @@ make verify     # = ./scripts/verify.sh
 make health
 make logs
 ```
+
+### `make verify` (skills, rules, question-scope)
+
+Gọi lần lượt:
+
+| Script | Kiểm tra |
+| ------ | -------- |
+| `scripts/verify-skills-structure.sh` | 26 skills — YAML, `SKILL.md` |
+| `scripts/verify-skills-audit.sh` | Invocation modes, links, anti-patterns |
+| `scripts/verify-question-scope-triggers.sh` | Parser fixtures, rule ↔ SKILL mirror |
+| `scripts/verify-question-scope-behavior.sh` | Behavioral anchors trong SKILL + templates |
+| `scripts/hint-question-scope-behavioral-eval.sh` | Gợi ý spot-check (không fail) |
+
+**Khi chạy:** Trước merge/PR sửa `skills/` hoặc `rules/`; sau đổi question-scope triggers/tokens/parsing.
+
+### Script tùy chọn (question-scope)
+
+| Script | Khi dùng |
+| ------ | -------- |
+| `./scripts/check-question-scope-session.sh` | Sau sync rule — so `~/.cursor/rules/question-scope.mdc` vs repo; legacy trigger |
+| `./scripts/run-question-scope-behavioral-eval.sh` | In checklist spot-check LLM (không bắt buộc merge) |
+
+Chi tiết từng file `.sh`: mục [Scripts](#scripts) bên dưới.
+
+## Đồng bộ skills & rules vào IDE (`make sync-ide`)
+
+**Nguồn chính:** `skills/` và `rules/cursor/*.mdc` trong repo này. Cursor/Kiro đọc bản cài qua symlink dưới home (`~/.cursor/rules`, `~/.cursor/skills`, `~/.kiro/…`) — **không** tự cập nhật khi bạn chỉ sửa file trong repo.
+
+**Khi nào chạy** (từ thư mục gốc `Workspace/`):
+
+| Thay đổi | Cần `make sync-ide`? |
+|----------|----------------------|
+| Sửa `skills/**` | Có — cập nhật symlink skills |
+| Sửa `rules/cursor/*.mdc` | Có — sinh lại `rules/kiro/` + symlink rules |
+| Chỉ sửa `scripts/`, `docs/`, code app | Không |
+
+**Sau khi sync (đặc biệt sau sửa rule always-on như `question-scope`):**
+
+1. **Reload cửa sổ Cursor** hoặc mở **chat mới** — rule đang inject trong chat cũ có thể vẫn là bản cache.
+2. Chỉ **rules + skills** được cài vào IDE — **không** có `scripts/`; kiểm tra repo chỉ chạy ở đây (`make verify` ở trên).
+3. Tùy chọn: `./scripts/check-question-scope-session.sh` (bảng script tùy chọn).
+
+Chi tiết: [`sync-ide.sh`](#sync-idesh--đồng-bộ-rules--skills-entry-point).
 
 ## Scripts (`scripts/`)
 

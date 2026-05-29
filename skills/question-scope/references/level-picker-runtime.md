@@ -1,6 +1,6 @@
 # Level picker runtime rules
 
-Contract qs-2026-05-29.3. Option copy: [level-picker.md](level-picker.md).
+Option copy: [level-picker.md](level-picker.md).
 
 ### Level picker (one rule)
 

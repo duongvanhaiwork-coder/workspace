@@ -50,7 +50,7 @@ Use [Checklist L2 ↔ L3 (5 questions)](#checklist-l2-vs-l3-five-questions): **o
 
 If the agent **jumps to code**, skips `docs/work/`, or claims **“done”** without test logs → remind the gate (“no Spec yet”, “no TC table”, “run verify and paste output”). Details: [pipelines-quickref.md](references/pipelines-quickref.md).
 
-**Stale rule cache:** after `make sync-ide`, **reload window** or start a new chat if the agent still treats `level Lx` / `?` as triggers — `./scripts/check-question-scope-session.sh` (AI Core repo).
+**Stale rule cache:** after IDE sync ([README.md](../../README.md)), **reload window** or start a new chat if the agent still treats `level Lx` / `?` as triggers — optional session check ([README.md](../../README.md) § Script tùy chọn).
 
 ### Token decision tree (one line)
 
