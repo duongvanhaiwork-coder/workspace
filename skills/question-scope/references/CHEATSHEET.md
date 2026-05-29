@@ -1,6 +1,6 @@
 # Question Scope — one-page cheat sheet (English)
 
-Full contract: [SKILL.md](../SKILL.md). Vietnamese guide: [README.md](../README.md).
+Full contract: [SKILL.md](../SKILL.md). Vietnamese guide: [README.md](../README.md) (§ skill summary). **Agent default:** [pipelines-quickref.md](./pipelines-quickref.md). Full tables: [pipelines-skill-map.md](./pipelines-skill-map.md) (one § at a time).
 
 ## Activate scope (only these)
 
@@ -45,6 +45,40 @@ Full contract: [SKILL.md](../SKILL.md). Vietnamese guide: [README.md](../README.
 | L3–L4 | Worktree, TDD, inline execute (B), verify, ship |
 
 Turn supplement off: `/question-scope L3 — <task>. sp:off`
+
+## L3 skill chain (after level chosen)
+
+```text
+brainstorming → architect-plan | writing-plans
+  → generate-test (l3-02) → using-git-worktrees
+  → executing-plans (B) | subagent-driven-development (A)
+  → test-driven-development (per task)
+  → Verify + Regression → verification-before-completion (log in l3-02)
+  → caveman-review → l3-03-ship.md (refine, rollout, rollback)
+  → finishing-a-development-branch (fresh verify; merge | PR | keep | discard)
+```
+
+Plan: ≤12 tasks + ≤8 files → `architect-plan`; larger or subagents → `writing-plans`.
+
+## L4 skill chain (after level chosen)
+
+```text
+l4-01-discover → analyze-impact (if unclear) + Validate (go/no-go)
+  → l4-02-define (architect-plan | writing-plans) → l4-03-build (generate-test, execute, TDD)
+  → l4-04-prove: Verify + Regression → caveman-review
+  → [L4 supplement: requesting-code-review pre-merge]
+  → l4-05-ship → finishing-a-development-branch
+  → [after PR open] receiving-code-review (incoming comments; log PR feedback in phase MD)
+```
+
+Impact analysis ≠ Regression: `analyze-impact` lists blast radius; Regression **runs** tests named in prove phase. **Outgoing** review = `requesting-code-review`; **incoming** PR comments = `receiving-code-review`.
+
+## L2 skill chain (minimal)
+
+```text
+Spec + TC rows (l2-patch; optional generate-test) → Patch + test-driven-development (if behavior)
+  → verification-before-completion → caveman-review
+```
 
 ## Common mistakes
 

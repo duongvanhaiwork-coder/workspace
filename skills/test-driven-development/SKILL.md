@@ -1,6 +1,6 @@
 ---
 name: test-driven-development
-description: Use when implementing any feature or bugfix, before writing implementation code
+description: RED→GREEN→REFACTOR during Patch/Code when behavior changes (L2+). L3 after generate-test/TC table; bugs after failing repro. Skip pure rename/config-only.
 ---
 
 # Test-Driven Development (TDD)
@@ -19,20 +19,54 @@ Write the test first. Watch it fail. Write minimal code to pass.
 
 **Violating the letter of the rules is violating the spirit of the rules.**
 
-## When to Use
+## When to use
 
-**Always:**
-- New features
-- Bug fixes
-- Refactoring
-- Behavior changes
+Rule ID: **`tdd-during-implementation`** (normal change) or **`tdd-failing-repro`** (bug overlay).
 
-**Exceptions (ask your human partner):**
-- Throwaway prototypes
-- Generated code
-- Configuration files
+| Situation | Use TDD? |
+| --------- | -------- |
+| **Patch / Code** changes **observable behavior** or **contract** | **Yes** — RED → GREEN → REFACTOR |
+| **Bug fix** (after root cause in Spec) | **Yes** — failing **repro** test first (`tdd-failing-repro`) |
+| **Refactor** with **same** behavior (tests stay green) | **No new failing test** — keep suite green; small steps |
+| **Rename / move / format** only — no behavior change | **No** — run existing tests after |
+| **Config / deps / comments** only | **No** unless they change runtime behavior |
+| **L1** explain-only | **No** |
 
-Thinking "skip TDD just this once"? Stop. That's rationalization.
+**Exceptions (ask user once):** throwaway spike, generated code dump, explicit “skip TDD”.
+
+Thinking "skip TDD just this once" for a **behavior** change? Stop — that's rationalization.
+
+## When NOT to use
+
+- Pure refactor/rename per **`question-scope`** L2 playbook — no new tests required; verify after.
+- Tests already written and failing for this change (L3) — go to GREEN; do not rewrite from scratch without reason.
+- **Before** Spec lists test cases (L2) or TC table filled (L3) — fill those first, then TDD during Patch/Code.
+
+## Pipeline: Patch / Code (question-scope)
+
+| Level | Before Patch/Code | During Patch/Code (this skill) |
+| ----- | ----------------- | ------------------------------ |
+| **L2** | Spec + **test case rows** in `l2-patch.md` (gate) — use **`generate-test`** if helpful | TDD per change; no worktree default |
+| **L3** | **`generate-test`** → TC table in `l3-02` → **`using-git-worktrees`** | TDD **per task/slice** during Code / **`executing-plans`** |
+| **L4** | Same as L3 in `l4-03-build.md` | TDD per increment |
+
+**L3–L4 note:** Tests may already exist from **`generate-test`** (Test design) — TDD cycle = run RED on those tests (or add one missing case), then GREEN, then REFACTOR. Do not duplicate the whole TC table in chat. **`generate-test`** must not implement production code to green tests; that happens here in Code.
+
+**After each cycle:** log command + result in phase file; **`verification-before-completion`** before claiming pass.
+
+## Bug overlay (usually L2)
+
+1. **`systematic-debugging`** — root cause in Spec / `STATUS.md` first  
+2. **This skill** — write **failing repro** test (`tdd-failing-repro`)  
+3. Minimal fix → **`verification-before-completion`**
+
+## With question-scope (summary)
+
+| Topic | Rule |
+| ----- | ---- |
+| **Plan (`architect-plan`)** | Tasks only — no RED/GREEN lines in phase file |
+| **`sp:off`** | TDD still applies on behavior change unless user opts out |
+| **Execute B / A** | TDD inside each checkpoint/task |
 
 ## The Iron Law
 
@@ -277,12 +311,12 @@ Tests-first force edge case discovery before implementing. Tests-after verify yo
 
 ## Red Flags - STOP and Start Over
 
-- Code before test
+- Code before test (when **behavior** changes)
 - Test after implementation
 - Test passes immediately
 - Can't explain why test failed
 - Tests added "later"
-- Rationalizing "just this once"
+- Rationalizing "just this once" on a **behavior** change
 - "I already manually tested it"
 - "Tests after achieve the same purpose"
 - "It's about spirit not ritual"
@@ -290,8 +324,11 @@ Tests-first force edge case discovery before implementing. Tests-after verify yo
 - "Already spent X hours, deleting is wasteful"
 - "TDD is dogmatic, I'm being pragmatic"
 - "This is different because..."
+- Writing a **new failing test** for **rename/move/format-only** with unchanged behavior
 
-**All of these mean: Delete code. Start over with TDD.**
+**All of these mean: Delete code. Start over with TDD** — when the change actually affects behavior.
+
+**Not red flags (no new RED required):** refactor with **same** observable behavior (tests stay green); rename/move; config-only — run existing tests after (**`question-scope`** L2 playbook).
 
 ## Example: Bug Fix
 

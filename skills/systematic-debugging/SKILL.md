@@ -43,6 +43,20 @@ Use for ANY technical issue:
 - You're in a hurry (rushing guarantees rework)
 - Manager wants it fixed NOW (systematic is faster than thrashing)
 
+## Question-scope bug overlay (usually L2)
+
+When **`question-scope`** is active and the item is a **defect**, this skill runs **inside** the level pipeline — not as a separate level. See **`question-scope`** → [Bug overlay](../question-scope/SKILL.md#bug-overlay-any-level-with-a-defect).
+
+| Step | Skill / rule |
+| ---- | ------------- |
+| 1 | **`systematic-debugging`** (this skill) — root cause in Spec or `STATUS.md` **before** Patch |
+| 2 | **`test-driven-development`** — failing repro (`tdd-failing-repro`) when behavior changes |
+| 3 | Fix (minimal) |
+| 4 | **`verification-before-completion`** — evidence before “fixed” |
+
+- **Do not** run **`brainstorming`** for a narrow bug on L2 unless the user escalates to L3.
+- **Do not** skip root cause to patch symptoms.
+
 ## The Four Phases
 
 You MUST complete each phase before proceeding to the next.

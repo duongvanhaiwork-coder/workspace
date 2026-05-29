@@ -32,8 +32,8 @@ Canonical map for skill IDs, handoffs, and dependency strength. Use this when fo
 | `test-driven-development` | Discipline | Feature, bugfix, refactor — before production code |
 | `systematic-debugging` | Discipline | Bug, test fail, unexpected behavior — before fixes |
 | `verification-before-completion` | Discipline | Before “done”, commit, PR, next task |
-| `requesting-code-review` | Quality | After task/feature; before merge |
-| `receiving-code-review` | Quality | Incoming review feedback |
+| `requesting-code-review` | Quality | Formal pre-merge (L4 supplement default); whole-branch — not duplicate subagent A per-task review |
+| `receiving-code-review` | Quality | Incoming PR feedback (`incoming-code-review`); verify before implement — after PR open, not a scope phase step |
 | `finishing-a-development-branch` | Close | All tasks done; tests pass |
 | `writing-skills` | Meta | Authoring or changing skills |
 
@@ -47,9 +47,9 @@ Team skills live under `skills/<id>/`. They complement the Superpowers table abo
 | `architect-plan` | Plan | Bounded implementation plan in work phase files (default L3–L4 Plan; pair with execute **B**) |
 | `orchestra-decision` | Process | Ambiguous problem — Q1–Q4 matrix before scope or design |
 | `explain-code` | AI Core | How does this work? / call flow (MCP or editor fallback) |
-| `analyze-impact` | AI Core | Blast radius before large rename/refactor |
+| `analyze-impact` | AI Core | Blast radius (L4 discover/plan; L3 one-service optional); feeds Regression scope — not test execution |
 | `refactor-code` | AI Core | Safe structural edits preserving behavior |
-| `generate-test` | AI Core | Tests after behavior or contract changes |
+| `generate-test` | AI Core | Test design before Code (L3–L4 gate, `l3-02`/`l4-03` TC table); L2 optional TC rows |
 | `caveman-review` | Quality | Terse PR/diff review |
 | `commit-message` | Delivery | LINKID company commit template |
 | `caveman-commit` | Delivery | Short Conventional Commits |
@@ -64,27 +64,32 @@ Team skills live under `skills/<id>/`. They complement the Superpowers table abo
 superpowers (always check skills first)
     │
     ▼
-brainstorming ──NEXT──► architect-plan (bounded L3 / work phase)
-    │                 └──► writing-plans (large handoff / subagents)
+brainstorming ──NEXT──► architect-plan (bounded L3)  |  writing-plans (large / subagents)
+    │                           │                              │
+    │                           └──────────┬───────────────────┘
+    │                                      ▼
+    │                      generate-test (TC table; before Code)
+    │                                      ▼
+    │                      using-git-worktrees (skip sp:off / L2 / decline)
+    │                                      ▼
+    │ FORBIDDEN: any              pick ONE execute path:
+    │ implementation       ├── ALT-B (default L3) ──► executing-plans
+    │ before design        │       REQUIRES: plan (phase ### Tasks OR docs/plans/)
+    │ approved             │       REQUIRES: test-driven-development, verification-before-completion
+    │                      │       NEXT (after tasks): Verify + Regression → Review
+    │                      │            → l3-03/l4-05 Ship phase → finishing-a-development-branch
     │                      │
-    │ FORBIDDEN: any       ├── ALT-A ──NEXT──► subagent-driven-development
-    │ implementation       │                      │
-    │ before design        │                      ├── REQUIRES: using-git-worktrees
-    │ approved             │                      ├── REQUIRES: test-driven-development
-    │                      │                      ├── REQUIRES: requesting-code-review (per task)
-    │                      │                      └── NEXT ──► finishing-a-development-branch
-    │                      │
-    │                      └── ALT-B ──NEXT──► executing-plans
-    │                                             │
-    │                                             ├── REQUIRES: using-git-worktrees
-    │                                             ├── REQUIRES: test-driven-development
-    │                                             └── NEXT ──► finishing-a-development-branch
+    │                      └── ALT-A (user chose A) ──► subagent-driven-development
+    │                              REQUIRES: docs/plans/ from writing-plans
+    │                              REQUIRES: bundled prompts/ reviewers per task
+    │                              REQUIRES: test-driven-development, verification-before-completion
+    │                              NEXT (after tasks): same → finishing-a-development-branch
     │
     └── spec path: docs/specs/YYYY-MM-DD-<topic>-design.md
-        plan path: docs/plans/YYYY-MM-DD-<feature>.md
+        plan path: docs/plans/YYYY-MM-DD-<feature>.md (A requires; B optional)
 ```
 
-**ALT-A vs ALT-B:** User (or plan header) chooses exactly one after `writing-plans`. Do not run both on the same plan.
+**ALT-A vs ALT-B:** User (or plan header) chooses **exactly one** after plan + Test gate — whether plan came from **`architect-plan`** or **`writing-plans`**. Do not run both on the same plan. **`docs/plans/` alone does not imply A.**
 
 ## Handoff graph (bug / fix)
 
@@ -109,25 +114,31 @@ Optional: `dispatching-parallel-agents` when multiple **independent** failure do
 - **Optional:** `references/visual-companion.md` + `scripts/` (browser mockups)
 
 ### `writing-plans`
-- **REQUIRES (context):** `using-git-worktrees` at execution time (isolated workspace)
+- **REQUIRES (at execute):** `using-git-worktrees` when supplement on (L3–L4 default) — **skip** if `sp:off` / user declined / work in place
 - **NEXT (user choice):** `subagent-driven-development` **OR** `executing-plans`
 - **Artifacts:** `docs/plans/YYYY-MM-DD-<feature>.md` (see CONVENTIONS.md)
 
 ### `subagent-driven-development`
-- **REQUIRES:** `writing-plans` (`docs/plans/…` task file), `using-git-worktrees`, `test-driven-development`
+- **REQUIRES:** `writing-plans` (`docs/plans/…` task file), `test-driven-development`, `verification-before-completion`
+- **REQUIRES (L3–L4):** Test design gate — **`generate-test`** / TC table before Code (same as B)
+- **REQUIRES:** `using-git-worktrees` when supplement on — **skip** if `sp:off` / user declined (verify branch + baseline in place)
 - **REQUIRES (per-task review):** bundled `prompts/implementer-prompt.md`, `prompts/spec-reviewer-prompt.md`, `prompts/code-quality-reviewer-prompt.md`
 - **RECOMMENDED:** `requesting-code-review` for ad-hoc / whole-branch review (not every task)
-- **NEXT:** `finishing-a-development-branch`
-- **ALT:** `executing-plans` (different session / no subagents / architect-plan-only phase plan)
+- **NEXT (L3–L4):** Verify/Regression → Review → Ship phase MD → **`finishing-a-development-branch`**
+- **ALT:** `executing-plans` (**B** — default L3; inline same session; phase plan or `docs/plans/`)
 
 ### `executing-plans`
-- **REQUIRES:** written plan (`writing-plans` **or** `architect-plan` in `docs/work/…`), `using-git-worktrees`, `test-driven-development`
-- **NEXT:** `finishing-a-development-branch`
-- **RECOMMENDED instead when possible:** `subagent-driven-development` (only with `docs/plans/…`)
+- **REQUIRES:** written plan (`architect-plan` in `docs/work/…` **or** `docs/plans/…` from `writing-plans`), `test-driven-development`
+- **REQUIRES:** `using-git-worktrees` when supplement on — **skip** if `sp:off` / **L2** / user declined
+- **REQUIRES:** `verification-before-completion` — per task and before done
+- **NEXT (L3–L4):** Verify/Regression → Review → Ship phase MD → **`finishing-a-development-branch`**
+- **ALT:** `subagent-driven-development` (**A**) — only when user/plan chose A and `docs/plans/…` exists
 
 ### `finishing-a-development-branch`
-- **REQUIRES:** tests passing (`verification-before-completion` immediately before)
+- **REQUIRES:** Verify + Regression green in phase file (L3–L4); Review done; `l3-03-ship.md` / `l4-05-ship.md` updated (rollout/rollback)
+- **REQUIRES:** tests passing — **`verification-before-completion`** immediately before options (fresh run)
 - **Terminal:** user picks merge / PR / keep / discard
+- **PREVIOUS (do not skip):** `executing-plans` or `subagent-driven-development` ends at tasks done — not Ship
 
 ### `systematic-debugging`
 - **REQUIRES (phase 4):** `test-driven-development`

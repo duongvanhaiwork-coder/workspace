@@ -25,19 +25,29 @@ Map rule IDs from **`@workflow`** (invoke skill ID in the Playbook column):
 
 | Question-scope phase | Rule ID | Playbook (skill ID) |
 | -------------------- | ------- | ------------------- |
-| Spec (L3–L4, large L2) | `design-approval-gate` | `brainstorming` |
+| Discover / impact (L4) | — | **`analyze-impact`** in `l4-01` when blast radius unclear; notes feed Prove Regression |
+| Spec (L3–L4, large L2) | `design-approval-gate` | `brainstorming` (skip on L2 default; not while scope waits for L — see skill § When NOT) |
 | Plan (L3–L4) | `implementation-plan` **or** team plan | `writing-plans` or `architect-plan` |
-| Before Patch/Code | `isolated-workspace` | `using-git-worktrees` |
-| Code / Patch | `tdd-during-implementation` | `test-driven-development` |
-| Execute plan (L3–L4) | **Default L3:** `execute-inline-checkpoints` (B). **ALT:** `execute-via-subagents` (A) — requires `writing-plans` plan file | `executing-plans` \| `subagent-driven-development` |
+| Test design (L3–L4 before Code; L2 optional TC rows) | — | `generate-test` — TC table in `l3-02` / `l4-03`; L2: `l2-patch` optional; skip rename/config-only |
+| Before Patch/Code (L3: after Test gate, before Code; L2: skip default) | `isolated-workspace` | `using-git-worktrees` (skip when `sp:off` or L2 unless user opts in — see skill § When NOT) |
+| Code / Patch | `tdd-during-implementation` (if behavior/contract changes) | `test-driven-development` — L2: after Spec test rows; L3: after `generate-test` + worktree; skip pure rename/config |
+| Execute plan (L3–L4) | **Default:** `execute-inline-checkpoints` (B). **ALT:** `execute-via-subagents` (A) — user chose A + `docs/plans/…` from `writing-plans` (not phase-file-only) | `executing-plans` \| `subagent-driven-development` |
 | Verify | `verify-before-done` | `verification-before-completion` |
+| Review (L2–L3 diff) | — (question-scope Review checklist) | `caveman-review` — terse diff review; log in phase MD |
+| Review (L4 pre-merge) | — | `outgoing-code-review` → `requesting-code-review` when formal review before merge |
 | Ship (L3–L4) | `finish-branch-options` | `finishing-a-development-branch` |
+
+**Review vs Ship:** `caveman-review` = during/after **Review** step (quick diff pass). `requesting-code-review` = **formal pre-merge** (L4 + supplement **default**; L3 only if AC asks) — **after** `caveman-review`, **before** Ship git options; **not** a second per-task review when execute **A** already used bundled reviewers. **`receiving-code-review`** = **incoming** PR/comment feedback after PR is open (`incoming-code-review`) — verify each item; log rounds in phase **PR feedback**; not a substitute for outgoing review. **Ship phase MD** (`l3-03`, `l4-05`) = rollout/rollback/refine; **`finishing-a-development-branch`** = git integration only — run **after** phase Ship content. Do not skip **`verification-before-completion`** before merge/PR or before claiming fixes addressed.
 
 Run **`superpowers`** (`skill-check-first`) once per session when the supplement applies — **after** level is chosen, not instead of scope options.
 
 ## Plan path decision (L3–L4)
 
 Use this table after design approval (`brainstorming` or spec in phase file). **One primary plan location** — link elsewhere; do not duplicate full task lists.
+
+**Numeric pre-flight (skills):** **`architect-plan`** § Pre-flight and **`writing-plans`** § When to use — default escalate to `writing-plans` when **>12** slices/tasks or **>8** primary files, subagents (**A**), or zero-context handoff.
+
+**Terminology:** **slice** (`architect-plan`) = **task** checkbox under `### Tasks` in `l3-01-define.md` / L4 define — not the same as `writing-plans` micro-steps (RED/GREEN).
 
 | Situation | Plan skill | Plan lives at | Execute |
 | --------- | ---------- | ------------- | ------- |

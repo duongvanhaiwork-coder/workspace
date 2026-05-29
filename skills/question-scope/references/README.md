@@ -7,6 +7,8 @@ Load on demand (not every turn). **Naming:** kebab-case, one topic per file; see
 | [gray-zones.md](./gray-zones.md) | L1/L2, L2/L3, L3/L4; **Quick checklist L2 vs L3**; AskQuestion pairs; L2 work-folder choice |
 | [level-picker.md](./level-picker.md) | Trigger flow (mermaid) + host UI (Cursor vs Kiro) |
 | [playbooks.md](./playbooks.md) | Step-by-step L1–L4 execution |
+| **[pipelines-quickref.md](./pipelines-quickref.md)** | **Default during work** — skill chains by level (~120 lines); low token |
+| [pipelines-skill-map.md](./pipelines-skill-map.md) | Full map — load **one § only** (level table or single §6 skill); §9 audit |
 | [superpowers-supplement.md](./superpowers-supplement.md) | L2+ supplement, rule IDs, plan A/B |
 | [pressure-scenarios.md](./pressure-scenarios.md) | Pressure scenarios + baseline results |
 | [behavioral-gates.md](./behavioral-gates.md) | Behavioral fixtures + live-paste eval runbook |

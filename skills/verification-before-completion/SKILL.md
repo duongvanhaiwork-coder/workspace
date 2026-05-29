@@ -37,6 +37,14 @@ BEFORE claiming any status or expressing satisfaction:
 Skip any step = lying, not verifying
 ```
 
+## Terminology (question-scope)
+
+| Term | Meaning |
+| ---- | ------- |
+| **Phase Verify** | Scoped check after Code/Patch — TC rows, smoke, impacted tests (L2: patch scope + 1-hop; L3: per TC in `l3-02`) |
+| **Phase Regression** (L3–L4 only) | **Broader** than Verify — touched **module/package** + **1-hop** integration; separate step in pipeline; still log commands + output here |
+| **TDD regression (red-green repro)** | Bugfix discipline below — **not** the same as phase Regression |
+
 ## Common Failures
 
 | Claim | Requires | Not Sufficient |
@@ -45,7 +53,7 @@ Skip any step = lying, not verifying
 | Linter clean | Linter output: 0 errors | Partial check, extrapolation |
 | Build succeeds | Build command: exit 0 | Linter passing, logs look good |
 | Bug fixed | Test original symptom: passes | Code changed, assumed fixed |
-| Regression test works | Red-green cycle verified | Test passes once |
+| TDD regression (red-green) works | Revert-fix-fail-restore cycle verified | Test passes once |
 | Agent completed | VCS diff shows changes | Agent reports "success" |
 | Requirements met | Line-by-line checklist | Tests passing |
 
@@ -81,7 +89,7 @@ Skip any step = lying, not verifying
 ❌ "Should pass now" / "Looks correct"
 ```
 
-**Regression tests (TDD Red-Green):**
+**TDD regression (red-green repro — not phase Regression):**
 ```
 ✅ Write → Run (pass) → Revert fix → Run (MUST FAIL) → Restore → Run (pass)
 ❌ "I've written a regression test" (without red-green verification)
@@ -99,6 +107,12 @@ Skip any step = lying, not verifying
 ❌ "Tests pass, phase complete"
 ```
 
+**Test design (RED — `generate-test` before Code):**
+```
+✅ [Run test command] [See: N failures — missing implementation] "RED as expected; not ready for done"
+❌ "All tests pass" / "Phase complete" while behavior tests still fail for missing code
+```
+
 **Agent delegation:**
 ```
 ✅ Agent reports success → Check VCS diff → Verify changes → Report actual state
@@ -113,6 +127,22 @@ From 24 failure memories:
 - Missing requirements shipped - incomplete features
 - Time wasted on false completion → redirect → rework
 - Violates: "Honesty is a core value. If you lie, you'll be replaced."
+
+## With question-scope (L2–L4)
+
+Rule IDs: **`verify-before-done`** (Verify / done / ship) · **`verify-fix-evidence`** (bug overlay — same skill).
+
+| Level | Pipeline step | What to verify | Where to log |
+| ----- | ------------- | -------------- | ------------ |
+| **L2** | **Verify** only (no Regression step) | Impacted tests / smoke for patch + 1-hop | `l2-patch.md` § Verify |
+| **L3** | **Verify** then **Regression** (both required) | Verify: TC/smoke per row · Regression: module/package + 1-hop suite | `l3-02-build-prove.md` — Test design log (RED) + **Verify + regression** tables |
+| **L4** | **Prove:** Verify → Review → Regression | Per `l4-04-prove.md`; service-scoped when AC requires | `l4-04-prove.md` |
+
+**Per task during Code:** run verify after each task (`executing-plans` / TDD) — same gate, can log in Implementation log.
+
+**Ship:** **`finishing-a-development-branch`** Step 1 runs tests again — **fresh** evidence; do not skip because Verify/Regression logged earlier.
+
+When **`docs/work/…`** is active, record in the phase file — **not chat-only**. Copy **exact command** + **output summary** (e.g. `34 passed, 0 failed`). Update **`STATUS.md`** when the phase completes.
 
 ## When To Apply
 

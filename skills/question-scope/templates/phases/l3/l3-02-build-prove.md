@@ -2,7 +2,20 @@
 
 **Canonical steps:** Scaffold (if needed), Test Design, Implement, Verify, Review, Regression (required for L3), Iterate
 
+## Isolated workspace (before code)
+
+Fill after **`using-git-worktrees`** (L3 default; skip if `sp:off` or user works in place):
+
+| Field | Value |
+| ----- | ----- |
+| Branch | `feature/…` |
+| Worktree / checkout path | `.worktrees/…` or main repo path |
+| Baseline test command | e.g. `npm test` |
+| Baseline result | pass / fail (date) |
+
 ## Test design (before code — STOP without this table filled)
+
+Use **`generate-test`** to author tests; map each row to Spec `Then` from `l3-01-define.md`.
 
 | TC ID | Given | When | Then | Type |
 | ----- | ----- | ---- | ---- | ---- |
@@ -16,12 +29,22 @@
 - [ ] Includes ≥1 error path if user/system can send bad input
 - [ ] IDs stable (do not renumber mid-flight; append TC-04…)
 
+### Test design — command log (RED)
+
+Use **`verification-before-completion`** — log **expected failures**, not “all pass”:
+
+| Command | Output summary | Status |
+| ------- | ---------------- | ------ |
+| `npm test -- …` | e.g. `2 failed` — missing impl | RED expected |
+
 ## Scaffold (if any)
 
 - [ ] New paths listed
 - [ ] …
 
 ## Implementation log
+
+**Execute (pick one):** **`executing-plans` (B, default)** — inline checkpoints per plan task · **`subagent-driven-development` (A)** — only with `docs/plans/…` and user chose A. Use **`test-driven-development`** per task when behavior changes.
 
 - …
 
@@ -32,7 +55,14 @@
 
 ## Verify + regression
 
-### Execution vs test cases
+Use **`verification-before-completion`** for every run — log commands and output here (not chat-only).
+
+| Step | Scope (L3 default) |
+| ---- | ------------------ |
+| **Verify** | Each TC row / smoke for changed behavior |
+| **Regression** | Tests for touched **module/package** + **1-hop** callers of changed API/surface |
+
+### Execution vs test cases (Verify)
 
 | TC ID | Command / step | Result | Log / link |
 | ----- | ---------------- | ------ | ---------- |
@@ -53,6 +83,18 @@
 | Date | TC ID | Symptom | Fix |
 | ---- | ----- | ------- | --- |
 | … | TC-02 | … | … |
+
+## PR feedback / Iterate (after PR open)
+
+When the PR has **incoming review comments**, use **`receiving-code-review`** (rule `incoming-code-review`) — not the same as Review step or `requesting-code-review`.
+
+| Round | Comment / link | Action | Verify command | Result |
+| ----- | ---------------- | ------ | -------------- | ------ |
+| 1 | … | … | `npm test …` | pass |
+| 2 | … | … | … | … |
+
+- [ ] Clarified all items before implementing partial list
+- [ ] Each fix has fresh **`verification-before-completion`** evidence
 
 ## Done when
 

@@ -1,20 +1,36 @@
 ---
 name: analyze-impact
 description: >
-  Before renaming or changing a symbol, call MCP tool `analyze_impact` to list
-  affected files from the code graph. Use when the user asks about blast radius,
-  downstream impact, "what breaks if I change X", or before large refactors.
+  Blast radius before shared-symbol or cross-service changes (MCP analyze_impact or
+  search fallback). L4 discover/plan; L3 optional one-service bounded. Does not run tests.
 ---
 
 **Announce when applying:** `Using analyze-impact for <symbol>.`
 
 If MCP is down, follow **Search-only fallback** and state results are bounded — not graph-complete.
 
+## With question-scope (impact ≠ Regression)
+
+| Topic | Skill / step |
+| ----- | ------------- |
+| **This skill** | **What** is affected (files, services, symbols) — graph or search |
+| **Phase Regression (L3–L4)** | **Run tests** for impacted scope — **`verification-before-completion`** in `l3-02` / `l4-04-prove` |
+| **Do not** | Claim tests pass here; do not replace Regression with impact analysis |
+
+| Level | When to run `analyze-impact` |
+| ----- | ------------------------------ |
+| **L4** | **`l4-01-discover`** if blast radius unclear; before locking cross-service API in **`l4-02-define`** / **`architect-plan`** |
+| **L3** | Optional — shared/exported symbol or cross-module plan; **bounded to one service** ([`l3-vs-l4-diff`](../question-scope/references/l3-vs-l4-diff.md)) |
+| **L2** | Optional before large patch on shared code — scoped Verify still applies |
+
+**Output:** Record in phase MD (`l4-01` § *analyze-impact / exploration notes*, plan **### Architecture**, or task notes) — feeds **L4 Regression** suite list per impacted **service**.
+
 ## When to use
 
 - User will modify, rename, or delete a function, class, or exported symbol
 - User asks which files or services are affected
 - Planning a refactor across modules
+- **L4** discover/validate or plan before multi-service implementation
 
 ## Steps
 
@@ -46,3 +62,5 @@ Use this when Step 2 does not yield a trustworthy graph:
 
 - Guess affected files without tools or explicit search when the symbol is shared
 - Assume impact is only within one file when the symbol is exported
+- Claim **graph-complete** coverage when using search-only fallback
+- Run full-org test suites as a substitute for this skill — list targets; **`verification-before-completion`** runs tests in Regression

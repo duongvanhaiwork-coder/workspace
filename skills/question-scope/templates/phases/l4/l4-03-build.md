@@ -2,6 +2,14 @@
 
 **Canonical steps:** Scaffold, Test Design, Implement
 
+## Isolated workspace (before code)
+
+| Field | Value |
+| ----- | ----- |
+| Branch | … |
+| Worktree / path | … |
+| Baseline test | command + pass/fail |
+
 ## Scaffold
 
 - …
@@ -12,6 +20,8 @@
 - [ ] Config / env vars documented in one line each
 
 ## Test design (STOP before code without this table)
+
+Use **`generate-test`** to author tests; map each row to P0 **A\*** acceptance from define phase.
 
 | TC ID | Given | When | Then | Type | Maps to |
 | ----- | ----- | ---- | ---- | ---- | ------- |

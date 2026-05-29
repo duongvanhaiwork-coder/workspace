@@ -1,6 +1,8 @@
 ---
 name: subagent-driven-development
-description: Use when executing implementation plans with independent tasks in the current session
+description: >
+  Execute docs/plans/ with one subagent per task + two-stage review (A). Requires
+  writing-plans file; not for architect-plan-only phase plans. User must choose A.
 ---
 
 # Subagent-Driven Development
@@ -19,25 +21,28 @@ Execute plan by dispatching fresh subagent per task, with two-stage review after
 digraph when_to_use {
     "Have implementation plan?" [shape=diamond];
     "Tasks mostly independent?" [shape=diamond];
-    "Stay in this session?" [shape=diamond];
+    "User chose execute A?" [shape=diamond];
+    "docs/plans/ from writing-plans?" [shape=diamond];
     "subagent-driven-development" [shape=box];
     "executing-plans" [shape=box];
     "Manual execution or brainstorm first" [shape=box];
 
     "Have implementation plan?" -> "Tasks mostly independent?" [label="yes"];
     "Have implementation plan?" -> "Manual execution or brainstorm first" [label="no"];
-    "Tasks mostly independent?" -> "Stay in this session?" [label="yes"];
+    "Tasks mostly independent?" -> "User chose execute A?" [label="yes"];
     "Tasks mostly independent?" -> "Manual execution or brainstorm first" [label="no - tightly coupled"];
-    "Stay in this session?" -> "subagent-driven-development" [label="yes"];
-    "Stay in this session?" -> "executing-plans" [label="no - parallel session"];
+    "User chose execute A?" -> "docs/plans/ from writing-plans?" [label="yes"];
+    "User chose execute A?" -> "executing-plans" [label="no - default B"];
+    "docs/plans/ from writing-plans?" -> "subagent-driven-development" [label="yes"];
+    "docs/plans/ from writing-plans?" -> "executing-plans" [label="no - use architect-plan + B"];
 }
 ```
 
-**vs. Executing Plans (parallel session):**
-- Same session (no context switch)
-- Fresh subagent per task (no context pollution)
-- Two-stage review after each task: spec compliance first, then code quality
-- Faster iteration (no human-in-loop between tasks)
+**vs. Executing Plans (B — inline, same session):**
+- **A:** fresh subagent per task + bundled spec/code-quality reviewer prompts
+- **B:** controller implements each checkpoint inline (no subagent dispatch)
+- Both can run in the **same session**; B is question-scope L3 default
+- A: continuous between tasks (no “continue?” prompts); B may checkpoint with user when blocked
 
 ## The Process
 
@@ -82,7 +87,8 @@ digraph process {
     "Mark task complete (task-tracker)" -> "More tasks remain?";
     "More tasks remain?" -> "Dispatch implementer subagent (./prompts/implementer-prompt.md)" [label="yes"];
     "More tasks remain?" -> "Dispatch final code reviewer subagent for entire implementation" [label="no"];
-    "Dispatch final code reviewer subagent for entire implementation" -> "NEXT: finishing-a-development-branch";
+    "Dispatch final code reviewer subagent for entire implementation" -> "NEXT: Review + l3-03/l4-05 Ship phase";
+    "NEXT: Review + l3-03/l4-05 Ship phase" -> "NEXT: finishing-a-development-branch";
 }
 ```
 
@@ -148,7 +154,7 @@ Implementer: "Got it. Implementing now..."
   - Implemented install-hook command
   - Added tests, 5/5 passing
   - Self-review: Found I missed --force flag, added it
-  - Committed
+  - Ready to commit (or committed only if user/repo allows agent commits)
 
 [Dispatch spec compliance reviewer]
 Spec reviewer: ✅ Spec compliant - all requirements met, nothing extra
@@ -168,7 +174,7 @@ Implementer:
   - Added verify/repair modes
   - 8/8 tests passing
   - Self-review: All good
-  - Committed
+  - Ready to commit (or committed only if user/repo allows agent commits)
 
 [Dispatch spec compliance reviewer]
 Spec reviewer: ❌ Issues:
@@ -267,14 +273,17 @@ Done!
 ## Integration
 
 **Required workflow skills:**
-- **REQUIRES:** `using-git-worktrees` — isolated workspace (create or verify)
-- **REQUIRES:** `writing-plans` — task-level plan at `docs/plans/YYYY-MM-DD-<feature>.md` (do **not** use this skill with **`architect-plan`**-only phase files — use **`executing-plans`** instead)
-- **REQUIRES (per-task review):** Bundled prompts in this skill — `prompts/implementer-prompt.md`, `prompts/spec-reviewer-prompt.md`, `prompts/code-quality-reviewer-prompt.md`
-- **RECOMMENDED (ad-hoc / whole-branch review):** `requesting-code-review` → `prompts/code-reviewer.md` — not required for every task when spec + code-quality reviewer prompts already ran
-- **NEXT:** `finishing-a-development-branch` — after all tasks
+- **REQUIRES:** `writing-plans` — task-level plan at `docs/plans/YYYY-MM-DD-<feature>.md` (do **not** use with **`architect-plan`**-only phase files — use **`executing-plans` (B)**)
+- **REQUIRES (L3–L4 before Code):** **`generate-test`** / TC table filled — same gate as **B**; subagents implement per task after Test design
+- **REQUIRES:** `using-git-worktrees` — isolated workspace when supplement on — **skip** if **`sp:off`** / user declined; verify branch + baseline in place
+- **REQUIRES (per-task review):** Bundled prompts — `prompts/implementer-prompt.md`, `prompts/spec-reviewer-prompt.md`, `prompts/code-quality-reviewer-prompt.md`
+- **RECOMMENDED (ad-hoc / whole-branch):** `requesting-code-review` — not a substitute for per-task spec/code-quality prompts
+- **REQUIRES:** `verification-before-completion` — before marking a task or the plan done
+- **NEXT (L3–L4):** phase Verify/Regression → **`caveman-review`** → **L4:** optional **`requesting-code-review`** (whole branch once; not per task) → `l3-03-ship.md` / `l4-05-ship.md` → **`finishing-a-development-branch`**
 
 **Subagents should use:**
 - **REQUIRES:** `test-driven-development` — per task
+- **Commits:** only when user or repo policy allows agent commits
 
 **ALT:**
-- `executing-plans` — parallel session / no subagents in this session
+- **`executing-plans` (B)** — default L3; same session, inline checkpoints; works with phase plan or `docs/plans/`

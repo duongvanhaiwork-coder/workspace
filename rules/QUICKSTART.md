@@ -56,24 +56,37 @@ Human guide (Vietnamese): **`question-scope`** → `README.md`. English one-page
 
 One source of truth — see `skills/CONVENTIONS.md`.
 
-## L3 feature flow (typical)
+## L3 skill chain (typical, supplement on)
 
 ```text
-/question-scope L3 → docs/work/ + STATUS
-  → design-approval-gate (if large)
-  → implementation-plan: architect-plan in docs/work/ (B default) OR writing-plans → docs/plans/ (A)
-  → isolated-workspace
-  → execute-inline-checkpoints (B, default) OR execute-via-subagents (A, needs docs/plans/)
-  → tdd-during-implementation
-  → verify-before-done
-  → finish-branch-options
+/question-scope L3 → docs/work/ + STATUS.md
+  → brainstorming (spec approve) — skip if AC approved
+  → architect-plan (l3-01) | writing-plans (docs/plans/) — see Plan path in supplement
+  → generate-test (l3-02 TC table) — before Code
+  → using-git-worktrees — skip with sp:off
+  → executing-plans (B) | subagent-driven-development (A)
+  → test-driven-development (per task during Code)
+  → Verify → Regression (both use verification-before-completion; log l3-02)
+  → caveman-review → l3-03-ship.md (rollout/rollback) → finishing-a-development-branch (Ship; fresh verify)
+```
+
+Rule IDs (`design-approval-gate`, `isolated-workspace`, …): `@workflow`.
+
+## L2 skill chain (minimal supplement)
+
+```text
+/question-scope L2 — <task> (@files)
+  → Spec + TC rows in l2-patch (if behavior changes; optional generate-test)
+  → Patch + test-driven-development (if behavior)
+  → verification-before-completion → Review (caveman-review)
 ```
 
 ## Bug (usually L2)
 
 ```text
 /question-scope L2 — bug: <symptom> (@files)
-→ debug-root-cause-first → tdd-failing-repro → verify-fix-evidence
+→ systematic-debugging → test-driven-development (repro)
+→ verification-before-completion
 ```
 
 ## Load full workflow graph

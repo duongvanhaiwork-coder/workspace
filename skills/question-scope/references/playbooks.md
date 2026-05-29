@@ -18,7 +18,8 @@ Use [`l2-patch.md`](../templates/phases/l2/l2-patch.md) + `STATUS.md` (or [rollu
 - **Test gate:** Behavior/contract changes → test cases in Spec **before Patch**. Pure refactor/rename → skip new tests.
 - **Patch:** incremental edits; rule **`code-standards`** / stack rules in touched scope.
 - **Verify:** impacted tests / smoke; not full-system regression.
-- **Review:** [Review checklist](../SKILL.md#review-checklist-l2) + **`caveman-review`** mindset.
+- **Review:** [Review checklist](../SKILL.md#review-checklist-l2) + **`caveman-review`** mindset. L4 pre-merge: **`requesting-code-review`** when supplement applies.
+- **PR feedback (after PR open):** **`receiving-code-review`** — verify each comment; log rounds in phase **PR feedback** / Iterate; not blind implementation.
 - **MD:** phased `docs/work/…` or single work-item per [gray-zones § L2 documentation](./gray-zones.md#l2-documentation-patch-md).
 
 ## L3

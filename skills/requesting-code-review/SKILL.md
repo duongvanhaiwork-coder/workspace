@@ -1,6 +1,8 @@
 ---
 name: requesting-code-review
-description: Use when completing tasks, implementing major features, or before merging to verify work meets requirements
+description: >
+  Formal pre-merge review via subagent + code-reviewer prompt (L4 supplement default).
+  Whole-branch or feature slice — not duplicate per-task reviewers in subagent-driven-development (A).
 ---
 
 # Requesting Code Review
@@ -9,17 +11,33 @@ Dispatch a code reviewer subagent to catch issues before they cascade. The revie
 
 **Core principle:** Review early, review often.
 
+## With question-scope (vs `caveman-review`)
+
+| Review type | Skill | When |
+| ----------- | ----- | ---- |
+| **Quick diff** (L2+) | **`caveman-review`** | Review step in phase MD — terse comments, security/SOLID |
+| **Formal pre-merge** (L4 supplement) | **This skill** | After Verify/Regression green; before Ship merge/PR — rule `outgoing-code-review` |
+| **Per-task (execute A only)** | **`subagent-driven-development`** bundled prompts | Spec + code-quality reviewer **each task** — **do not** also run this skill every task |
+
+**Levels:** **L3** — this skill only if AC/user asks. **L4** + supplement on — **default** formal pre-merge (waive if user/`sp:off`/AC says skip). Always after **`verification-before-completion`** evidence.
+
+**Incoming human PR comments:** **`receiving-code-review`** — different direction.
+
 ## When to Request Review
 
-**Mandatory:**
-- After each task in subagent-driven development
-- After completing major feature
-- Before merge to main
+**Use this skill (whole-branch / pre-merge):**
+- **L4** supplement on — before merge/PR (after `caveman-review` + prove phase Review)
+- **L3** or **L2** — when AC or user asks for formal subagent review
+- After completing a major feature slice (before Ship)
+- Before merge to main / before `finishing-a-development-branch` option 1 or 2
+
+**Do not use as duplicate per-task review when:**
+- **`subagent-driven-development` (A)** already ran spec + code-quality reviewers for that task — use this skill once for **whole branch** if needed (RECOMMENDED in that skill), not again per task
 
 **Optional but valuable:**
 - When stuck (fresh perspective)
-- Before refactoring (baseline check)
-- After fixing complex bug
+- Before large refactor (baseline check)
+- After fixing complex bug (before claiming done)
 
 ## How to Request
 
@@ -82,18 +100,20 @@ You: [Fix progress indicators]
 
 ## Integration with Workflows
 
-**Subagent-Driven Development:**
-- Review after EACH task
-- Catch issues before they compound
-- Fix before moving to next task
+**Question-scope L3–L4 (after execute):**
+```text
+Verify/Regression → caveman-review → [L4: this skill if supplement/AC] → Ship phase MD → finishing-a-development-branch
+```
 
-**Executing Plans:**
-- Review after each task or at natural checkpoints
-- Get feedback, apply, continue
+**Subagent-Driven Development (A):**
+- Per-task review = bundled prompts only
+- **Once** before Ship: optional/recommended **whole-branch** pass with this skill — not mandatory after every task
 
-**Ad-Hoc Development:**
-- Review before merge
-- Review when stuck
+**Executing Plans (B):**
+- `caveman-review` at Review step; **L4:** add this skill when supplement/AC requires formal pre-merge
+
+**Finishing a Development Branch:**
+- Before merge locally or **Push + PR** — confirm formal review done when L4 supplement applies; fix Critical/Important findings first
 
 ## Red Flags
 

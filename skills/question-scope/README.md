@@ -30,6 +30,7 @@ Cần làm gì? → Chỉ hỏi / không sửa repo → /question-scope L1
 - [Chọn level (L1–L4)](#chọn-level-l1l4)
 - [Chưa gửi L trên lệnh](#chưa-gửi-l-trên-lệnh--agent-bắt-chọn-1-trong-4l)
 - [Bật / tắt & trigger](#bật--tắt--trigger)
+- [Tóm tắt skill trong pipeline](#tóm-tắt-skill-trong-pipeline-tiếng-việt)
 - [Superpowers supplement theo level](#superpowers-supplement-theo-level)
 - [Tài liệu trên disk](#tài-liệu-trên-disk)
 - [Luồng từng level](#luồng-từng-level-checklist-người-dùng)
@@ -210,7 +211,7 @@ Hai lớc **không thay nhau**. Scope chọn “bao nhiêu”; Superpowers (khi 
 
 **Gợi ý nhanh (không khóa):** chỉ hỏi → L1 · vài file / bug → L2 · feature mới có contract → L3 · hệ thống / nhiều service → L4.
 
-**Pipeline & playbook chi tiết:** [SKILL.md § Pipelines](./SKILL.md#pipelines-ui) · [references/playbooks.md](references/playbooks.md). **L4 đã có `/question-scope L4`:** bỏ bước Idea/Scope — bắt từ Context.
+**Pipeline & playbook:** [SKILL.md § Pipelines](./SKILL.md#pipelines-ui) · [playbooks.md](references/playbooks.md) · **[pipelines-quickref.md](references/pipelines-quickref.md)** (~120 dòng — agent đọc cái này khi làm việc, tiết kiệm token) · [pipelines-skill-map.md](references/pipelines-skill-map.md) (chi tiết — chỉ mở **một §** theo level/skill, không đọc cả file). **L4 preset:** bỏ Idea/Scope — bắt từ Context.
 
 **Map file phase (L2–L4):**
 
@@ -308,6 +309,37 @@ Bảng đầy đủ: [SKILL.md § When this skill applies](./SKILL.md#when-this-
 
 ---
 
+## Tóm tắt skill trong pipeline (tiếng Việt)
+
+**Khi agent chạy scope:** đọc [pipelines-quickref.md](references/pipelines-quickref.md) (~120 dòng). Chi tiết một skill: [pipelines-skill-map.md §6.x](references/pipelines-skill-map.md#6-skill-deep-dive--purpose-when-called-what-it-does) — **không** load cả file ~700 dòng.
+
+| Skill | Mục đích (1 câu) | Thường gọi ở | Agent làm gì (tóm tắt) |
+| ----- | ---------------- | ------------ | ---------------------- |
+| `orchestra-decision` | Chốt hướng nhanh khi ý tưởng còn mơ | Trước khi chọn L / AC chưa rõ | Q1–Q4 → 2–5 phương án → **1 quyết định**; không viết spec/plan |
+| `superpowers` | Biết skill nào sẽ chạy sau khi có L | Ngay sau chọn L2–L4 | Đọc supplement; map phase → skill; tôn `sp:off` |
+| `explain-code` | Giải thích code, không sửa | L1; trước khi sửa chỗ lạ | `get_context` / đọc file → luồng entry → phụ thuộc |
+| `brainstorming` | Spec/design **đã approve** trước code | L3–L4 Spec (bỏ nếu đã có spec) | Hỏi dần → 2–3 hướng → `docs/specs/…` → user approve |
+| `architect-plan` | Plan vừa phải trong phase file | L3 Plan (≤12 task) | Checkbox task + file + `verify:` trong `l3-01` |
+| `writing-plans` | Plan lớn / handoff / subagent A | >12 task hoặc user chọn A | `docs/plans/…` chi tiết; phase chỉ link |
+| `generate-test` | Test **trước** production code | L3–L4 Test; L2 tùy chọn | Bảng TC + test **RED**; log fail; không code prod |
+| `using-git-worktrees` | Branch/worktree tách biệt | L3–L4 trước Code | `.worktrees/…` + baseline test |
+| `executing-plans` (B) | Làm plan cùng session, checkpoint | L3–L4 Code (mặc định) | Từng task: TDD → verify → xong → Regression/Ship |
+| `subagent-driven-development` (A) | Mỗi task một subagent + review | L3–L4 khi có `docs/plans/` + chọn A | Implementer → review spec → review code / task |
+| `test-driven-development` | Đổi behavior có test chứng minh | L2 Patch; mỗi task L3–L4; bug | RED → GREEN → REFACTOR |
+| `verification-before-completion` | Không nói “xong” không có log lệnh | Verify, Regression, Ship, fix bug | Chạy lệnh **mới** → paste output → mới claim |
+| `systematic-debugging` | Root cause trước khi sửa | Bug (thường L2 Spec) | 4 phase điều tra → ghi nguyên nhân vào Spec |
+| `analyze-impact` | Biết file/service nào bị ảnh hưởng | L4 Discover; L3/L2 tùy | MCP/rg → list impact; **không** chạy test thay Regression |
+| `caveman-review` | Review diff ngắn, có fix cụ thể | Review L2+ | `L42: lỗi. sửa.` từng dòng |
+| `requesting-code-review` | Review formal trước merge | L4 (mặc định); L3 nếu AC | Subagent reviewer sau test xanh + caveman |
+| `receiving-code-review` | Xử lý comment PR đúng cách | Sau khi mở PR | Đọc → hiểu → verify → sửa từng mục + test |
+| `finishing-a-development-branch` | Kết thúc git (merge/PR/…) | Cuối L3–L4 Ship | Verify lại → user chọn 1 trong 4 option |
+| `dispatching-parallel-agents` | Nhiều lỗi **độc lập** song song | Bug/Iterate nhiều domain | 1 agent/domain; không sửa cùng file |
+| `code-standards` | Chất lượng & bảo mật mọi edit | Mọi Patch/Code (rule) | Validate, SOLID, không secret trong log |
+
+**Bảng pipeline đầy đủ (khi cần):** [pipelines-skill-map.md](references/pipelines-skill-map.md) — mở **một** § theo level (§1–§5).
+
+---
+
 ## Superpowers supplement theo level
 
 Áp dụng **sau khi** đã có `/question-scope Lx`. Tóm tắt: **L3/L4** bật đầy đủ (worktree, TDD, verify…); **L2** tối thiểu (TDD + verify khi đổi behavior); **L1** không. Tắt: `sp:off` / `no-sp`.
@@ -322,6 +354,26 @@ Bảng đầy đủ: [SKILL.md § When this skill applies](./SKILL.md#when-this-
 **Execute:** **B** (mặc định L3, plan trong `docs/work/`) hoặc **A** (subagents — **cần** `docs/plans/…` từ `writing-plans`). Chi tiết rule ID: [superpowers-supplement.md](references/superpowers-supplement.md) · load **`@workflow`** trong chat.
 
 **Agent:** Khi scope **chờ chọn L**, không chạy `brainstorming` / `writing-plans` / `using-git-worktrees` — xem **`superpowers`**.
+
+### Chuỗi skill (L3 — sau khi đã chọn level)
+
+```text
+/orchestra-decision          ← chỉ khi ý tưởng còn mơ hồ (trước hoặc sớm trong define)
+brainstorming                ← spec/design + user approve (L3–L4; L2 thường bỏ)
+architect-plan  |  writing-plans   ← plan: phase file  |  docs/plans/ (lớn / subagents)
+generate-test                ← TC table trong l3-02 (TRƯỚC Code)
+using-git-worktrees          ← branch/worktree (L3 mặc định; bỏ nếu sp:off)
+executing-plans (B)  |  subagent-driven-development (A)
+test-driven-development      ← trong từng task khi đổi behavior
+Verify + Regression          ← verification-before-completion (ghi l3-02; L3 bắt buộc Regression)
+caveman-review               ← review diff nhanh (L2+)
+requesting-code-review       ← L4 supplement: formal pre-merge (trước Ship git; không trùng review từng task path A)
+l3-03-ship / l4-05-ship      ← refine, rollout, rollback
+finishing-a-development-branch  ← merge/PR/keep/discard; verify lại (fresh)
+receiving-code-review           ← sau khi có comment PR (incoming; rule incoming-code-review)
+```
+
+**Plan routing:** ≤12 task + ≤8 file → `architect-plan`; lớn hơn hoặc subagents → `writing-plans`. Chi tiết: [superpowers-supplement.md](references/superpowers-supplement.md).
 
 ---
 
@@ -365,22 +417,27 @@ Template: [templates/phases/](./templates/phases/) · L1 tùy chọn: `docs/answ
 ### L2
 
 1. `/question-scope L2` + mô tả + `@file`.
-2. Agent: Spec (AC; bug → root cause trước).
-3. Patch → chạy test vùng ảnh hưởng → review.
+2. Agent: Spec (AC; bug → root cause trước). Nếu đổi behavior: bảng TC trong `l2-patch` (tùy chọn **`generate-test`**).
+3. Patch → TDD nếu đổi behavior → chạy test vùng ảnh hưởng → review.
 4. Cập nhật `docs/work/…` (patch nhỏ có thể một file rollup).
 
 ### L3
 
 1. `/question-scope L3` + AC mong muốn.
-2. `docs/work/…` + define (plan) → **test cases trước code**.
-3. Code → verify → **regression** → ship (rollout/rollback).
-4. Cập nhật `STATUS.md` mỗi phase.
+2. `docs/work/…` + define (spec/plan; có thể `brainstorming` → `architect-plan`).
+3. `l3-02`: **TC table** (`generate-test`) → **worktree** (`using-git-worktrees`) → code (TDD).
+4. Verify → **regression** → ship (rollout/rollback).
+5. Cập nhật `STATUS.md` mỗi phase.
 
 ### L4
 
 1. `/question-scope L4` — coi bước Idea/Scope đã xong.
-2. Discover → Define → Build (test design trước implement) → Prove → Ship.
-3. `l4-05-ship.md`: Architecture / AI / Delivery khi áp dụng.
+2. **Discover** (`l4-01`): **`analyze-impact`** nếu blast radius chưa rõ → Validate go/no-go.
+3. Define → Build (`l4-03`: **`generate-test`** + TC) → **Prove**: Verify + **Regression** → **`caveman-review`** → **`requesting-code-review`** (supplement mặc định).
+4. Ship (`l4-05`) + `finishing-a-development-branch`.
+5. Architecture / AI / Delivery trong phase L4 khi áp dụng.
+
+**Impact ≠ Regression:** `analyze-impact` = danh sách ảnh hưởng; Regression = chạy test + log (`verification-before-completion`).
 
 ---
 
@@ -416,7 +473,7 @@ Text: mục dưới **Một câu nhớ** + bảng L ở trên. Flowchart + IDE: 
 | **references/CHEATSHEET.md** | Người — one-pager tiếng Anh (trigger, token, level) |
 | **examples/sample-prompts.md** | Người / agent — prompt mẫu (English) |
 | **SKILL.md** | Agent — contract, gates, pipeline (core) |
-| **references/** | Agent — gray-zone, playbooks, supplement, Kiro, testing ([index](references/README.md)) |
+| **references/** | Agent — **pipelines-quickref** (mặc định), playbooks, pipelines-skill-map (từng §), supplement ([index](references/README.md)) |
 | **templates/phases/** | Agent copy khi tạo `docs/work/…` ([STRUCTURE.md](../STRUCTURE.md)) |
 
 **Canonical:** Nếu README và SKILL.md lệch nhau, ưu tiên **SKILL.md** và **references/** (tiếng Anh).

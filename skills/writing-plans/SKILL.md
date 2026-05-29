@@ -1,63 +1,110 @@
 ---
 name: writing-plans
-description: Use when you have a spec or requirements for a multi-step task, before touching code
+description: Zero-context implementation plans in docs/plans/ for large handoff or subagents (A). Prefer architect-plan for bounded L3 in docs/work phase files (B default).
 ---
 
 # Writing Plans
 
+## When to use (and when to stop)
+
+**STOP — do not run this skill** when **all** apply:
+
+- **question-scope** L3 **bounded** (single module/feature, AC in phase file).
+- **≤12** implementation tasks and **≤8** primary files to touch.
+- Plan can live in `docs/work/YYYY-MM-DD-<slug>/l3-01-define.md` (or L4 define phase summary only).
+
+→ Use **`architect-plan`** on the phase file + **`executing-plans`** (**B**). Do not create `docs/plans/…`.
+
+**Use this skill** when **any** apply:
+
+- User wants **subagent-driven-development** (**A**) — plan file under `docs/plans/` is **required**.
+- Large handoff (zero context): many tasks/files, separate session or engineer.
+- Multiple subsystems → separate `docs/plans/…` per subsystem (link from `STATUS.md`).
+- User explicitly requests `docs/plans/YYYY-MM-DD-<feature>.md`.
+- **L4 dual plan:** detail file while phase file keeps summary (see below).
+
+Routing: **`question-scope`** → `references/superpowers-supplement.md` § Plan path decision.
+
+## Prerequisites
+
+- **Approved spec** — AC in phase file and/or `docs/specs/…` after **`brainstorming`** when supplement applies. Do not plan from a blank requirement.
+- If spec is missing, **STOP** — complete Spec/`brainstorming` first or ask the user (max 2 blocker questions).
+
+## Without question-scope
+
+- Save to `docs/plans/YYYY-MM-DD-<feature>.md` unless `AGENTS.md` defines another path.
+- If the repo uses `docs/work/…` for all work, link the plan from `STATUS.md` when that folder exists.
+
+## `sp:off`
+
+- Use this skill only when pre-flight / user still needs `docs/plans/…` or subagents.
+- Otherwise **`architect-plan`** in `docs/work/…` + **`executing-plans`** — no mandatory worktree.
+
+## L4 dual plan
+
+1. **`l4-02-define.md`:** Goal, architecture summary, task IDs (T-n), dependencies, migration/rollback bullets, **links** to plan file(s).
+2. **`docs/plans/YYYY-MM-DD-<feature>.md`:** This skill — full steps, code, commands.
+3. Header **Spec** and **Work phase** must point to the phase file; phase file links back to this plan.
+4. For API or cross-service changes, note **`analyze-impact`** results in the plan **Architecture** section (bounded).
+
 ## Overview
 
-Write comprehensive implementation plans assuming the engineer has zero context for our codebase and questionable taste. Document everything they need to know: which files to touch for each task, code, testing, docs they might need to check, how to test it. Give them the whole plan as bite-sized tasks. DRY. YAGNI. TDD. Frequent commits.
-
-Assume they are a skilled developer, but know almost nothing about our toolset or problem domain. Assume they don't know good test design very well.
+Write comprehensive implementation plans assuming the engineer has **zero context**. Per task: files, code, tests, verify commands. Bite-sized steps. DRY. YAGNI. TDD in steps when behavior changes.
 
 **Announce at start:** "I'm using the writing-plans skill to create the implementation plan."
 
-**Context:** If working in an isolated worktree, it should have been created via **`using-git-worktrees`** at execution time (see [CONVENTIONS.md](../CONVENTIONS.md)).
+**Context (execution):** Before the first implementation task, run **`using-git-worktrees`** when **question-scope L3–L4** supplement is on (default). **Skip** when **`sp:off`**, **L2**, or the user declined — execute in the current checkout; verify branch + baseline. ([CONVENTIONS.md](../CONVENTIONS.md))
 
-**Save plans to:** `docs/plans/YYYY-MM-DD-<feature-name>.md`
-- (User preferences for plan location override this default)
+**Save plans to:** `docs/plans/YYYY-MM-DD-<feature-name>.md` (user/repo overrides allowed).
 
-**With question-scope L3 (default):** Bounded features often use **`architect-plan`** in `docs/work/YYYY-MM-DD-<slug>/l3-01-define.md` and **`executing-plans`** (inline checkpoints **B**) — **do not** create a separate `docs/plans/…` file unless the supplement table or user asks for a large handoff or subagents (**A**). See **`question-scope`** → `references/superpowers-supplement.md` § Plan path decision.
+## Repo conventions (match the target repo)
+
+- **Test runner:** Repo command (`npm test`, `pytest`, `dotnet test`, `go test ./...`, …) — not a default stack.
+- **Commit messages:** Team style (`AGENTS.md`, `commit-message`, `caveman-commit`, …).
+- **Paths / layout:** Match existing module boundaries.
+
+## Commits in plans
+
+- **Agent must not run `git commit`** unless the user explicitly asked for commits in this session.
+- In plan steps, prefer: **"Ready to commit"** with suggested message and paths — or a commit step labeled **(human)**.
+- If the user/repo policy allows agent commits, use explicit **Step: Commit** with full command.
 
 ## Scope Check
 
-If the spec covers multiple independent subsystems, it should have been broken into sub-project specs during brainstorming. If it wasn't, suggest breaking this into separate plans — one per subsystem. Each plan should produce working, testable software on its own.
+If the spec covers multiple independent subsystems, break into separate plans — one per subsystem. Each plan should produce working, testable software on its own. Link all plans from `STATUS.md`.
+
+## Optional plan review (large plans)
+
+Before execute handoff, for **>8** tasks or L4 detail plans, you may dispatch a reviewer using **`prompts/plan-document-reviewer-prompt.md`** (subagent: verify completeness vs spec, no placeholders). Fix blocking issues before **NEXT: `executing-plans`** or **A**.
 
 ## File Structure
 
-Before defining tasks, map out which files will be created or modified and what each one is responsible for. This is where decomposition decisions get locked in.
-
-- Design units with clear boundaries and well-defined interfaces. Each file should have one clear responsibility.
-- You reason best about code you can hold in context at once, and your edits are more reliable when files are focused. Prefer smaller, focused files over large ones that do too much.
-- Files that change together should live together. Split by responsibility, not by technical layer.
-- In existing codebases, follow established patterns. If the codebase uses large files, don't unilaterally restructure - but if a file you're modifying has grown unwieldy, including a split in the plan is reasonable.
-
-This structure informs the task decomposition. Each task should produce self-contained changes that make sense independently.
+Before tasks, map files to create/modify and responsibilities. Lock decomposition here. Follow existing repo patterns; do not unilaterally restructure large files unless the plan includes a justified split.
 
 ## Bite-Sized Task Granularity
 
-**Each step is one action (2-5 minutes):**
-- "Write the failing test" - step
-- "Run it to make sure it fails" - step
-- "Implement the minimal code to make the test pass" - step
-- "Run the tests and make sure they pass" - step
-- "Commit" - step
+**Each step is one action (2–5 minutes):** failing test → run fail → implement → run pass → verify/commit-ready.
 
 ## Plan Document Header
+
+**Full example (header + one task):** [examples/plan-header-snippet.md](examples/plan-header-snippet.md).
 
 **Every plan MUST start with this header:**
 
 ```markdown
 # [Feature Name] Implementation Plan
 
-> **For agentic workers:** **REQUIRES (pick one):** `subagent-driven-development` (recommended) or `executing-plans` — implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
+> **For agentic workers:** **REQUIRES (pick one):** `executing-plans` (**default** under question-scope L3–L4) **or** `subagent-driven-development` (subagents per task). Checkbox (`- [ ]`) steps.
 
-**Goal:** [One sentence describing what this builds]
+**Goal:** [One sentence]
 
-**Architecture:** [2-3 sentences about approach]
+**Spec:** [path: docs/work/…/l3-01-define.md § Spec, or docs/specs/…-design.md]
 
-**Tech Stack:** [Key technologies/libraries]
+**Work phase:** [path: docs/work/…/STATUS.md and define phase file — omit if no work folder]
+
+**Architecture:** [2–3 sentences]
+
+**Tech stack:** [Key technologies]
 
 ---
 ```
@@ -67,90 +114,60 @@ This structure informs the task decomposition. Each task should produce self-con
 ````markdown
 ### Task N: [Component Name]
 
+**Traces:** [S1 / A2 / TC-03 — spec or test id]
+
 **Files:**
 - Create: `exact/path/to/file.py`
 - Modify: `exact/path/to/existing.py:123-145`
 - Test: `tests/exact/path/to/test.py`
 
 - [ ] **Step 1: Write the failing test**
-
-```python
-def test_specific_behavior():
-    result = function(input)
-    assert result == expected
-```
-
-- [ ] **Step 2: Run test to verify it fails**
-
-Run: `pytest tests/path/test.py::test_name -v`
-Expected: FAIL with "function not defined"
-
-- [ ] **Step 3: Write minimal implementation**
-
-```python
-def function(input):
-    return expected
-```
-
-- [ ] **Step 4: Run test to verify it passes**
-
-Run: `pytest tests/path/test.py::test_name -v`
-Expected: PASS
-
-- [ ] **Step 5: Commit**
+…
+- [ ] **Step 5: Ready to commit (human)** or **Commit** if user allows agent commits
 
 ```bash
-git add tests/path/test.py src/path/file.py
-git commit -m "feat: add specific feature"
+git add <paths>
+# git commit -m "<message>"  # only when user requested agent commits
 ```
 ````
 
 ## No Placeholders
 
-Every step must contain the actual content an engineer needs. These are **plan failures** — never write them:
-- "TBD", "TODO", "implement later", "fill in details"
-- "Add appropriate error handling" / "add validation" / "handle edge cases"
-- "Write tests for the above" (without actual test code)
-- "Similar to Task N" (repeat the code — the engineer may be reading tasks out of order)
-- Steps that describe what to do without showing how (code blocks required for code steps)
-- References to types, functions, or methods not defined in any task
+Plan failures — never write: TBD, vague validation, "similar to Task N", steps without code/commands where required, undefined symbols.
 
 ## Remember
-- Exact file paths always
-- Complete code in every step — if a step changes code, show the code
-- Exact commands with expected output
-- DRY, YAGNI, TDD, frequent commits
+
+- Exact file paths; complete code in code steps; exact test commands and expected output.
+- Link tasks to spec IDs (**Traces:**) and **TC-xx** when question-scope L3+ applies.
+- DRY, YAGNI, TDD in implementation steps — not redundant plan boilerplate.
 
 ## Self-Review
 
-After writing the complete plan, look at the spec with fresh eyes and check the plan against it. This is a checklist you run yourself — not a subagent dispatch.
-
-**1. Spec coverage:** Skim each section/requirement in the spec. Can you point to a task that implements it? List any gaps.
-
-**2. Placeholder scan:** Search your plan for red flags — any of the patterns from the "No Placeholders" section above. Fix them.
-
-**3. Type consistency:** Do the types, method signatures, and property names you used in later tasks match what you defined in earlier tasks? A function called `clearLayers()` in Task 3 but `clearFullLayers()` in Task 7 is a bug.
-
-If you find issues, fix them inline. No need to re-review — just fix and move on. If you find a spec requirement with no task, add the task.
+1. **Spec coverage** — every requirement has a task.
+2. **Placeholder scan** — fix red flags.
+3. **Type consistency** — names match across tasks.
+4. **Right skill** — if ≤12 tasks, ≤8 files, L3 bounded → should be **`architect-plan`** in phase file instead.
+5. **Dual plan** — L4: phase file has summary + links; no duplicate full step lists in both files.
 
 ## Execution Handoff
 
-After saving the plan, offer execution choice:
+After saving the plan, offer execution **unless** the user already chose in the message or header:
 
-**"Plan complete and saved to `docs/plans/<filename>.md`. Two execution options:**
+**1. Inline (default)** — **`executing-plans`** (**B**): checkpoints between tasks.
 
-**1. Subagent-Driven (recommended)** - I dispatch a fresh subagent per task, review between tasks, fast iteration
+**2. Subagent-driven (A)** — **`subagent-driven-development`**: per task + review between tasks.
 
-**2. Inline Execution** - Execute tasks in this session using executing-plans, batch execution with checkpoints
+| Choice | **REQUIRES** |
+| ------ | ------------ |
+| Inline (**default**) | **`executing-plans`** |
+| Subagent-driven | **`subagent-driven-development`** |
 
-**Which approach?"**
+Do not run both on the same plan.
 
-**If Subagent-Driven chosen:**
-- **REQUIRES:** `subagent-driven-development`
-- Fresh subagent per task + two-stage review
+**`docs/plans/` does not imply A:** User may execute this file with **`executing-plans` (B)** unless they chose subagents.
 
-**If Inline Execution chosen:**
-- **REQUIRES:** `executing-plans`
-- Batch execution with checkpoints for review
+**L3 bounded with AC only in `docs/work/…`:** You should not have run this skill — **`architect-plan`** + **`executing-plans`** on the phase file.
 
-**If question-scope L3 bounded and plan already lives in `docs/work/…`:** Skip this skill; use **`architect-plan`** + **`executing-plans`** on the phase file instead.
+**Test gate (L3–L4):** If tasks assume tests that do not exist yet, **NEXT:** **`generate-test`** in build phase before Code, per **`question-scope`** pipeline.
+
+**After Test design:** If **`generate-test`** already added failing tests for a task, **do not** duplicate RED steps — run those tests (RED), then GREEN per **`test-driven-development`**.

@@ -1,6 +1,8 @@
 ---
 name: receiving-code-review
-description: Use when receiving code review feedback, before implementing suggestions, especially if feedback seems unclear or technically questionable - requires technical rigor and verification, not performative agreement or blind implementation
+description: >
+  Incoming PR/review feedback — verify before implementing (rule incoming-code-review).
+  Not a fixed L1–L4 phase; runs after PR open. Opposite of requesting-code-review.
 ---
 
 # Code Review Reception
@@ -10,6 +12,24 @@ description: Use when receiving code review feedback, before implementing sugges
 Code review requires technical evaluation, not emotional performance.
 
 **Core principle:** Verify before implementing. Ask before assuming. Technical correctness over social comfort.
+
+## With question-scope (incoming ≠ outgoing review)
+
+Rule ID: **`incoming-code-review`** (`@workflow`). **Not** a numbered L1–L4 pipeline step — runs when **PR or review comments arrive** (often after **`finishing-a-development-branch`** option 2 Push + PR).
+
+| Direction | Skill |
+| --------- | ----- |
+| **Outgoing** (you request review) | **`requesting-code-review`** — before merge |
+| **Incoming** (others comment on your PR) | **This skill** |
+
+| Related | Notes |
+| ------- | ----- |
+| **`subagent-driven-development` (A)** | Per-task spec/code-quality feedback is handled **inside** execute A — **not** a substitute for this skill on human PR threads |
+| **`caveman-review`** | You **write** terse review comments — not receive |
+| After each fix | **`verification-before-completion`** — log test command + output before “fixed” |
+| Phase log | `l3-02` / `l4-04` § **PR feedback / Iterate** — link comment → fix → retest |
+
+**Levels:** Any L2–L4 when a PR exists; common during L3–L4 Ship iteration (worktree kept for PR path).
 
 ## The Response Pattern
 
@@ -203,6 +223,12 @@ You understand 1,2,3,6. Unclear on 4,5.
 ## GitHub Thread Replies
 
 When replying to inline review comments on GitHub, reply in the comment thread (`gh api repos/{owner}/{repo}/pulls/{pr}/comments/{id}/replies`), not as a top-level PR comment.
+
+## After implementing fixes
+
+1. Run tests — **`verification-before-completion`** (fresh evidence per claim).
+2. Push to PR branch; update phase **PR feedback** table if `docs/work/…` is active.
+3. Reply in thread with what changed (technical, no thanks — see Acknowledging Correct Feedback).
 
 ## The Bottom Line
 

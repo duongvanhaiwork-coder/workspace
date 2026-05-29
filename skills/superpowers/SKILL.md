@@ -40,6 +40,31 @@ If the repo agent file says "don't use TDD" and a skill says "always use TDD," f
 
 Run **`skill-check-first`** for this bundle **after** the user has a level (or **`/question-scope Lx`** on the message) — **not** instead of the scope level picker. Invoke `question-scope` when **`/question-scope`** triggers match; do not substitute brainstorming or `writing-plans` for the L1–L4 choice step.
 
+## After level is chosen (question-scope supplement)
+
+Use **`question-scope`** → `references/superpowers-supplement.md` for full table. Quick map:
+
+| Phase / need | Skill (typical) | Skip when |
+| ------------ | --------------- | --------- |
+| Idea vague (before L pick) | `orchestra-decision` | AC already clear |
+| Impact / blast radius (L4 discover; L3 optional) | `analyze-impact` | Not Regression; MCP or search fallback |
+| Spec / design (L3–L4) | `brainstorming` | L2 patch; approved spec exists |
+| Plan bounded | `architect-plan` | — |
+| Plan large / subagents | `writing-plans` | ≤12 tasks in phase file |
+| Test design before Code | `generate-test` | L2 optional TC rows; L3–L4 gate; no behavior change |
+| Isolated branch (before Code) | `using-git-worktrees` | L2; `sp:off`; user declined |
+| Execute inline (B, default L3) | `executing-plans` | phase plan or `docs/plans/` |
+| Execute subagents (A) | `subagent-driven-development` | user chose A; needs `docs/plans/…`; not phase-only |
+| During Code | `test-driven-development` | user/policy opt-out |
+| Verify / Regression / “done” | `verification-before-completion` | L2 Verify only; L3–L4 Verify + Regression; Test RED: log failures, not “all pass” |
+| Review (quick diff) | `caveman-review` | L2+ Review step in phase MD |
+| Review (pre-merge, L4) | `requesting-code-review` | L4 supplement default; L3 if AC asks; not duplicate of subagent A per-task review |
+| Feedback PR (incoming) | `receiving-code-review` | After PR open; rule `incoming-code-review`; verify before implement |
+| Ship (L3–L4) | `finishing-a-development-branch` | After Review + `l3-03`/`l4-05` rollout; user picks merge/PR/keep/discard |
+| Bug | `systematic-debugging` → TDD → verify | not brainstorming |
+
+Do **not** run design/plan/worktree skills while scope **STOP** waits for L1–L4.
+
 ## How to Access Skills (`invoke-skill`)
 
 Load skills by **skill ID** (directory name under `skills/`). Map `invoke-skill` to your platform:

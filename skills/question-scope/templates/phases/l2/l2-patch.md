@@ -37,6 +37,8 @@ Complete **before** deep Spec/Patch. If **any** box is checked → **stop**: do 
 
 ## Test cases (before patch — if behavior changes)
 
+Author with **`generate-test`** or by hand. **During Patch:** **`test-driven-development`** (RED→GREEN) per change. Pure rename/refactor → skip new tests; verify only.
+
 | TC ID | Given | When | Then | Type |
 | ----- | ----- | ---- | ---- | ---- |
 | TC-01 | … | … | … | happy |
@@ -54,6 +56,8 @@ Complete **before** deep Spec/Patch. If **any** box is checked → **stop**: do 
 - Key edits: …
 
 ## Verify
+
+Use **`verification-before-completion`** — scoped tests/smoke for patch + 1-hop (not full monorepo unless AC says so). Log **command + output** before claiming pass or Done.
 
 | Command | Result |
 | ------- | ------ |

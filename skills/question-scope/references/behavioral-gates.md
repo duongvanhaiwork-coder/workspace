@@ -4,7 +4,7 @@
 
 **Behavioral** (multi-turn, LLM): [behavioral-eval-fixtures.json](./behavioral-eval-fixtures.json). **Optional** spot-check — not required for every PR.
 
-**Fixture IDs (full list):** **1, 4, 4b, 6, 6b, 6c, 7, 8, 9, 10, 11, 14, 15, 19, 21, 23**
+**Fixture IDs (full list):** **1, 4, 4b, 6, 6b, 6c, 7, 8, 9, 10, 11, 14, 15, 19, 21, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42**
 
 ## Default gate (enough for most changes)
 
@@ -66,5 +66,26 @@ Steps when editing contract in **AI Core repo**:
 | **19** | Meta VI (no path) | **No** scope pipeline |
 | **21** | Meta beats token | **No** scope despite `/question-scope` in message |
 | **23** | Explicit `qs:meta` | **No** scope; beats `/question-scope Lx` in same message |
+| **24** | L3 bounded plan | **`architect-plan`** in phase file; **no** `docs/plans/` / **`writing-plans`** as primary |
+| **25** | L2 rename only | **No** new failing TDD; **no** `writing-plans` / worktree default |
+| **26** | L3 Test gate | **TC table** / **`generate-test`** before Code; no skip to prod implementation |
+| **27** | Test design RED | **`generate-test`**: failing tests OK; **no** prod code to green in Test phase |
+| **28** | L3 bounded execute | **`executing-plans` (B)** on phase plan; **not** `subagent-driven-development` without `docs/plans/` |
+| **29** | `docs/plans/` + user B | **`executing-plans` (B)** when user chose inline; **no** auto-A because plan file exists |
+| **30** | No claim without verify | **No** “tests pass” / “done” without **fresh** command output |
+| **31** | L3 Test RED + verify log | Test design: **RED expected** — not “all pass”; log evidence in **phase file** |
+| **32** | Ship tests fail | **No** merge/PR while tests failing |
+| **33** | Ship PR keeps worktree | Option 2: **no** `worktree remove` |
+| **34** | Execute done ≠ Ship | **Review** + `l3-03` before **`finishing-a-development-branch`** only |
+| **35** | L4 discover impact | **`analyze-impact`** in discover when radius unclear |
+| **36** | L4 Regression scope | Per **impacted service** — not whole monorepo by default |
+| **37** | Impact search fallback | **search-based** — no **graph-complete** claim |
+| **38** | L4 pre-merge review | **`requesting-code-review`** before Ship merge/PR when supplement on |
+| **39** | Subagent A no duplicate | **Not** `requesting-code-review` every task — bundled reviewers per task |
+| **40** | Critical before merge | **No** merge/PR with unfixed **Critical** review findings |
+| **41** | Incoming PR verify | **No** blind implement — **`receiving-code-review`** / verify before fix |
+| **42** | Incoming PR clarify | **Clarify** unclear items before claiming full review addressed |
 
 Parsing rows **8–11, 14, 15, 19, 21, 23** are covered by `verify-question-scope-triggers.sh` — no manual paste needed for those alone.
+
+**Supplement routing (#24–#42):** optional spot-check when editing execute/verify/ship/review/impact skills or L4 templates.

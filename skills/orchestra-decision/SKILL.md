@@ -17,6 +17,8 @@ If higher-level instructions conflict with this skill, follow higher-level instr
 
 **vs `brainstorming`:** **`orchestra-decision`** picks direction fast (Q1–Q4, 2–5 options, one decision) when the problem is still fuzzy. **`brainstorming`** produces an approved **design spec** section-by-section — use after scope/level is clear or when building a new feature needs full design gate.
 
+**After `question-scope` level is chosen:** **NEXT:** return to the active L pipeline (Spec/Plan) — or **`brainstorming`** when L3–L4 needs an approved design spec. Do **not** use orchestra output as a substitute for spec, plan files, or **`architect-plan`** / **`writing-plans`**.
+
 ## Quick start
 
 When a request arrives, avoid jumping into broad implementation immediately. Run this pipeline first and keep retrieval/clarification loops minimal.

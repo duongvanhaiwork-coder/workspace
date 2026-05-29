@@ -2,6 +2,8 @@
 
 **Canonical steps:** Refine, Document (Architecture / AI / Delivery)
 
+**Order:** Fill delivery/rollout/rollback below → then **`finishing-a-development-branch`** after Prove/Verify green (fresh verify; merge / PR / keep / discard). Record git choice below.
+
 ## Refine (no behavior change)
 
 - …
@@ -98,8 +100,18 @@
 - PR / release: …
 - Runbooks / dashboards: …
 
-## Ship checklist
+## Pre-merge review (L4 supplement)
 
+- [ ] **`caveman-review`** logged in `l4-04-prove.md`
+- [ ] **`requesting-code-review`** done (formal subagent + `prompts/code-reviewer.md`) **or** explicitly waived in `STATUS.md`
+- [ ] Critical / Important findings fixed or accepted with reason
+
+## Ship checklist (`finishing-a-development-branch`)
+
+- [ ] Tests green — evidence in prove/build phase files
+- [ ] Pre-merge review complete (section above) when supplement on
+- [ ] **`finishing-a-development-branch`** — user chose: merge | PR | keep | discard
+- [ ] Worktree / release branch state documented (if used)
 - [ ] Architecture + Delivery sections filled or explicitly N/A
 - [ ] AI section filled or **N/A (no AI in scope)**
 - [ ] `STATUS.md` marked **complete**; all phase files state = done

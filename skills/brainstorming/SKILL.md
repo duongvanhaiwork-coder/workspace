@@ -1,169 +1,191 @@
 ---
 name: brainstorming
-description: "Use before creative work (features, behavior changes). Design + approved spec; then architect-plan (bounded) or writing-plans (large handoff). No code until design approved."
+description: Design + approved spec before Plan/Code (L3–L4 default). Skip for L2 patch, L1 explain, bugs. After approve → architect-plan or writing-plans. No code until approved.
 ---
 
 # Brainstorming Ideas Into Designs
 
-Help turn ideas into fully formed designs and specs through natural collaborative dialogue.
+Turn ideas into **approved** designs and specs through dialogue — then hand off to planning skills. Rule ID: **`design-approval-gate`**.
 
-Start by understanding the current project context, then ask questions one at a time to refine the idea. Once you understand what you're building, present the design and get user approval.
+**Announce when applying:** `Using brainstorming for <topic/slug>.`
+
+## Instruction precedence
+
+1. System/developer constraints  
+2. User request  
+3. **`question-scope`** STOP gates and level (when active)  
+4. This skill  
+
+When **`question-scope`** is waiting for **L1–L4** choice → **do not** run brainstorming (no Spec/Plan/design gate yet).
+
+## When to use
+
+| Situation | Run brainstorming? |
+| --------- | -------------------- |
+| **L3–L4** feature / behavior change (supplement default) | **Yes** — design gate before Plan |
+| User already has **approved** spec/design on disk | **No** — link it; go to **`architect-plan`** / **`writing-plans`** |
+| **`sp:off`** but L3–L4 and AC still fuzzy | **Lightweight OK** — spec in phase file only; skip Visual Companion unless UI |
+| **Standalone** (no `/question-scope`) | **Yes** for new features; save `docs/specs/…` per repo convention |
+
+## When NOT to use (do not invoke this skill)
+
+| Situation | Use instead |
+| --------- | ------------- |
+| **`question-scope`** — Idea → suggest → **STOP** (no level yet) | Wait for L; optional **`orchestra-decision`** if idea is vague |
+| **L1** explain / compare only | Answer in chat |
+| **L2** patch, AC already clear in `l2-patch.md` | Spec bullets in phase file — **no** full brainstorming (supplement skips gate) |
+| **Bug / defect** (L2+) | **`systematic-debugging`** — root cause in Spec/`STATUS.md` before Patch |
+| **Meta / audit** (`qs:meta`, `audit:`) | Normal chat |
+| **`quick:`** | Fast path — no L1–L4 pipeline |
+
+**vs `orchestra-decision`:** Fuzzy problem **before** level pick → **`orchestra-decision`** first (fast direction). **After** L3–L4 is chosen and you need a **full approved spec** → this skill.
 
 <HARD-GATE>
-Do NOT invoke any implementation skill, write any code, scaffold any project, or take any implementation action until you have presented a design and the user has approved it. This applies to EVERY project regardless of perceived simplicity.
+When **this skill is active**, do NOT invoke implementation skills, write production code, or scaffold until design is presented **and** the user approves the written spec.
 </HARD-GATE>
+
+**Scaled design:** Simple work still gets approval — a few sentences in chat + a short spec file is enough. That is not “skip brainstorming”; it is **minimal** brainstorming.
 
 ## Anti-Pattern: "This Is Too Simple To Need A Design"
 
-Every project goes through this process. A todo list, a single-function utility, a config change — all of them. "Simple" projects are where unexamined assumptions cause the most wasted work. The design can be short (a few sentences for truly simple projects), but you MUST present it and get approval.
+Unexamined assumptions waste work even on small changes — **when this skill applies** (see tables above). Present design (brief if needed) and get approval. **L2 patches with clear AC are excluded** — do not force a `docs/specs/…` file for a one-line fix.
+
+## Context (JIT)
+
+- Explore **bounded** context first: relevant module, `README`, rules (**`code-standards`**), linked `@` paths.
+- Under **question-scope**: **impacted module + 1-hop** — do not repo-wide search before scope is understood ([**question-scope**](../question-scope/SKILL.md#progressive-context-jit)).
+- List paths you intend to read before opening many files in one turn.
 
 ## Checklist
 
-You MUST create a task for each of these items and complete them in order:
+Complete **in order** (track with task list if your host supports it):
 
-1. **Explore project context** — check files, docs, recent commits
-2. **Offer visual companion** (if topic will involve visual questions) — this is its own message, not combined with a clarifying question. See the Visual Companion section below.
-3. **Ask clarifying questions** — one at a time, understand purpose/constraints/success criteria
-4. **Propose 2-3 approaches** — with trade-offs and your recommendation
-5. **Present design** — in sections scaled to their complexity, get user approval after each section
-6. **Write design doc** — save to `docs/specs/YYYY-MM-DD-<topic>-design.md` (or link from `docs/work/…` when **question-scope** is active)
-7. **Spec self-review** — quick inline check for placeholders, contradictions, ambiguity, scope (see below)
-8. **User reviews written spec** — ask user to review the spec file before proceeding
-9. **Transition to implementation** — choose plan skill (see **Plan handoff** below)
+1. **Explore project context** — files, docs, recent commits (bounded)
+2. **Offer Visual Companion** — only if UI/layout/mockup questions ahead; **skip** for backend-only/API-only; own message only ([Visual Companion](#visual-companion))
+3. **Clarifying questions** — one at a time; purpose, constraints, success criteria
+4. **Propose 2–3 approaches** — trade-offs + recommendation
+5. **Present design** — sections scaled to complexity; user OK per section (or once for tiny scope)
+6. **Write spec** — `docs/specs/YYYY-MM-DD-<topic>-design.md` ([template](references/spec-template.md)); map into phase file when question-scope (below)
+7. **Spec self-review** — [below](#spec-self-review)
+8. **Optional spec review** — large/L4 specs: dispatch **`prompts/spec-document-reviewer-prompt.md`**; fix blocking issues
+9. **User reviews written spec** — explicit approve in chat
+10. **Plan handoff** — [below](#plan-handoff); update `STATUS.md`
 
 ## Process Flow
 
 ```dot
 digraph brainstorming {
-    "Explore project context" [shape=box];
-    "Visual questions ahead?" [shape=diamond];
-    "Offer Visual Companion\n(own message, no other content)" [shape=box];
-    "Ask clarifying questions" [shape=box];
-    "Propose 2-3 approaches" [shape=box];
-    "Present design sections" [shape=box];
-    "User approves design?" [shape=diamond];
-    "Write design doc" [shape=box];
-    "Spec self-review\n(fix inline)" [shape=box];
-    "User reviews spec?" [shape=diamond];
-    "Plan handoff\n(architect-plan or writing-plans)" [shape=doublecircle];
+    "Explore context" [shape=box];
+    "UI-heavy?" [shape=diamond];
+    "Offer Visual Companion" [shape=box];
+    "Clarify / approaches / design" [shape=box];
+    "Write spec + phase AC" [shape=box];
+    "Self-review (+ optional reviewer)" [shape=box];
+    "User approves spec?" [shape=diamond];
+    "Plan handoff" [shape=doublecircle];
 
-    "Explore project context" -> "Visual questions ahead?";
-    "Visual questions ahead?" -> "Offer Visual Companion\n(own message, no other content)" [label="yes"];
-    "Visual questions ahead?" -> "Ask clarifying questions" [label="no"];
-    "Offer Visual Companion\n(own message, no other content)" -> "Ask clarifying questions";
-    "Ask clarifying questions" -> "Propose 2-3 approaches";
-    "Propose 2-3 approaches" -> "Present design sections";
-    "Present design sections" -> "User approves design?";
-    "User approves design?" -> "Present design sections" [label="no, revise"];
-    "User approves design?" -> "Write design doc" [label="yes"];
-    "Write design doc" -> "Spec self-review\n(fix inline)";
-    "Spec self-review\n(fix inline)" -> "User reviews spec?";
-    "User reviews spec?" -> "Write design doc" [label="changes requested"];
-    "User reviews spec?" -> "Plan handoff\n(architect-plan or writing-plans)" [label="approved"];
+    "Explore context" -> "UI-heavy?";
+    "UI-heavy?" -> "Offer Visual Companion" [label="yes"];
+    "UI-heavy?" -> "Clarify / approaches / design" [label="no"];
+    "Offer Visual Companion" -> "Clarify / approaches / design";
+    "Clarify / approaches / design" -> "Write spec + phase AC";
+    "Write spec + phase AC" -> "Self-review (+ optional reviewer)";
+    "Self-review (+ optional reviewer)" -> "User approves spec?";
+    "User approves spec?" -> "Write spec + phase AC" [label="changes"];
+    "User approves spec?" -> "Plan handoff" [label="yes"];
 }
 ```
 
-**Terminal state: plan handoff only** — invoke **`architect-plan`** or **`writing-plans`** per **Plan handoff** below. Do NOT invoke frontend-design, mcp-builder, or any other implementation skill.
+**Terminal state:** **`architect-plan`** or **`writing-plans`** only — not frontend-design, mcp-builder, or other implementation skills.
+
+## Large scope & L4
+
+If the request spans **multiple independent subsystems** (chat + billing + storage + …):
+
+1. Flag immediately; suggest decomposition or **`/question-scope L4`**.
+2. One spec per sub-project (or one L4 program spec + phased sub-specs).
+3. Brainstorm **first slice** through this checklist; repeat per slice.
+
+## Map into question-scope phase files
+
+Do **not** duplicate full spec prose in the phase file.
+
+| Level | Phase file | What to write |
+| ----- | ---------- | --------------- |
+| **L3** | `docs/work/…/l3-01-define.md` | **§ Spec:** Given/When/Then table (S1…); assumptions; link **`docs/specs/…-design.md`** |
+| **L4** | `l4-02-define.md` | Acceptance table (A1…); link spec; P0 traceability notes |
+
+After user approves spec:
+
+- Set spec **Status: Approved** (in file or chat).
+- Update **`STATUS.md`**: `current_phase`, link to spec, `next_actions` → Plan (`architect-plan` or `writing-plans`).
+
+**L3 Done when (phase template):** every critical `Then` testable; **TC-xx** reserved or linked for later **`generate-test`** / build phase.
 
 ## The Process
 
 **Understanding the idea:**
 
-- Check out the current project state first (files, docs, recent commits)
-- Before asking detailed questions, assess scope: if the request describes multiple independent subsystems (e.g., "build a platform with chat, file storage, billing, and analytics"), flag this immediately. Don't spend questions refining details of a project that needs to be decomposed first.
-- If the project is too large for a single spec, help the user decompose into sub-projects: what are the independent pieces, how do they relate, what order should they be built? Then brainstorm the first sub-project through the normal design flow. Each sub-project gets its own spec → plan → implementation cycle.
-- For appropriately-scoped projects, ask questions one at a time to refine the idea
-- Prefer multiple choice questions when possible, but open-ended is fine too
-- Only one question per message - if a topic needs more exploration, break it into multiple questions
-- Focus on understanding: purpose, constraints, success criteria
+- Assess decomposition before deep questions on an oversized “platform in one spec”.
+- One question per message when exploring; multiple choice when helpful.
+- Cover **security/auth/PII/migration** when in scope (rule **`code-standards`** at implementation).
 
-**Exploring approaches:**
+**Exploring approaches:** 2–3 options, lead with recommendation.
 
-- Propose 2-3 different approaches with trade-offs
-- Present options conversationally with your recommendation and reasoning
-- Lead with your recommended option and explain why
+**Presenting design:** architecture, components, data flow, errors, testing — scale length to risk.
 
-**Presenting the design:**
-
-- Once you believe you understand what you're building, present the design
-- Scale each section to its complexity: a few sentences if straightforward, up to 200-300 words if nuanced
-- Ask after each section whether it looks right so far
-- Cover: architecture, components, data flow, error handling, testing
-- Be ready to go back and clarify if something doesn't make sense
-
-**Design for isolation and clarity:**
-
-- Break the system into smaller units that each have one clear purpose, communicate through well-defined interfaces, and can be understood and tested independently
-- For each unit, you should be able to answer: what does it do, how do you use it, and what does it depend on?
-- Can someone understand what a unit does without reading its internals? Can you change the internals without breaking consumers? If not, the boundaries need work.
-- Smaller, well-bounded units are also easier for you to work with - you reason better about code you can hold in context at once, and your edits are more reliable when files are focused. When a file grows large, that's often a signal that it's doing too much.
-
-**Working in existing codebases:**
-
-- Explore the current structure before proposing changes. Follow existing patterns.
-- Where existing code has problems that affect the work (e.g., a file that's grown too large, unclear boundaries, tangled responsibilities), include targeted improvements as part of the design - the way a good developer improves code they're working in.
-- Don't propose unrelated refactoring. Stay focused on what serves the current goal.
+**Isolation:** clear boundaries and interfaces; follow existing repo patterns; no drive-by refactors.
 
 ## After the Design
 
 **Documentation:**
 
-- Write the validated design (spec) to `docs/specs/YYYY-MM-DD-<topic>-design.md`
-  - (User preferences for spec location override this default)
-  - When **question-scope** L3–L4 is active: link from the phase define file; avoid duplicating full AC in two places (see **`question-scope`** → `references/superpowers-supplement.md`)
-- **Do not** `git commit` the spec unless the user explicitly asks — offer to commit after they approve
+- Canonical detail: `docs/specs/YYYY-MM-DD-<topic>-design.md` ([spec-template.md](references/spec-template.md))
+- Phase file: AC summary + link (question-scope L3–L4)
+- **Do not** `git commit` unless the user explicitly asked
 
-**Spec Self-Review:**
-After writing the spec document, look at it with fresh eyes:
+### Spec self-review
 
-1. **Placeholder scan:** Any "TBD", "TODO", incomplete sections, or vague requirements? Fix them.
-2. **Internal consistency:** Do any sections contradict each other? Does the architecture match the feature descriptions?
-3. **Scope check:** Is this focused enough for a single implementation plan, or does it need decomposition?
-4. **Ambiguity check:** Could any requirement be interpreted two different ways? If so, pick one and make it explicit.
+1. **Placeholder scan** — no TBD/vague requirements  
+2. **Consistency** — architecture matches AC  
+3. **Scope** — one implementable plan unit (or explicit decomposition)  
+4. **Ambiguity** — resolve dual interpretations  
+5. **Testability** — each critical `Then` observable; L3 **TC-xx** plan noted  
 
-Fix any issues inline. No need to re-review — just fix and move on.
+Fix inline; then user review gate:
 
-**User Review Gate:**
-After the spec review loop passes, ask the user to review the written spec before proceeding:
+> "Spec written to `<path>`. Please review and approve before we create the implementation plan."
 
-> "Spec written to `<path>`. Please review it and let me know if you want any changes before we create the implementation plan."
+### Optional spec review
 
-Wait for the user's response. If they request changes, make them and re-run the spec review loop. Only proceed once the user approves.
+For **L4**, multi-subsystem specs, or **> ~300 lines** spec: subagent review via **`prompts/spec-document-reviewer-prompt.md`**. Fix blocking issues before Plan handoff.
 
-**Plan handoff (pick one):**
+## Plan handoff
+
+After spec **approved**:
 
 | Situation | **NEXT** |
 | --------- | -------- |
-| **question-scope** L3 bounded / plan fits one phase file | **`architect-plan`** in `docs/work/…/l3-01-define.md` (or L4 define phase) → default **`executing-plans`** (B) |
-| Many tasks/files, zero-context handoff, or user wants subagents | **`writing-plans`** → `docs/plans/YYYY-MM-DD-<feature>.md` → may use **`subagent-driven-development`** (A) |
-| L4 large scope | Often **both**: **`architect-plan`** framing in phase MD + **`writing-plans`** for task-level execution |
+| L3 bounded — **≤12** slices/tasks, **≤8** primary files (see **`architect-plan`** pre-flight) | **`architect-plan`** in `l3-01-define.md` § Plan → **`executing-plans`** (**B**) |
+| **>12** tasks, **>8** files, zero-context handoff, or subagents (**A**) | **`writing-plans`** → `docs/plans/…` |
+| L4 large | Often **`architect-plan`** frame in phase + **`writing-plans`** detail (linked) |
 
-See **`question-scope`** → `references/superpowers-supplement.md` § Plan path decision. Do not create `docs/plans/…` when **`architect-plan`** in the work folder is enough.
+See **`question-scope`** → `references/superpowers-supplement.md` § Plan path decision.
+
+## `sp:off`
+
+Supplement off does **not** remove the need for clear AC when building features. You may keep spec **only** in the phase file (no `docs/specs/…`) if user prefers — still get **explicit user approve** before Plan/Code.
 
 ## Key Principles
 
-- **One question at a time** - Don't overwhelm with multiple questions
-- **Multiple choice preferred** - Easier to answer than open-ended when possible
-- **YAGNI ruthlessly** - Remove unnecessary features from all designs
-- **Explore alternatives** - Always propose 2-3 approaches before settling
-- **Incremental validation** - Present design, get approval before moving on
-- **Be flexible** - Go back and clarify when something doesn't make sense
+- One question at a time · YAGNI · 2–3 approaches · incremental validation · flexible revision
 
 ## Visual Companion
 
-A browser-based companion for showing mockups, diagrams, and visual options during brainstorming. Available as a tool — not a mode. Accepting the companion means it's available for questions that benefit from visual treatment; it does NOT mean every question goes through the browser.
+Browser mockups/diagrams when **seeing** beats reading. **Skip offer** for non-UI work.
 
-**Offering the companion:** When you anticipate that upcoming questions will involve visual content (mockups, layouts, diagrams), offer it once for consent:
-> "Some of what we're working on might be easier to explain if I can show it to you in a web browser. I can put together mockups, diagrams, comparisons, and other visuals as we go. This feature is still new and can be token-intensive. Want to try it? (Requires opening a local URL)"
+Offer in **one message only** (no combined questions). If declined, text-only.
 
-**This offer MUST be its own message.** Do not combine it with clarifying questions, context summaries, or any other content. The message should contain ONLY the offer above and nothing else. Wait for the user's response before continuing. If they decline, proceed with text-only brainstorming.
+Per question: browser for layout/mockup/diagram; terminal for concepts and tradeoffs.
 
-**Per-question decision:** Even after the user accepts, decide FOR EACH QUESTION whether to use the browser or the terminal. The test: **would the user understand this better by seeing it than reading it?**
-
-- **Use the browser** for content that IS visual — mockups, wireframes, layout comparisons, architecture diagrams, side-by-side visual designs
-- **Use the terminal** for content that is text — requirements questions, conceptual choices, tradeoff lists, A/B/C/D text options, scope decisions
-
-A question about a UI topic is not automatically a visual question. "What does personality mean in this context?" is a conceptual question — use the terminal. "Which wizard layout works better?" is a visual question — use the browser.
-
-If they agree to the companion, read the detailed guide before proceeding:
-[references/visual-companion.md](references/visual-companion.md)
+Details: [references/visual-companion.md](references/visual-companion.md)

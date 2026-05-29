@@ -15,7 +15,7 @@ Load plan, review critically, execute all tasks, report when complete.
 
 **Announce at start:** "I'm using the executing-plans skill to implement this plan."
 
-**Note:** This path works without subagents (inline checkpoints in the current or a resumed session). Under **question-scope L3**, this is the default **execute-inline-checkpoints (B)** path unless the user chose **writing-plans** + subagents (A). If your platform supports **subagent** dispatch and a task-level `docs/plans/…` file exists, **`subagent-driven-development`** is the ALT when the supplement table or user requests it.
+**Note:** Inline checkpoints in the **same or resumed session** (no subagent per task). Under **question-scope L3–L4**, this is the default **execute-inline-checkpoints (B)** unless the user or plan header chose **`subagent-driven-development` (A)**. Having `docs/plans/…` from **`writing-plans`** does **not** auto-select A — **B** may still execute that file. Use **A** only when explicitly chosen and `docs/plans/…` exists.
 
 ## The Process
 
@@ -32,18 +32,35 @@ Load plan, review critically, execute all tasks, report when complete.
 
 ### Step 2: Execute Tasks
 
+### Plan source (B)
+
+| Source | One checkpoint = | Typical L3 path |
+| ------ | ------------------ | --------------- |
+| **`architect-plan`** (phase `### Tasks`) | One checkbox (T-n: files, DoD, **verify:**) + **`test-driven-development`** inside the slice | Bounded L3 default |
+| **`writing-plans`** (`docs/plans/…`) | Follow micro-steps (RED/GREEN, commands) in each ### Task — skip duplicate RED if **`generate-test`** already added tests | Large plan / user chose `docs/plans/` but execute **B** |
+
+Do not invent micro-steps in a phase file to mimic `writing-plans` — checkpoints stay **tasks** for **`architect-plan`**.
+
 For each task:
 1. Mark as in_progress
-2. Follow each step exactly (plan has bite-sized steps)
-3. Run verifications as specified
+2. Follow steps (micro-steps **or** slice DoD + TDD as above)
+3. Run **verify:** from the task line or plan step
 4. Mark as completed
 
-### Step 3: Complete Development
+### Step 3: Execute complete (not Ship yet)
 
-After all tasks complete and verified:
-- Announce: "I'm using the finishing-a-development-branch skill to complete this work."
-- **REQUIRES:** `finishing-a-development-branch`
-- Follow that skill to verify tests, present options, execute choice
+After all plan tasks are complete and each task’s **verify:** passed:
+
+**L3–L4 (question-scope):** do **not** jump straight to Ship. Order:
+
+1. **Verify + Regression** in `l3-02-build-prove.md` / `l4-04-prove.md` — **`verification-before-completion`**
+2. **Review** — `caveman-review` (L4 + supplement: add **`requesting-code-review`** formal pre-merge unless waived)
+3. **Ship phase file** — `l3-03-ship.md` / `l4-05-ship.md` (refine, rollout, rollback, links)
+4. **`finishing-a-development-branch`** — fresh test run + merge / PR / keep / discard
+
+**L2:** scoped Verify in `l2-patch.md`; full Ship ceremony only when escalated to L3 or AC requires it.
+
+When Ship applies, announce: "I'm using the finishing-a-development-branch skill to complete this work."
 
 ## When to Stop and Ask for Help
 
@@ -74,6 +91,8 @@ After all tasks complete and verified:
 ## Integration
 
 **Required workflow skills:**
-- **REQUIRES:** `using-git-worktrees` — isolated workspace (create or verify)
+- **REQUIRES:** `using-git-worktrees` — isolated workspace (create or verify) **unless** **`sp:off`** / user declined worktree / **L2** — then verify branch and baseline in place
 - **REQUIRES (plan):** A written plan with executable tasks — from **`writing-plans`** (`docs/plans/…`) **or** **`architect-plan`** in `docs/work/…` (default L3 **B** path; see **`question-scope`** → `references/superpowers-supplement.md`)
-- **NEXT:** `finishing-a-development-branch` — after all tasks
+- **REQUIRES:** `test-driven-development` — during each task when behavior/contract changes (skip pure rename/config per skill § When NOT)
+- **REQUIRES:** `verification-before-completion` — after each task verification and before “done”
+- **NEXT (L3–L4):** Verify/Regression → Review → phase Ship MD → **`finishing-a-development-branch`**

@@ -11,7 +11,7 @@ description: Use when the user sends /question-scope or /question-scope L1–L4 
 
 Cursor + Kiro share this skill. **User invocation (canonical):** `/question-scope` or `/question-scope L1`…`L4` only — see [README.md](README.md). **Difference:** Cursor may use `AskQuestion` for level pick; Kiro uses a numbered list — wait for `L1`…`L4` or `/question-scope Lx`.
 
-**Deep dives (load when needed):** [references/README.md](references/README.md) — gray-zones, level-picker, playbooks, superpowers-supplement, pressure-scenarios.
+**Deep dives (load when needed):** [references/README.md](references/README.md) — gray-zones, level-picker, playbooks, **pipelines-quickref** (default skill chains), pipelines-skill-map (sections only), superpowers-supplement, pressure-scenarios.
 
 **Rules (IDE — cite rule IDs only):** Always-on **`question-scope`**, **`code-standards`**, stack rules by file type. On demand: **`@workflow`** (Superpowers rule IDs). **This skill:** `question-scope`.
 
@@ -294,6 +294,7 @@ Do **not** duplicate SOLID/architecture here — rule **`code-standards`** and s
 - Input validation, authZ/tenant, no secrets/PII in logs, safe queries/paths
 - Obvious perf issues (N+1, unbounded load)
 - **`code-standards` / stack** rule violations in the diff (one line each if clear)
+- Diff review tone: **`caveman-review`**. L4 formal pre-merge: **`requesting-code-review`** (see supplement)
 
 ## Definition of Done
 
@@ -308,17 +309,55 @@ Do **not** duplicate SOLID/architecture here — rule **`code-standards`** and s
 
 **Summary:** L3–L4 default on; L2 minimal; L1 none. Opt out: `sp:off` / `no-sp`. Full tables, rule IDs, plan choice, prompts: **[references/superpowers-supplement.md](references/superpowers-supplement.md)**.
 
+## Pipeline skills (supplement — after level chosen)
+
+Do **not** run design/plan/worktree while scope **STOP** waits for L1–L4. Detail: [superpowers-supplement.md](references/superpowers-supplement.md) · [README.md](README.md) (VI chain).
+
+**L2 (minimal supplement):**
+
+```text
+Spec (+ TC rows in l2-patch if behavior changes; optional generate-test)
+  → Patch → test-driven-development (if behavior changes)
+  → Verify → verification-before-completion
+  → Review (caveman-review mindset) → MD
+```
+
+**Bug overlay (usually L2):** `systematic-debugging` → `test-driven-development` (repro) → `verification-before-completion`
+
+**L3 (default supplement):**
+
+```text
+brainstorming (spec approve) → architect-plan | writing-plans
+  → generate-test (l3-02 TC table) → using-git-worktrees
+  → executing-plans (B) | subagent-driven-development (A)
+  → test-driven-development (per task)
+  → Verify → verification-before-completion (per task + phase)
+  → Regression → verification-before-completion (L3–L4; broader suite)
+  → Review (caveman-review) → [L4: requesting-code-review if supplement on]
+  → Refine + rollout/rollback in l3-03-ship.md / l4-05-ship.md
+  → finishing-a-development-branch (git: merge | PR | keep | discard; fresh verify)
+```
+
 ## Related skills
 
-| Step          | Skill              |
-| ------------- | ------------------ |
-| Vague problem | orchestra-decision |
-| Plan L3–L4    | architect-plan (default); writing-plans when supplement + large plan |
-| Superpowers meta | superpowers (`skill-check-first`) |
-| Workflow rule IDs | Load **`@workflow`** (on demand) |
-| Tests         | generate-test      |
-| Review tone   | caveman-review     |
-| L4 impact     | analyze-impact     |
+| Phase / need | Skill | Notes |
+| ------------ | ----- | ----- |
+| Vague idea (before or early define) | `orchestra-decision` | Not a substitute for `brainstorming` after L3–L4 chosen |
+| Spec / design (L3–L4) | `brainstorming` | Skip L2 default; skip if spec already approved |
+| Plan | `architect-plan` (bounded) · `writing-plans` (large / A) | See supplement § Plan path decision |
+| Test design | `generate-test` | **L3–L4:** gate before Code (`l3-02` / `l4-03`). **L2:** optional TC rows in `l2-patch` |
+| Isolated branch (L3–L4) | `using-git-worktrees` | Skip L2, `sp:off`, user decline |
+| Execute plan | `executing-plans` (B) · `subagent-driven-development` (A) | **B (default L3):** `architect-plan` phase **or** `docs/plans/`. **A:** user chose A + `docs/plans/…` only — not phase-file-only |
+| Patch / Code | `test-driven-development` | If behavior/contract changes |
+| Verify / Regression / “done” | `verification-before-completion` | **L2:** Verify only (scoped). **L3–L4:** Verify + Regression steps; log in phase MD. Test design RED: log failures, do not claim suite green |
+| Review (diff tone) | `caveman-review` | L2+ playbook Review step |
+| Review (pre-merge, L4) | `requesting-code-review` | **L4 + supplement:** default formal pre-merge (waive explicitly). **L3:** only if AC asks. Not duplicate of subagent A per-task reviewers |
+| Feedback PR (incoming) | `receiving-code-review` | When PR/review comments arrive — rule `incoming-code-review`; verify before implement; log in phase **PR feedback** / Iterate |
+| Ship (L3–L4) | `finishing-a-development-branch` | After Verify/Regression green + Review; fill `l3-03` / `l4-05` (rollout/rollback) then git options + fresh verify |
+| Bug | `systematic-debugging` | Before Patch; see Bug overlay |
+| Impact analysis | `analyze-impact` | **L4:** discover/plan cross-service (bounded). **L3:** optional, one-service. **Not** Regression — feeds Regression scope in phase MD |
+| Meta / skill pick | `superpowers` | `skill-check-first` once per session |
+| Workflow rule IDs | **`@workflow`** | On demand — maps rule ID → skill ID |
 
 ## Token depth
 

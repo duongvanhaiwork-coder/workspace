@@ -11,6 +11,9 @@ CONTRACT_PATHS=(
   skills/question-scope/references/gray-zones.md
   skills/question-scope/references/pressure-scenarios.md
   skills/question-scope/references/behavioral-eval-fixtures.json
+  skills/architect-plan/SKILL.md
+  skills/writing-plans/SKILL.md
+  skills/test-driven-development/SKILL.md
 )
 
 if ! git -C "$ROOT" rev-parse --is-inside-work-tree >/dev/null 2>&1; then
@@ -38,6 +41,6 @@ echo "== question-scope contract changed =="
 printf '%s\n' "$unique" | sed 's/^/  - /'
 echo ""
 echo "Default gate: make verify (already run if you use make verify)."
-echo "Optional: spot-check fixtures #1, #6, #8 or #21 in a NEW chat — see behavioral-gates.md"
+echo "Optional: spot-check fixtures #1, #6, #8/#21, #24–#42 in a NEW chat — see behavioral-gates.md"
 echo "Then: make sync-ide + reload Cursor (sync installs rules/skills only, not scripts)."
 echo ""

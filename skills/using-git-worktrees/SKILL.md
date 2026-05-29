@@ -1,21 +1,65 @@
 ---
 name: using-git-worktrees
-description: Use when starting feature work that needs isolation from current workspace or before executing implementation plans - ensures an isolated workspace exists via native tools or git worktree fallback
+description: Isolated branch/workspace before Code/Patch (L3–L4 default). Skip L2/L1, sp:off, or user declines. Rule isolated-workspace. NEXT executing-plans or subagent-driven-development.
 ---
 
 # Using Git Worktrees
 
-Portable conventions: [../CONVENTIONS.md](../CONVENTIONS.md). Platform tool names: **`superpowers`** → `references/`.
-
-## Overview
-
-Ensure work happens in an **isolated workspace** before implementation (rule **`isolated-workspace`** / supplement on **question-scope** L3–L4).
-
-**Core principle:** Detect existing isolation first → native worktree tools → git worktree fallback. Never fight the harness.
+Portable conventions: [../CONVENTIONS.md](../CONVENTIONS.md). Platform tools: **`superpowers`** → `references/`.
 
 **Announce at start:** "I'm using the using-git-worktrees skill to set up an isolated workspace."
 
-**Worktree root (this repo):** Project-local **`.worktrees/`** (preferred) or **`worktrees/`** at the git repo root. Do not create new worktrees under host paths outside the repo unless the user explicitly requests it.
+Rule ID: **`isolated-workspace`** → this skill.
+
+## Instruction precedence
+
+1. System/developer constraints  
+2. User request (decline worktree = work in place)  
+3. **`question-scope`** level + supplement (`sp:off` skips mandatory worktree)  
+4. This skill  
+
+## When to use
+
+| Situation | Run this skill? |
+| --------- | ---------------- |
+| **L3–L4** before **Code** (or **Patch** on L3 path) | **Yes** (supplement default) — after Plan (+ Test gate when scope requires tests before Code) |
+| **`executing-plans`** or **`subagent-driven-development`** about to start | **Yes** — verify or create isolation first |
+| User already in linked worktree (Step 0) | **Verify only** — skip create |
+| **Standalone** feature (no scope) + multi-step implement | **Yes** — same flow |
+
+**Pipeline position (question-scope L3):**
+
+```text
+… → Spec → Plan → [Scaffold] → Test (cases/TC-xx) → 【 worktree 】 → Code → Verify → …
+```
+
+Not during **`brainstorming`**, **`architect-plan`**, or **`writing-plans`** (design/plan only). Not while scope waits for **L1–L4** pick.
+
+## When NOT to use
+
+| Situation | Action |
+| --------- | ------ |
+| **L1** | No implementation |
+| **L2** (default supplement) | **Skip** — patch in place on named branch or current checkout; optional ask if change is large |
+| **`sp:off` / `no-sp`** | **Skip** unless user asks for worktree |
+| User declined isolated worktree | Work in place → Step 2–3 in current directory |
+| **Meta / `quick:`** | N/A |
+
+**L2 high-risk patch** (shared lib, auth): user may escalate to L3 or explicitly request worktree — then run this skill.
+
+## `sp:off`
+
+Supplement off → **do not** require worktree before Code. **`executing-plans`** may run in current checkout. User can still opt in (Step 0 ask once).
+
+## Overview
+
+Ensure work happens in an **isolated workspace** before implementation.
+
+**Core principle:** Detect existing isolation → native worktree tools → git worktree fallback. Never fight the harness.
+
+**Worktree root:** Project-local **`.worktrees/`** (preferred) or **`worktrees/`** at the **git repo root** you are changing.
+
+**Monorepo / AI Core workspace:** Run git commands in **`<target-repo>`** (the app repo under `projects/…`), not the meta `Workspace/` root unless that is the repo being edited.
 
 ## Step 0: Detect existing isolation
 
@@ -143,18 +187,20 @@ Tests passing (<N> tests, 0 failures)
 Ready to implement <feature-name>
 ```
 
+Update **`STATUS.md`** when question-scope is active: note branch path, baseline command, pass/fail.
+
 ## Integration
 
 | When | Skill / rule |
 | ---- | ------------- |
-| Before **`executing-plans`** or **`subagent-driven-development`** | This skill — create or verify isolation |
-| After **`writing-plans`** | Run this skill before executing the plan |
-| When done | **NEXT:** **`finishing-a-development-branch`** — merge / PR / cleanup (cleans `.worktrees/` / `worktrees/` only) |
-| Question-scope L3–L4 | Rule **`isolated-workspace`** before Patch/Code |
+| **question-scope L3–L4** before Code/Patch | **`isolated-workspace`** → this skill |
+| Before **`executing-plans`** or **`subagent-driven-development`** | Create or verify isolation (unless `sp:off` + user works in place) |
+| After **`writing-plans`** / approved plan | Run before first implementation task |
+| When done (L3–L4) | Verify/Regression → Review → **`l3-03-ship.md`** / **`l4-05-ship.md`** → **`finishing-a-development-branch`** (merge / PR / cleanup) |
 
 **REQUIRES:** none (entry skill for isolated execution).
 
-**NEXT (typical):** **`executing-plans`** or **`subagent-driven-development`** after baseline is green — whichever the supplement table or user chose.
+**NEXT (typical):** **`executing-plans`** (**B**) or **`subagent-driven-development`** (**A**) after baseline is green.
 
 ## Quick reference
 
@@ -167,10 +213,11 @@ Ready to implement <feature-name>
 | `.worktrees/` exists | Use it (verify ignored) |
 | `worktrees/` exists | Use it (verify ignored) |
 | Both exist | Prefer `.worktrees/` |
-| Neither exists | Default `.worktrees/` at repo root |
 | Directory not ignored | Fix `.gitignore` before `worktree add` |
 | Sandbox blocks `worktree add` | Work in place; report |
 | Tests fail at baseline | Report; ask |
+| **L2 / `sp:off`** | Skip unless user opts in |
+| **Wrong git root** | `cd` to `<target-repo>` first |
 
 ## Common mistakes
 
@@ -182,6 +229,8 @@ Ready to implement <feature-name>
 | Wrong directory | Project-local only; team doc → `.worktrees/` |
 | Implement on `main` | Named feature branch + user consent |
 | Skip baseline tests | Step 3 required |
+| Worktree during Plan/Spec only | Wait until before Code |
+| Worktree at Workspace root | Use app repo under `projects/…` |
 
 ## Red flags
 
@@ -191,6 +240,7 @@ Ready to implement <feature-name>
 - Skip 1a when a native worktree tool is available
 - Create project-local worktree without ignore verification
 - Proceed past failing baseline tests without asking
+- Require worktree on L2 default path without user opt-in
 
 **Always:**
 

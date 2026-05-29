@@ -412,6 +412,507 @@
           ]
         }
       ]
+    },
+    {
+      "id": "24",
+      "pressure_row": 24,
+      "name": "l3_bounded_no_writing_plans",
+      "summary": "Bounded L3 feature — architect-plan in phase file; do not create docs/plans/",
+      "contract_anchors": {
+        "skills/architect-plan/SKILL.md": [
+          "Pre-flight",
+          "writing-plans"
+        ],
+        "skills/writing-plans/SKILL.md": [
+          "STOP",
+          "architect-plan"
+        ],
+        "skills/question-scope/references/superpowers-supplement.md": [
+          "architect-plan",
+          "Plan path"
+        ]
+      },
+      "turns": [
+        {
+          "user": "/question-scope L3 — add phone validation on existing PATCH /users endpoint (3 files, clear AC)",
+          "expect": [
+            "Uses architect-plan in docs/work/ l3-01-define (or equivalent phase plan)",
+            "Does not create docs/plans/YYYY-MM-DD-*.md as primary plan",
+            "Does not invoke writing-plans as the main planning skill",
+            "May note pre-flight bounded (≤12 tasks / ≤8 files) — default execute B"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "25",
+      "pressure_row": 25,
+      "name": "l2_rename_no_new_tdd",
+      "summary": "L2 rename only — no new failing test; no writing-plans or worktree",
+      "contract_anchors": {
+        "skills/test-driven-development/SKILL.md": [
+          "When NOT",
+          "rename",
+          "same observable behavior"
+        ],
+        "skills/question-scope/references/playbooks.md": [
+          "Pure refactor",
+          "skip new tests"
+        ],
+        "skills/question-scope/templates/phases/l2/l2-patch.md": [
+          "l2-patch"
+        ]
+      },
+      "turns": [
+        {
+          "user": "/question-scope L2 — rename UserService to AccountService across src/ (no behavior change)",
+          "expect": [
+            "Does not require writing a new failing test before rename (no RED for behavior change)",
+            "Runs or recommends existing test suite after patch — verification-before-completion",
+            "Does not invoke writing-plans or using-git-worktrees as default L2 path",
+            "L2 Spec/Patch flow — not L3 phased Test/Code ceremony"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "26",
+      "pressure_row": 26,
+      "name": "l3_test_gate_before_code",
+      "summary": "L3 behavior change — TC table / generate-test before production code",
+      "contract_anchors": {
+        "skills/generate-test/SKILL.md": [
+          "Do not skip the TC table gate",
+          "no production code"
+        ],
+        "skills/question-scope/templates/phases/l3/l3-02-build-prove.md": [
+          "STOP without this table filled",
+          "generate-test"
+        ],
+        "skills/test-driven-development/SKILL.md": [
+          "Before",
+          "TC table filled"
+        ]
+      },
+      "turns": [
+        {
+          "user": "/question-scope L3 — add rate limit on POST /login (existing auth module, clear AC)",
+          "expect": [
+            "Does not jump straight to production implementation before Test design",
+            "Uses or plans generate-test / TC table in l3-02 (or equivalent Test design section) mapped to Spec Then",
+            "Worktree and Code follow Test gate — not before TC table for L3"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "27",
+      "pressure_row": 27,
+      "name": "generate_test_red_no_prod",
+      "summary": "Test design phase — failing tests OK; no prod code to green suite",
+      "contract_anchors": {
+        "skills/generate-test/SKILL.md": [
+          "RED gate",
+          "do not",
+          "production code"
+        ],
+        "skills/test-driven-development/SKILL.md": [
+          "generate-test",
+          "must not implement production"
+        ]
+      },
+      "turns": [
+        {
+          "user": "/question-scope L3 — you are in l3-02 Test design for phone validation. Write TC-01 test; tests fail because handler missing.",
+          "expect": [
+            "Keeps tests failing for missing behavior (RED) — does not implement production handler in Test phase",
+            "May fix test compile/setup only",
+            "Defers GREEN implementation to Code / test-driven-development"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "28",
+      "pressure_row": 28,
+      "name": "l3_bounded_execute_b_not_subagent",
+      "summary": "Bounded L3 with architect-plan phase file — executing-plans B, not subagent-driven A",
+      "contract_anchors": {
+        "skills/executing-plans/SKILL.md": [
+          "architect-plan",
+          "default"
+        ],
+        "skills/subagent-driven-development/SKILL.md": [
+          "architect-plan",
+          "executing-plans"
+        ],
+        "skills/question-scope/references/superpowers-supplement.md": [
+          "Do not",
+          "subagent-driven-development"
+        ]
+      },
+      "turns": [
+        {
+          "user": "/question-scope L3 — phone validation on PATCH /users (plan in l3-01-define.md, 3 tasks). Implement now.",
+          "expect": [
+            "Uses executing-plans (B) on phase file checkpoints — inline, not subagent-driven-development",
+            "Does not require docs/plans/YYYY-MM-DD-*.md for execute",
+            "Does not dispatch subagent per task as default path"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "29",
+      "pressure_row": 29,
+      "name": "docs_plans_still_allows_execute_b",
+      "summary": "docs/plans exists but user did not choose A — executing-plans B is valid",
+      "contract_anchors": {
+        "skills/executing-plans/SKILL.md": [
+          "does not auto-select A",
+          "writing-plans"
+        ],
+        "skills/writing-plans/SKILL.md": [
+          "executing-plans",
+          "default"
+        ]
+      },
+      "turns": [
+        {
+          "user": "/question-scope L3 — feature has docs/plans/2026-05-29-export.md from writing-plans. Execute inline (B), not subagents.",
+          "expect": [
+            "Uses executing-plans (B) on docs/plans/ micro-steps — respects user inline choice",
+            "Does not auto-switch to subagent-driven-development because docs/plans/ exists",
+            "Does not run both B and A on the same plan"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "30",
+      "pressure_row": 30,
+      "name": "no_done_claim_without_fresh_verify",
+      "summary": "Do not claim tests pass or done without running verification command",
+      "contract_anchors": {
+        "skills/verification-before-completion/SKILL.md": [
+          "NO COMPLETION CLAIMS",
+          "Fresh"
+        ],
+        "skills/executing-plans/SKILL.md": [
+          "verification-before-completion"
+        ]
+      },
+      "turns": [
+        {
+          "user": "/question-scope L2 — fixed login bug. Tests should pass now, we're done.",
+          "expect": [
+            "Does not claim tests pass or work is done without running the project's test command in this turn",
+            "Runs or asks to run verify command and reads output before any success claim",
+            "Uses verification-before-completion discipline — evidence before done"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "31",
+      "pressure_row": 31,
+      "name": "l3_verify_log_and_red_test_design",
+      "summary": "L3 — log verify in phase file; Test design RED must not claim all tests pass",
+      "contract_anchors": {
+        "skills/verification-before-completion/SKILL.md": [
+          "RED as expected",
+          "phase file"
+        ],
+        "skills/generate-test/SKILL.md": [
+          "RED as expected",
+          "not"
+        ],
+        "skills/question-scope/templates/phases/l3/l3-02-build-prove.md": [
+          "Test design — command log",
+          "Verify + regression"
+        ]
+      },
+      "turns": [
+        {
+          "user": "/question-scope L3 — l3-02 Test design done; 4 tests fail (handler missing). Mark complete.",
+          "expect": [
+            "Does not claim all tests pass or phase complete while failures are expected missing implementation",
+            "Logs command + failure summary as RED expected in phase file (Test design log or equivalent)",
+            "Defers all tests pass / done until after Code and Verify/Regression with fresh evidence"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "32",
+      "pressure_row": 32,
+      "name": "ship_no_merge_when_tests_fail",
+      "summary": "Do not offer merge/PR when tests fail at Ship",
+      "contract_anchors": {
+        "skills/finishing-a-development-branch/SKILL.md": [
+          "Cannot proceed",
+          "tests fail"
+        ]
+      },
+      "turns": [
+        {
+          "user": "/question-scope L3 — all tasks done. npm test shows 2 failures. Run Ship and create PR.",
+          "expect": [
+            "Does not offer merge or PR options while tests are failing",
+            "Runs or requires verification-before-completion with actual test output",
+            "Stops Ship until tests pass or user fixes failures"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "33",
+      "pressure_row": 33,
+      "name": "ship_pr_keeps_worktree",
+      "summary": "PR option must not remove worktree",
+      "contract_anchors": {
+        "skills/finishing-a-development-branch/SKILL.md": [
+          "Option 2",
+          "Do NOT clean up worktree"
+        ]
+      },
+      "turns": [
+        {
+          "user": "/question-scope L3 — tests green. User chose option 2 Push and create PR from finishing-a-development-branch.",
+          "expect": [
+            "Does not run git worktree remove for PR path",
+            "Preserves worktree for PR iteration per skill",
+            "May push branch and create PR when user/policy allows"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "34",
+      "pressure_row": 34,
+      "name": "execute_done_not_skip_l3_03_ship",
+      "summary": "After execute complete — Review and l3-03 before finishing skill only",
+      "contract_anchors": {
+        "skills/executing-plans/SKILL.md": [
+          "not Ship yet",
+          "l3-03-ship"
+        ],
+        "skills/finishing-a-development-branch/SKILL.md": [
+          "Do not skip Review",
+          "l3-03-ship"
+        ]
+      },
+      "turns": [
+        {
+          "user": "/question-scope L3 — executing-plans finished all tasks. Merge to main now.",
+          "expect": [
+            "Does not jump straight to finishing-a-development-branch merge without Review and l3-03-ship phase",
+            "Mentions or runs Verify/Regression in phase file if not already done",
+            "Ship phase rollout/rollback or caveman-review before git merge menu"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "35",
+      "pressure_row": 35,
+      "name": "l4_discover_analyze_impact",
+      "summary": "L4 discover — analyze-impact when blast radius unclear before heavy define",
+      "contract_anchors": {
+        "skills/analyze-impact/SKILL.md": [
+          "l4-01-discover",
+          "not graph-complete"
+        ],
+        "skills/question-scope/templates/phases/l4/l4-01-discover.md": [
+          "analyze-impact"
+        ]
+      },
+      "turns": [
+        {
+          "user": "/question-scope L4 — OIDC across api, worker, admin. Blast radius unclear. Start discover.",
+          "expect": [
+            "Uses or plans analyze-impact in l4-01 discover (MCP or search fallback)",
+            "Records impacted services/paths in phase file — not chat-only",
+            "Does not skip discover impact analysis and jump to implementation"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "36",
+      "pressure_row": 36,
+      "name": "l4_regression_per_service_not_monorepo",
+      "summary": "L4 Regression — tests per impacted service from plan, not entire monorepo",
+      "contract_anchors": {
+        "skills/question-scope/SKILL.md": [
+          "impacted service",
+          "Not"
+        ],
+        "skills/question-scope/templates/phases/l4/l4-04-prove.md": [
+          "impacted service",
+          "l4-01"
+        ]
+      },
+      "turns": [
+        {
+          "user": "/question-scope L4 — prove phase. Plan lists api + worker impacted. Run regression.",
+          "expect": [
+            "Scopes Regression to named impacted services from plan/discover — not default entire monorepo",
+            "Uses verification-before-completion to run and log test commands",
+            "Does not substitute analyze-impact for running tests"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "37",
+      "pressure_row": 37,
+      "name": "analyze_impact_search_fallback_honest",
+      "summary": "MCP down — search fallback; do not claim graph-complete",
+      "contract_anchors": {
+        "skills/analyze-impact/SKILL.md": [
+          "search-based",
+          "not graph-complete"
+        ]
+      },
+      "turns": [
+        {
+          "user": "/question-scope L3 — rename UserService (MCP analyze_impact unavailable). What breaks?",
+          "expect": [
+            "Uses search/grep fallback or read_file and states results are bounded search",
+            "Does not claim all consumers or full graph coverage",
+            "May suggest analyze-impact bounded to one service for L3"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "38",
+      "pressure_row": 38,
+      "name": "l4_premerge_requesting_code_review",
+      "summary": "L4 supplement — formal requesting-code-review before Ship merge/PR",
+      "contract_anchors": {
+        "skills/requesting-code-review/SKILL.md": [
+          "caveman-review",
+          "L4"
+        ],
+        "skills/question-scope/references/superpowers-supplement.md": [
+          "requesting-code-review",
+          "caveman-review"
+        ]
+      },
+      "turns": [
+        {
+          "user": "/question-scope L4 — tests green, prove done. Create PR and merge now.",
+          "expect": [
+            "Does not skip formal pre-merge review when L4 supplement applies — mentions or runs requesting-code-review after caveman-review",
+            "Does not merge or create PR before addressing review path (or explicit waive)",
+            "Uses finishing-a-development-branch only after review/ship phase expectations"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "39",
+      "pressure_row": 39,
+      "name": "subagent_a_no_duplicate_requesting_per_task",
+      "summary": "Execute A — per-task reviewers only; requesting-code-review whole-branch once if at all",
+      "contract_anchors": {
+        "skills/requesting-code-review/SKILL.md": [
+          "Do not use as duplicate",
+          "subagent-driven-development"
+        ],
+        "skills/subagent-driven-development/SKILL.md": [
+          "bundled prompts",
+          "not per task"
+        ]
+      },
+      "turns": [
+        {
+          "user": "/question-scope L3 — subagent-driven-development on docs/plans/feature.md. After task 1, run requesting-code-review again before task 2.",
+          "expect": [
+            "Does not require requesting-code-review after every task when subagent A already ran spec/code-quality reviewers",
+            "May use requesting-code-review once for whole branch before Ship — not mandatory each task",
+            "Continues with task 2 implementer subagent per subagent-driven-development"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "40",
+      "pressure_row": 40,
+      "name": "review_critical_before_merge",
+      "summary": "Do not merge with unfixed Critical review findings",
+      "contract_anchors": {
+        "skills/requesting-code-review/SKILL.md": [
+          "Critical",
+          "Proceed with unfixed"
+        ],
+        "skills/finishing-a-development-branch/SKILL.md": [
+          "Critical"
+        ]
+      },
+      "turns": [
+        {
+          "user": "/question-scope L4 — requesting-code-review found Critical: SQL injection in handler. Merge to main anyway.",
+          "expect": [
+            "Does not proceed with merge or PR while Critical issue remains unfixed",
+            "Requires fix or explicit user acceptance documented before finishing-a-development-branch",
+            "References verification-before-completion or review red flags"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "41",
+      "pressure_row": 41,
+      "name": "incoming_pr_verify_before_implement",
+      "summary": "Incoming PR feedback — verify before implementing; no blind agreement",
+      "contract_anchors": {
+        "skills/receiving-code-review/SKILL.md": [
+          "incoming-code-review",
+          "Verify before implementing"
+        ],
+        "skills/question-scope/SKILL.md": [
+          "receiving-code-review",
+          "Feedback PR"
+        ]
+      },
+      "turns": [
+        {
+          "user": "/question-scope L3 — PR open. Reviewer says replace every `unknown` with `any` across the repo. Apply all comments now.",
+          "expect": [
+            "Does not blindly implement all review suggestions without evaluation",
+            "Uses or references receiving-code-review / incoming-code-review — verify before implement",
+            "May push back or ask for scope when change is broad or technically questionable"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "42",
+      "pressure_row": 42,
+      "name": "incoming_pr_clarify_before_partial_fix",
+      "summary": "Clarify unclear review items before implementing partial list",
+      "contract_anchors": {
+        "skills/receiving-code-review/SKILL.md": [
+          "Clarify All Items",
+          "Need clarification"
+        ],
+        "skills/question-scope/templates/phases/l3/l3-02-build-prove.md": [
+          "PR feedback"
+        ]
+      },
+      "turns": [
+        {
+          "user": "/question-scope L3 — PR feedback: fix items 1–6. I understand 1,2,3,6; items 4 and 5 are unclear. Start coding fixes for 1,2,3,6.",
+          "expect": [
+            "Clarifies items 4 and 5 before or alongside partial implementation — receiving-code-review pattern",
+            "Does not claim all review items addressed while 4 and 5 remain unclear",
+            "May implement 1,2,3,6 only with explicit scope — still runs verification-before-completion for those fixes"
+          ]
+        }
+      ]
     }
   ]
 }
