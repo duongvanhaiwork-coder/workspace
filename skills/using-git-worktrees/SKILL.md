@@ -24,7 +24,7 @@ User starts multi-step implementation — run this skill before code; no `/quest
 
 ### With question-scope
 
-**L3–L4** default before Code (after Plan + Test gate when required); skip when **`sp:off`**, L2, or user declines.
+**L3–L4** default before Code (after Plan + Test gate when required); skip when **`sp:off`**, L2, user declines, **`scope:light`**, or assessment-only (**IDE-ALIGNED §3**, **§8**).
 
 ### Combines with (optional)
 

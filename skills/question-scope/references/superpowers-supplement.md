@@ -41,6 +41,8 @@ Map rule IDs from **`@workflow`** (invoke skill ID in the Playbook column):
 
 Run **`superpowers`** (`skill-check-first`) once per session when the supplement applies — **after** level is chosen, not instead of scope options.
 
+**IDE-aligned:** When supplement is on, honor **IDE-ALIGNED** (this reference doc). Child skills cite **IDE-ALIGNED §N** — [CONVENTIONS.md](../../CONVENTIONS.md) § Cross-referencing question-scope.
+
 ## Plan path decision (L3–L4)
 
 Use this table after design approval (`brainstorming` or spec in phase file). **One primary plan location** — link elsewhere; do not duplicate full task lists.

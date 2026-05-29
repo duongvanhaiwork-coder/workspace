@@ -1,6 +1,6 @@
 ---
 name: question-scope
-description: Use when the user sends /question-scope or /question-scope L1–L4 only. Opt-out qs:off, no-scope, quick:, qs:meta, audit:, sp:off, no-sp. level Lx and ?+keyword do not activate.
+description: Use when the user sends /question-scope or /question-scope L1–L4 only. Opt-out qs:off, no-scope, quick:, qs:meta, audit:. Modifiers scope:light (L2 chat rollup), sp:off. Clarifying options IDE-ALIGNED §12 when scope on. Coordinated skills cite IDE-ALIGNED §N per CONVENTIONS. level Lx and ?+keyword do not activate.
 ---
 
 # Question Scope
@@ -13,7 +13,7 @@ description: Use when the user sends /question-scope or /question-scope L1–L4 
 
 Cursor + Kiro share this skill. **User invocation (canonical):** `/question-scope` or `/question-scope L1`…`L4` only — see [README.md](README.md). **Difference:** Cursor may use `AskQuestion` for level pick; Kiro uses a numbered list — wait for `L1`…`L4` or `/question-scope Lx`.
 
-**Deep dives (load when needed):** [references/README.md](references/README.md) — [parsing-tokens](references/parsing-tokens.md), [session-continuity](references/session-continuity.md), [progressive-context-jit](references/progressive-context-jit.md), gray-zones, level-picker, playbooks, pipelines-quickref, pipelines-skill-map, superpowers-supplement, pressure-scenarios, [CONTRACT-SYNC](references/CONTRACT-SYNC.md).
+**Deep dives (load when needed):** [references/README.md](references/README.md) — [parsing-tokens](references/parsing-tokens.md), [session-continuity](references/session-continuity.md), [progressive-context-jit](references/progressive-context-jit.md), **[ide-aligned-practices](references/ide-aligned-practices.md)**, gray-zones, level-picker, playbooks, pipelines-quickref, pipelines-skill-map, superpowers-supplement, pressure-scenarios, [CONTRACT-SYNC](references/CONTRACT-SYNC.md).
 
 **Rules (IDE — cite rule IDs only):** Always-on **`question-scope`**, **`code-standards`**, stack rules by file type. On demand: **`@workflow`** (Superpowers rule IDs). **This skill:** `question-scope`.
 
@@ -27,6 +27,7 @@ Cursor + Kiro share this skill. **User invocation (canonical):** `/question-scop
 - [Scope Level — user chooses](#scope-level--user-chooses-do-not-auto-lock)
 - [Pipelines (UI)](#pipelines-ui)
 - [Progressive context (JIT)](#progressive-context-jit)
+- [IDE-aligned practices](#ide-aligned-practices)
 - [Bug overlay](#bug-overlay-any-level-with-a-defect)
 - [Code policy & review](#code-policy-l2l4)
 - [Definition of Done](#definition-of-done)
@@ -80,10 +81,12 @@ Shared ✅/❌: [invocation-anti-patterns](../references/invocation-anti-pattern
 | Gate | When |
 | ---- | ---- |
 | **STOP after options** | Presented L1–L4 (or gray pair) — no Context/Spec/Patch/Code until user picks (unless `/question-scope Lx` preset) |
-| **STOP before wide context (L2)** | No codebase-wide search / unbounded grep before **Spec** drafted |
-| **STOP before Patch (L2)** | Behavior/contract change without test cases in Spec; **bug** without **root cause** in Spec/`STATUS.md` |
-| **STOP before Code (L3–L4)** | **Test** (L3) or **Test Design** (L4 §8) not done — test cases listed first |
+| **STOP before wide context (L2)** | No codebase-wide search / unbounded grep before **Spec** drafted — **exception:** approved plan attach or ≤3 primary `@` files with AC ([ide-aligned-practices](references/ide-aligned-practices.md)) |
+| **STOP before Patch (L2)** | Behavior/contract change without test cases in Spec (tiered — see IDE-aligned §4); **bug** without **root cause** in Spec/`STATUS.md` |
+| **STOP before Code (L3–L4)** | **Test** (L3) or **Test Design** (L4 §8) not done for **new contract/module** — not for assessment-only or config-only ([ide-aligned-practices](references/ide-aligned-practices.md)) |
+| **Assessment-only** | Gap/review (“cần sửa gì”, “vs plan”) → **no** Patch/Code until user asks to implement |
 | **Gray zone** | Two levels fit → two-option AskQuestion; never auto-pick heavier level — [gray-zones](references/gray-zones.md) |
+| **STOP before Patch/Code (§12)** | Open **how** decision in Spec/Plan → clarifying options (2–4 + **Other — I'll specify**); scope active only — [clarifying-options](references/clarifying-options.md) |
 | **Escalation** | Work exceeds chosen L → stop; re-present adjacent levels; user confirms |
 | **Sticky scope** | Same work item keeps L until done or new `/question-scope` / `/question-scope Ly` — no second four-option picker mid-task — [level-picker-runtime](references/level-picker-runtime.md) |
 
@@ -130,6 +133,8 @@ Same meaning in rule **`@workflow`** when scope is off. Rule **`question-scope`*
 | **`quick:`** | Off — fast path, **no** L1–L4 options, **no** phased `docs/work/` | Off |
 | **`qs:meta`**, **`audit:`** | Off — explicit audit/review (no L1–L4); see **Meta discussion** | Off |
 | `sp:off`, `no-sp` | On **only when scope already active**; does **not** activate scope | Off |
+| **`scope:light`** | On — L2 **chat rollup** instead of required `docs/work/` ([ide-aligned-practices](references/ide-aligned-practices.md)) | Unchanged |
+| **`clarify:off`** | On — **skip** §12 clarifying options ([clarifying-options](references/clarifying-options.md)); level picker unchanged | Unchanged |
 | **`/question-scope`** (no `L1`…`L4` on command) | On → level picker (2 or 4) → STOP | Per level after pick |
 | `/question-scope Lx` | On (skip level picker) | Per [supplement by level](references/superpowers-supplement.md#by-level) |
 
@@ -142,7 +147,7 @@ Same meaning in rule **`@workflow`** when scope is off. Rule **`question-scope`*
 | **`qs:meta`** | Message **starts with** `qs:meta` OR `(^|\s)qs:meta\b` |
 | **`audit:`** | Message **starts with** `audit:` OR `(^|\s)audit:` (colon required) |
 
-**`quick:` is not** “skip design/plan only” while scope runs — use **`sp:off`** for that. **`quick:` is not** “L2 with light `docs/work/` rollup” — use **`/question-scope L2`** + rollup note in the task (see [README.md](README.md) § Preset **Light patch**).
+**`quick:` is not** “skip design/plan only” while scope runs — use **`sp:off`** for that. **`quick:` is not** “L2 with light docs” — use **`/question-scope L2`** + **`scope:light`** or **Rollup MD OK** (see [README.md](README.md) § Presets **Light patch** / **scope:light**).
 
 ## Parsing, meta, and conflicting tokens
 
@@ -201,8 +206,9 @@ List canonical steps 1–15 only for **L4** or when the user asks.
 
 | Step       | Meaning                                        |
 | ---------- | ---------------------------------------------- |
-| Verify     | Smoke / happy path; log commands run           |
-| Regression | **L3 default:** all tests under the touched **module/package** + **1-hop** integration tests that call the changed API or public surface; log commands in phase MD. **L4:** test targets for each **impacted service** per validate/plan (`analyze-impact` bounded); CI slice OK when named in phase MD. **Not** full monorepo/entire suite unless AC or user requires. **L2:** scoped Verify only (no Regression step). Human presets: [README.md § Regression](README.md#regression-l3l4) |
+| **Assessment** | Gap/review vs plan or AC — **no** Patch/Code unless user asks to implement ([ide-aligned-practices](references/ide-aligned-practices.md)) |
+| Verify     | Smoke / happy path; **paste command + exit code in chat** before “done” (`verification-before-completion`) |
+| Regression | **L3 default:** tests under touched **module/package** (infer from diff) + **1-hop** integration; log in **chat** + optional phase MD. **L4:** per impacted service (`analyze-impact` bounded). **L2:** scoped Verify only. Human presets: [README.md § Regression](README.md#regression-l3l4) |
 | Iterate    | Fix failures from Verify / Review / Regression |
 
 **Playbooks (step detail):** [references/playbooks.md](references/playbooks.md)
@@ -210,6 +216,12 @@ List canonical steps 1–15 only for **L4** or when the user asks.
 ## Progressive context (JIT)
 
 [references/progressive-context-jit.md](references/progressive-context-jit.md).
+
+## IDE-aligned practices
+
+Borrow IDE strengths (speed, plan reuse, diff-scoped tests) **without** dropping scope gates. Full rules: [references/ide-aligned-practices.md](references/ide-aligned-practices.md).
+
+**Summary:** (1) Attached approved plan = Spec; skip duplicate `docs/work/` unless archiving. (2) **Assessment-only** sub-pipeline when user asks review/gap, not implement. (3) **`scope:light`** = L2 with chat rollup, scope still on. (4) Test gates **tiered** by change type. (5) **Verify** = command output in chat. (6) L2–L3 review ≈ **≤5** caveman lines unless security-sensitive diff. (7) **§12** — Spec/Plan ambiguity → 2–4 options + **Other**; STOP before Patch/Code ([clarifying-options](references/clarifying-options.md)).
 
 ## Bug overlay (any level with a defect)
 
@@ -227,10 +239,10 @@ Do **not** duplicate SOLID/architecture here — rule **`code-standards`** and s
 
 ## Review checklist (L2+)
 
-- Input validation, authZ/tenant, no secrets/PII in logs, safe queries/paths
-- Obvious perf issues (N+1, unbounded load)
-- **`code-standards` / stack** rule violations in the diff (one line each if clear)
-- Diff review tone: **`caveman-review`**. L4 formal pre-merge: **`requesting-code-review`** (see supplement)
+- **L2–L3 default:** **`caveman-review`**, ~**5** lines max on the diff ([ide-aligned-practices](references/ide-aligned-practices.md))
+- **L2–L3 security depth** when diff touches public routes, webhooks, auth/authZ, PII/secrets: validation, tenant scope, no secrets in logs, safe queries/paths, N+1
+- **`code-standards` / stack** violations (one line each if clear)
+- L4 formal pre-merge: full checklist + **`requesting-code-review`** (see supplement)
 - **Impact analysis** (L4 Discover): **`analyze-impact`** — blast radius / impacted paths; **not** the Regression test step
 - **Incoming PR feedback:** **`receiving-code-review`** (rule **`incoming-code-review`**) after PR open — verify each comment before fix
 
@@ -239,7 +251,7 @@ Do **not** duplicate SOLID/architecture here — rule **`code-standards`** and s
 | Level | DoD                                                  |
 | ----- | ---------------------------------------------------- |
 | L1    | Answer meets outcome; MD if user wants archive       |
-| L2    | AC met; tests pass; Review done; work folder or rollup MD |
+| L2    | AC met; tests pass; Verify evidence in chat; Review done; `docs/work/` **or** chat rollup (`scope:light` / Rollup MD OK) |
 | L3    | Contract + tests; Regression pass; phased L3 + `STATUS.md` |
 | L4    | Full flow + layers; phased L4 + `STATUS.md` complete |
 
@@ -249,7 +261,7 @@ Do **not** duplicate SOLID/architecture here — rule **`code-standards`** and s
 
 ## Pipeline skills
 
-Standalone vs coordinated vs composition: [COMPOSITION.md](../COMPOSITION.md). Per-level chains: [references/superpowers-supplement.md](references/superpowers-supplement.md), [references/pipelines-quickref.md](references/pipelines-quickref.md), [references/pipelines-skill-map.md](references/pipelines-skill-map.md), [SKILLS-REGISTRY.md](../SKILLS-REGISTRY.md).
+Standalone vs coordinated vs composition: [COMPOSITION.md](../COMPOSITION.md) (includes **Task kind** when scope active). Per-level chains: [references/pipelines-quickref.md](references/pipelines-quickref.md) (default during work), [references/pipelines-skill-map.md](references/pipelines-skill-map.md) (detail), [references/superpowers-supplement.md](references/superpowers-supplement.md), [references/ide-aligned-practices.md](references/ide-aligned-practices.md) §11 (child skills), [SKILLS-REGISTRY.md](../SKILLS-REGISTRY.md).
 
 Do **not** run design/plan/worktree while scope **STOP** waits for L1–L4.
 

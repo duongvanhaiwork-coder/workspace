@@ -45,7 +45,11 @@ docs/work/YYYY-MM-DD-<slug>/
 | `qs:meta — …` / `audit: — …` | Review skill/rules — no pipeline |
 | Same message as `/question-scope Lx` | **Opt-out wins** |
 
-`quick:` ≠ L2 with rollup MD → use `/question-scope L2 — … Rollup MD OK.`
+`quick:` ≠ L2 with rollup MD → use `/question-scope L2 scope:light — …` or `Rollup MD OK.`
+
+| `scope:light` | L2 on; chat rollup — no required `docs/work/` |
+| Assessment task | Review/gap only — no Patch until you ask to implement |
+| Plan `@` attached | Spec = plan; skip duplicate `docs/work/` unless archiving |
 
 ## Levels (pick one)
 
@@ -57,6 +61,12 @@ docs/work/YYYY-MM-DD-<slug>/
 | **L4** | Multi-service, large migration | Yes + 15-step flow |
 
 **Gray zone:** agent asks **2 labeled options** only (e.g. L2 vs L3 for export on existing API) — each with a short “what happens” note — you must pick before work starts.
+
+## Clarifying options (scope on — after level picked)
+
+When **how** to build is unclear (API, UX, config), agent offers **2–4** labeled options + **`Other — I'll specify`** → **STOP** before Patch/Code. Not used without `/question-scope`. Detail: [clarifying-options.md](./clarifying-options.md) (**IDE-ALIGNED §12**).
+
+Skip §12 picker (scope still on): `/question-scope L2 clarify:off — …`
 
 ## Superpowers supplement (second layer)
 

@@ -52,3 +52,25 @@ If the same message contains **both** a scope trigger (`/question-scope` or `/qu
 
 **Vague idea (no problem statement):** Run **`orchestra-decision`** first, then return to scope options.
 
+### `scope:light` (L2 doc weight — scope stays on)
+
+| Token | Match | Effect |
+| ----- | ----- | ------ |
+| **`scope:light`** | `(^|\s)scope:light\b` | Scope **on**. L2: use **chat rollup** at end — **do not** require `docs/work/…` unless user also asks for archive. Spec / Patch / Verify gates unchanged. |
+
+**Not** `quick:` — `quick:` still opts scope **out**. Combine: `/question-scope L2 scope:light — …` or `Rollup MD OK` in the task (same as **IDE-ALIGNED §8**).
+
+### `clarify:off` (skip §12 — scope stays on)
+
+| Token | Match | Effect |
+| ----- | ----- | ------ |
+| **`clarify:off`** | `(^|\s)clarify:off\b` | Scope **on**. **Do not** run **IDE-ALIGNED §12** (no AskQuestion clarifying block; no mandatory **Other** option). Agent may still ask **one** plain-language question if truly blocked — do not present a multi-option picker. |
+
+**Not** `quick:` — scope pipelines and gates still apply. Combine: `/question-scope L2 clarify:off — …` when AC is clear or you will decide in chat without a formal option list.
+
+**Conflicts:** `clarify:off` with scope **opt-out** (`quick:`, `qs:off`, …) → scope off; §12 N/A. `clarify:off` does **not** disable level picker on `/question-scope` without `Lx`.
+
+### Assessment-only (task kind — not a token)
+
+No separate token. When the user asks **gap / review / “cần sửa gì” / vs plan** without **implement / fix / patch**, run **Assessment** sub-pipeline (**IDE-ALIGNED §3**) even under `/question-scope L3`. Do **not** jump to Code until they ask to implement.
+

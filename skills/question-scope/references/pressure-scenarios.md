@@ -33,10 +33,12 @@ Reference table for triggers, gates, and gray-zone logic. Contract: [SKILL.md](.
 | 23 | `qs:meta — review question-scope rules` | **No** scope — explicit audit token |
 | 23b | `/question-scope L2 — fix X. qs:meta — audit only` | **No** scope — `qs:meta` beats `/question-scope Lx` |
 | 24 | `audit: đánh giá skills/question-scope` | **No** scope — explicit `audit:` token |
+| 25 | `/question-scope L2 clarify:off — patch handler` | **Yes** L2 — **no** §12 AskQuestion block; may patch when AC clear |
+| 26 | `/question-scope L2 — callback JSON or redirect?` (ambiguous how) | **Yes** L2 — **§12**: 2–4 options + **Other**; **STOP** before Patch |
 
 ## Behavioral (multi-turn)
 
-Fixtures **1, 4, 4b, 6, 6b, 6c, 7, 8, 9, 10, 11, 14, 15, 19, 21, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42** — turns and expectations in [behavioral-eval-fixtures.json](./behavioral-eval-fixtures.json); summary in [behavioral-gates.md](./behavioral-gates.md).
+Fixtures **1, 4, 4b, 6, 6b, 6c, 7, 8, 9, 10, 11, 14, 15, 19, 21, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 49, 49b** — turns and expectations in [behavioral-eval-fixtures.json](./behavioral-eval-fixtures.json); summary in [behavioral-gates.md](./behavioral-gates.md).
 
 ## Contract cross-check
 
@@ -48,7 +50,7 @@ Fixtures **1, 4, 4b, 6, 6b, 6c, 7, 8, 9, 10, 11, 14, 15, 19, 21, 23, 24, 25, 26,
 
 ## Behavioral eval log (manual)
 
-**Default:** repo verification in AI Core ([README.md](../../../README.md)). **Optional** log below — spot-check **#1, #6, #8/#21** in new chats when Parsing/Meta/tokens change; full 16 only for major releases. After IDE sync ([README.md](../../../README.md)), no scripts in IDE — paste from [behavioral-eval-fixtures.json](./behavioral-eval-fixtures.json) if spot-checking.
+**Default:** repo verification in AI Core ([README.md](../../../README.md)). **Optional** log below — spot-check **#1, #6, #8/#21** in new chats when Parsing/Meta/tokens change; **#49, #49b** when §12 / `clarify:off` change; full 16 only for major releases. After IDE sync ([README.md](../../../README.md)), no scripts in IDE — paste from [behavioral-eval-fixtures.json](./behavioral-eval-fixtures.json) if spot-checking.
 
 | Date | Agent / chat | Scenarios | Result | Notes |
 | ---- | ------------ | --------- | ------ | ----- |

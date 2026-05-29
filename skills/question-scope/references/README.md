@@ -8,6 +8,8 @@ Load on demand (not every turn). **Naming:** kebab-case, one topic per file; see
 | [parsing-tokens.md](./parsing-tokens.md) | Parsing table, meta/audit, conflicting tokens, placement |
 | [session-continuity.md](./session-continuity.md) | `docs/work/…`, `STATUS.md`, phase files (L2–L4) |
 | [progressive-context-jit.md](./progressive-context-jit.md) | When to `@` files per level (JIT budgets) |
+| [ide-aligned-practices.md](./ide-aligned-practices.md) | IDE-aligned rules; other skills cite **IDE-ALIGNED §N** (no `../` paths) — [CONVENTIONS.md](../../CONVENTIONS.md) |
+| [clarifying-options.md](./clarifying-options.md) | **§12** — how-to-build forks; 2–4 options + **Other**; scope active only |
 | [level-picker-runtime.md](./level-picker-runtime.md) | STOP, sticky scope, escalation (option copy in [level-picker.md](./level-picker.md)) |
 | [gray-zones.md](./gray-zones.md) | L1/L2, L2/L3, L3/L4; **Quick checklist L2 vs L3**; AskQuestion pairs; L2 work-folder choice |
 | [level-picker.md](./level-picker.md) | Trigger flow (mermaid) + host UI (Cursor vs Kiro) |

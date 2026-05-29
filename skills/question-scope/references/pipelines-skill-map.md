@@ -24,6 +24,9 @@ Keep in sync with [SKILL.md](../SKILL.md) when pipelines change.
 | ----- | ------- | ------------- |
 | **Question-scope** | How much ceremony? (L1–L4), STOP gates, `docs/work/` | `/question-scope`, level pick, `qs:off`, `quick:` |
 | **Superpowers supplement** | How to execute well? (design, plan, TDD, verify, worktree) | Level + `sp:off`; map in [superpowers-supplement.md](./superpowers-supplement.md) |
+| **IDE-aligned** | Plan attach, assessment-only, `scope:light`, tiered tests, verify in chat, **§12 clarifying options** | [ide-aligned-practices.md](./ide-aligned-practices.md) · [clarifying-options.md](./clarifying-options.md) |
+
+**IDE-aligned column (apply to §2–§3 rows):** When [ide-aligned-practices](./ide-aligned-practices.md) applies, adjust the step — do not duplicate full Spec/Plan/Test/Code.
 
 ---
 
@@ -101,13 +104,13 @@ Load each skill’s `SKILL.md` for full rules. **`code-standards`** applies on e
 | Step | Goal | Skill(s) | Skill actions (concrete) | Phase / artifact |
 | ---- | ---- | -------- | ------------------------ | ---------------- |
 | Level check (~30s) | Confirm L2 is enough | `question-scope` | 1. Four checkboxes in [l2-patch](../templates/phases/l2/l2-patch.md). 2. If any checked → AskQuestion L2 vs L3. | `STATUS.md`: `Level check: L2 OK` |
-| Context (initial) | Bounded understanding | — | 1. Symptom + 0–1 `@`. 2. **STOP:** no wide search before Spec. | `STATUS.md` + `l2-patch.md` or [rollup](../templates/phases/rollup/work-item.md) |
+| Context (initial) | Bounded understanding | — | 1. Symptom + 0–1 `@`. 2. **STOP:** no wide search before Spec — **waived** if approved plan attach or ≤3 `@` with AC ([ide-aligned](./ide-aligned-practices.md)). | `STATUS.md` + `l2-patch.md`, [rollup](../templates/phases/rollup/work-item.md), or **chat** (`scope:light`) |
 | Context (expand) | Callers + impacted paths | — | 1. List paths + **1-hop** callers. 2. Open within [JIT](../SKILL.md#progressive-context-jit) budget. | `l2-patch.md` § Context |
-| Spec | AC + test gate | [`systematic-debugging`](#612-systematic-debugging) (bug); [`generate-test`](#67-generate-test) (optional) | 1. AC G/W/T. 2. **Bug:** root cause before Patch ([§5](#5-bug-overlay)). 3. Behavior change → TC rows before Patch. | `l2-patch.md` § Spec |
+| Spec | AC + test gate | [`systematic-debugging`](#612-systematic-debugging) (bug); [`generate-test`](#67-generate-test) (optional) | 1. AC G/W/T — or plan attach = Spec (delta only). 2. **Bug:** root cause ([§5](#5-bug-overlay)). 3. Behavior change → TC rows (**tiered** — skip config-only). | `l2-patch.md` § Spec |
 | Patch | Minimal fix | [`test-driven-development`](#611-test-driven-development); `code-standards` | 1. Incremental edits. 2. TDD: fail → minimal code → refactor. 3. Rename/config only → existing tests after. | Diff + patch notes |
-| Verify | Scoped proof | [`verification-before-completion`](#613-verification-before-completion) | 1. Impacted tests / smoke. 2. Fresh run → log command + output. | `l2-patch.md` § Verify |
-| Review | Diff safety | [`caveman-review`](#615-caveman-review) | 1. [Review checklist](../SKILL.md#review-checklist-l2). 2. `L<n>: problem. fix.` per finding. | `l2-patch.md` § Review |
-| MD | Continuity | — | 1. Update `STATUS.md`. 2. Mark complete. | `docs/work/YYYY-MM-DD-<slug>/` |
+| Verify | Scoped proof | [`verification-before-completion`](#613-verification-before-completion) | 1. Impacted tests / smoke. 2. Fresh run → **paste command + exit code in chat**; optional phase MD. | `l2-patch.md` § Verify |
+| Review | Diff safety | [`caveman-review`](#615-caveman-review) | 1. ~**5** caveman lines L2–L3; security checklist only if public/webhook/auth. 2. `L<n>: problem. fix.` | `l2-patch.md` § Review |
+| MD | Continuity | — | 1. Update `STATUS.md` **or** chat rollup (`scope:light`). 2. Mark complete. | `docs/work/…/` or chat |
 
 **Supplement (minimal, default L2):** TDD + verify only — no `brainstorming`, no mandatory worktree. See [superpowers-supplement.md § By level](./superpowers-supplement.md#by-level).
 
@@ -121,14 +124,14 @@ Load each skill’s `SKILL.md` for full rules. **`code-standards`** applies on e
 
 | Step | Goal | Skill(s) | Skill actions (concrete) | Phase / artifact |
 | ---- | ---- | -------- | ------------------------ | ---------------- |
-| Context | Module boundary | — | 1. Symptom + AC; `@` after define. 2. JIT: module + API + tests + config. | `STATUS.md` |
-| Spec | Approved requirements | [`brainstorming`](#64-brainstorming) (if no spec yet) | 1. AC + out of scope. 2. Bug: root cause ([§5](#5-bug-overlay)). 3. No spec on disk → brainstorm → approve. 4. Spec exists → link, skip brainstorm. | `l3-01` § Spec; `docs/specs/…` |
-| Plan | Implementable slices | [`architect-plan`](#65-architect-plan) or [`writing-plans`](#66-writing-plans) | 1. Default: ≤12 tasks in `l3-01` **### Tasks**. 2. Large/A: `docs/plans/…` + link. 3. **verify:** per task. | `l3-01` § Plan |
+| Context | Module boundary | — | 1. Symptom + AC; `@` after define (or plan attach). 2. JIT: module + API + tests + config. | `STATUS.md` |
+| Spec | Approved requirements | [`brainstorming`](#64-brainstorming) (if no spec yet) | 1. AC + out of scope — **assessment-only:** gap answer, no Spec file for implement. 2. **Plan attach:** Spec = plan + delta; skip brainstorm. 3. Else: brainstorm → approve. | `l3-01` § Spec; `docs/specs/…` |
+| Plan | Implementable slices | [`architect-plan`](#65-architect-plan) or [`writing-plans`](#66-writing-plans) | 1. **Plan attach:** delta tasks only. 2. Default: ≤12 tasks in `l3-01`. 3. Large/A: `docs/plans/…`. **Skip** if assessment-only. | `l3-01` § Plan |
 | Scaffold (if needed) | Skeleton only | — | 1. Dirs/stubs/config after Plan — **no** behavior. | `l3-01` notes |
-| Test | Gate before Code | [`generate-test`](#67-generate-test); [`verification-before-completion`](#613-verification-before-completion) | 1. TC table + tests **RED**. 2. Log expected failures. 3. **STOP** — no prod code. | `l3-02` § Test design |
-| Code | Implement slices | [`using-git-worktrees`](#68-using-git-worktrees); [`executing-plans`](#69-executing-plans) **B** or [`subagent-driven-development`](#610-subagent-driven-development) **A**; [`test-driven-development`](#611-test-driven-development) | 1. Worktree (unless `sp:off`). 2. Execute plan per task. 3. TDD GREEN from RED. | `l3-02` § Implementation |
+| Test | Gate before Code | [`generate-test`](#67-generate-test); [`verification-before-completion`](#613-verification-before-completion) | 1. **Tiered:** new contract → full TC + RED; config-only → skip. 2. **Assessment-only:** skip entire step. 3. Log RED in chat + phase MD. | `l3-02` § Test design |
+| Code | Implement slices | [`using-git-worktrees`](#68-using-git-worktrees); [`executing-plans`](#69-executing-plans) **B** or [`subagent-driven-development`](#610-subagent-driven-development) **A**; [`test-driven-development`](#611-test-driven-development) | 1. Worktree (unless `sp:off`, `scope:light`, assessment). 2. Execute plan (attach = valid plan source). 3. TDD GREEN. **Skip** if assessment-only. | `l3-02` § Implementation |
 | Verify | Per-TC / smoke | [`verification-before-completion`](#613-verification-before-completion) | 1. Run per TC. 2. Fresh log in phase MD. | `l3-02` § Verify |
-| Regression | Module + 1-hop | [`verification-before-completion`](#613-verification-before-completion) | 1. Module/package + 1-hop integration. 2. Not full monorepo unless AC. | `l3-02` § Regression |
+| Regression | Module + 1-hop | [`verification-before-completion`](#613-verification-before-completion) | 1. Infer test paths from **diff** → module/package + 1-hop. 2. Evidence in **chat**. 3. Not full monorepo unless AC. **Skip** if assessment-only. | `l3-02` § Regression |
 | Review | Diff + formal (optional) | [`caveman-review`](#615-caveman-review); [`requesting-code-review`](#616-requesting-code-review) (AC only) | 1. Terse diff review. 2. Formal only if AC asks. | `l3-02` § Review |
 | Iterate | Fix failures | TDD + verify; [`receiving-code-review`](#617-receiving-code-review) (PR) | 1. Fix → re-verify. 2. PR comments: verify each before fix. | `l3-02` Iterate |
 | Refine | No new behavior | — | 1. Lint/format; tests green. | `l3-03-ship.md` |

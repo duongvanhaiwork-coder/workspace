@@ -49,7 +49,13 @@ Before “done”, “fixed”, or “tests pass” in any task — run fresh co
 
 ### With question-scope
 
-Required at L2 Verify, L3–L4 Verify + Regression, Ship, and after bug fixes; log in phase MD when scope active.
+Required at L2 Verify, L3–L4 Verify + Regression, Ship, and after bug fixes.
+
+When scope is active (**IDE-ALIGNED §5**, **§6**):
+
+1. Paste **command + exit code + brief outcome in the chat reply** before “done” / “tests pass”.
+2. Phase MD log is **optional** supplement — not a substitute for chat evidence.
+3. L3 Regression: infer test targets from changed paths (diff) → module tests + 1-hop integration.
 
 ### Combines with (optional)
 

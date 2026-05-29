@@ -37,6 +37,8 @@ Bug, failing test, or unexpected behavior — run this skill immediately; root c
 
 `/question-scope L2+` bug overlay — root cause in Spec or `STATUS.md` **before** Patch; same four-phase process.
 
+**JIT (scope on):** IDE-ALIGNED §2 — stack trace + `@file` first; no repo-wide grep before hypothesis.
+
 ### Combines with (optional)
 
 - `test-driven-development` — when fix changes behavior

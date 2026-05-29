@@ -35,6 +35,10 @@ New feature or design — run this skill; save `docs/specs/…` per repo; no `/q
 
 **L3–L4** design gate before Plan; skip L2 default; **do not** run while scope waits for L1–L4 pick.
 
+**When NOT (scope on):** IDE-ALIGNED §1 (plan/spec on disk), §3 (assessment-only), L2 default.
+
+**Scope on + product fork:** Prefer **IDE-ALIGNED §12** (options + **Other**) once level is set; use this skill for open-ended design before Spec exists.
+
 ### Combines with (optional)
 
 - `architect-plan` or `writing-plans` — after approve

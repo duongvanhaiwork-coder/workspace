@@ -2,6 +2,8 @@
 
 Load when **two levels both fit** and the user has not sent **`/question-scope L1`…`L4`**. Core gates stay in [SKILL.md](../SKILL.md).
 
+**Technical forks** (JSON vs redirect, webhook strictness, …) are **not** gray zones — use **IDE-ALIGNED §12** after level is chosen: [clarifying-options.md](./clarifying-options.md).
+
 ## Rules
 
 - **User picks** (or sends **`/question-scope Lx`** only — `level Lx` does not activate). **Suggest** must name the gray zone and tradeoff in one line.

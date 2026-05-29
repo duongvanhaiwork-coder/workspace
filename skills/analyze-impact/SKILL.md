@@ -22,7 +22,9 @@ User asks what breaks if they change X, or before a refactor — run this skill;
 
 ### With question-scope
 
-**L4** discover when radius unclear; **L3** optional (one service); record in phase MD — feeds Regression scope, does **not** replace running tests.
+**L4** discover when radius unclear; **L3** optional (one service) before wide Patch on public API; record in phase MD — suggest regression test paths from diff — does **not** replace running tests.
+
+**Assessment-only:** IDE-ALIGNED §3 — optional gap analysis; no Patch.
 
 ### Combines with (optional)
 

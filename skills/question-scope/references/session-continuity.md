@@ -21,4 +21,6 @@
 3. **New session:** `@` `STATUS.md` + current phase file — do not re-derive from chat alone.
 4. L1: optional [answer.md](templates/phases/l1/answer.md); phased folder not required.
 5. Tiny L2: single [rollup](templates/phases/rollup/work-item.md) allowed; use phased folder if multi-session.
+6. **`scope:light`** or **Rollup MD OK** in the task: L2 may end with **chat rollup only** — no required `docs/work/` folder ([ide-aligned-practices.md](ide-aligned-practices.md)).
+7. **Attached approved plan** + “follow plan”: do **not** create `docs/work/` unless user wants team archive or multi-session; plan file is Spec source.
 

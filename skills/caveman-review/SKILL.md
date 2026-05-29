@@ -21,6 +21,10 @@ User asks to review a diff/PR — run this skill; no `/question-scope` required.
 
 **L2+** Review step in phase MD; before **`requesting-code-review`** on L4 when supplement applies.
 
+**Scope on:** IDE-ALIGNED §7 — ~**5** one-line findings; security depth only on public routes / webhooks / auth / PII.
+
+**Assessment-only:** IDE-ALIGNED §3 — gap report only; no merge approval unless asked.
+
 ### Combines with (optional)
 
 - `requesting-code-review` — formal pre-merge after quick pass

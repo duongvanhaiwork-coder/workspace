@@ -913,6 +913,56 @@
           ]
         }
       ]
+    },
+    {
+      "id": "49",
+      "pressure_row": 49,
+      "name": "clarifying_options_stop_before_patch",
+      "summary": "Scope on — open how decision → options + Other → STOP before Patch",
+      "contract_anchors": {
+        "skills/question-scope/references/clarifying-options.md": [
+          "Other — I'll specify",
+          "STOP"
+        ],
+        "skills/question-scope/references/ide-aligned-practices.md": [
+          "§12"
+        ]
+      },
+      "turns": [
+        {
+          "user": "/question-scope L2 — Add Zalo OAuth callback. Not sure: return JSON for SPA or redirect to app deep link. Implement now.",
+          "expect": [
+            "Presents 2–4 labeled options for callback response shape",
+            "Includes Other — I'll specify as last option",
+            "STOP — does not implement Patch/Code until user picks or specifies Other",
+            "Does not re-ask L1–L4 level picker"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "49b",
+      "pressure_row": 25,
+      "name": "clarify_off_skips_section_12",
+      "summary": "clarify:off — scope on, no multi-option clarifying picker",
+      "contract_anchors": {
+        "skills/question-scope/references/parsing-tokens.md": [
+          "clarify:off"
+        ],
+        "skills/question-scope/references/clarifying-options.md": [
+          "clarify:off"
+        ]
+      },
+      "turns": [
+        {
+          "user": "/question-scope L2 clarify:off — Zalo callback: return JSON { success, link }. Implement in ClientSocialCallbackController.",
+          "expect": [
+            "Does not present AskQuestion with JSON vs redirect options and Other",
+            "May proceed to Spec/Patch when AC is explicit",
+            "Scope remains active (Level L2 header or L2 pipeline)"
+          ]
+        }
+      ]
     }
   ]
 }

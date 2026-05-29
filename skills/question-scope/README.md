@@ -64,6 +64,8 @@ What to do? → Ask only / no repo edits → /question-scope L1
             → Multi-service / platform → /question-scope L4 — …
             → Unsure of L → /question-scope + description (agent asks 4L or 2L gray zone, STOP)
             → L3/L4 but skip worktree/SP plan → /question-scope L3 — … sp:off
+            → L2, scope on, no docs/work folder → /question-scope L2 scope:light — …
+            → Gap/review only (no implement) → /question-scope L3 — … assessment / cần sửa gì?
             (Do not use level Lx or ?fix — skill does not activate.)
 ```
 
@@ -164,6 +166,11 @@ English presets: [examples/sample-prompts.md § Presets](examples/sample-prompts
 | **Explain** | Ask only, no repo edits | `/question-scope L1 — <question>` |
 | **Patch** | Fix/bug, few files, clear AC | `/question-scope L2 — <description> (@file)` |
 | **Light patch** | L2 with minimal MD (one session, ≤ ~3 files) | `/question-scope L2 — <description>. Rollup MD OK.` |
+| **scope:light** | L2 pipeline, **no** required `docs/work/` — chat rollup at end | `/question-scope L2 scope:light — <description>` |
+| **Assessment** | Review/gap vs plan — no code unless you ask | `/question-scope L3 — <feature>: cần sửa gì so với plan?` (agent: Assessment only) |
+| **Plan attached** | Spec = plan; skip duplicate work folder | `/question-scope L3 — implement attached plan` + `@plan.md` |
+| **Open how decision** | Agent offers 2–4 options + **Other — I'll specify**; STOP before code | `/question-scope L2 — … callback: JSON or redirect?` (see [clarifying-options](references/clarifying-options.md)) |
+| **Skip §12 picker** | Scope on; no multi-option AskQuestion for how | `/question-scope L2 clarify:off — …` (AC must be clear) |
 | **Feature** | Bounded module/API/worker + AC | `/question-scope L3 — <description>` + AC; `docs/work/YYYY-MM-DD-<slug>/` |
 | **Feature (minimal SP)** | L3 but no full worktree/SP plan | `/question-scope L3 — <description>. sp:off` |
 | **System** | Multi-service, large migration | `/question-scope L4 — <description>` |
@@ -192,7 +199,7 @@ After 2–4 lines of problem + outcome, the agent returns to **Suggest** + level
 | `level L2 — …` (no `/question-scope`) | Scope **does not** activate | `/question-scope L2 — …` |
 | Long sentence without `/question-scope` | Scope **does not** activate | `/question-scope` or `/question-scope L2 — …` |
 | `/question-scope L2` + `quick:` same message | Opt-out wins — **no** scope run | One only: `quick:` **or** `/question-scope L2` |
-| `quick:` but want L2 + light rollup MD | Scope **off** — no STATUS/rollup | `/question-scope L2 — <description>. Rollup MD OK.` (**Light patch** preset) |
+| `quick:` but want L2 + light rollup MD | Scope **off** — no STATUS/rollup | `/question-scope L2 scope:light — …` or `Rollup MD OK` (**Light patch** / **scope:light**) |
 | `sp:off` alone without `/question-scope` | Scope **does not** auto-activate | `/question-scope L3 — … sp:off` |
 | `/question-scopeL2` (no space before L) | Not L2 preset — agent asks 4L | `/question-scope L2 — …` |
 | Audit/review skill, path `skills/question-scope` | Scope **does not** activate (meta) | `qs:meta — …` or `audit: — …` (or `qs:off — …`) |

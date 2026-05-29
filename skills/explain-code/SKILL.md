@@ -24,6 +24,8 @@ User asks how code works — run this skill; default path (no scope, no repo edi
 
 **L1** default; optional before Patch on L2+ when context is unclear — does not replace Spec.
 
+**Assessment-only:** IDE-ALIGNED §3. **Plan attach:** IDE-ALIGNED §1 — explain per plan sections.
+
 ### Combines with (optional)
 
 - `refactor-code` or `test-driven-development` — if user moves to change after explain

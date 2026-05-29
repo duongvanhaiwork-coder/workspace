@@ -10,8 +10,8 @@
 
 | Layer | Cases | Parser/sim | Agent contract | Notes |
 | ----- | ----: | ---------- | -------------- | ----- |
-| Parsing (pressure #1–#24) | 24 | 24/24 PASS | 24/24 PASS (simulated) | Gray picker = 2 or 4 per `level-picker-runtime.md` |
-| Behavioral (fixtures #1–#42) | 42 | N/A (multi-turn) | 42/42 PASS (simulated) | Cross-skill gates per `behavioral-gates.md` |
+| Parsing (pressure #1–#26) | 26 | 26/26 PASS (simulated) | 26/26 PASS (simulated) | Gray picker = 2 or 4 per `level-picker-runtime.md`; #25–#26 §12 / `clarify:off` |
+| Behavioral (fixtures #1–#42, #49, #49b) | 44 | N/A (multi-turn) | 44/44 PASS (simulated) | Cross-skill gates per `behavioral-gates.md` |
 
 ---
 
@@ -48,12 +48,14 @@ Legend: **Parser** = `qs_classify` (automated). **Agent sim** = expected behavio
 | 23 | `qs:meta — review…` | `inactive` | No | Audit chat | No scope | **PASS** |
 | 23b | `/question-scope L2… qs:meta…` | `inactive` | No | `qs:meta` beats Lx | No scope | **PASS** |
 | 24 | `audit: đánh giá skills/question-scope` | `inactive` | No | Explicit audit token | No scope | **PASS** |
+| 25 | `/question-scope L2 clarify:off — patch handler` | `preset:L2` | Yes | L2 pipeline; **no** §12 AskQuestion | May Patch when AC clear | **PASS** |
+| 26 | `/question-scope L2 — callback JSON or redirect?` | `preset:L2` | Yes | §12: options + **Other** → STOP | No Patch until pick | **PASS** |
 
 \*Case #14/#22: parser = `needs_pick` (not preset); agent must not treat as L2 until user picks after hint.
 
 ---
 
-## Part 2 — Behavioral fixtures (#1–#42)
+## Part 2 — Behavioral fixtures (#1–#42, #49, #49b)
 
 Simulated against [behavioral-gates.md](./behavioral-gates.md) + [behavioral-eval-fixtures.json](./behavioral-eval-fixtures.json). Parser column N/A (multi-turn or post-pick).
 
@@ -94,10 +96,12 @@ Simulated against [behavioral-gates.md](./behavioral-gates.md) + [behavioral-eva
 | 40 | Critical fixed | No merge open Critical | finishing blocks | Yes |
 | 41 | Incoming PR | receiving-code-review | Verify before implement | Yes |
 | 42 | Clarify items | Clarify all before partial fix | feedback-playbook pattern | Yes |
+| 49 | §12 clarifying options | 2–4 + Other; STOP before Patch | Zalo callback fork | Yes |
+| 49b | clarify:off | No §12 picker; scope on | Explicit JSON AC | Yes |
 
 ---
 
-## Part 3 — Spot-check agent simulation (fixtures #1, #6, #7, #8, #14)
+## Part 3 — Spot-check agent simulation (fixtures #1, #6, #7, #8, #14, #49, #49b)
 
 These blocks are **simulated agent turns** following the question-scope contract (not a live Cursor chat). Use to compare future LLM spot-checks.
 
@@ -225,6 +229,46 @@ STOP — I have **not** started Patch; glued form did not preset L2.
 **Note:** For a vague “fix X”, **four** options are correct per `level-picker-runtime.md` (unclear task). For export-style task after hint, agent would show **L2 vs L3** only.
 
 **Check:** Hint once — **PASS**. Did not emit `Level: L2` before pick — **PASS**.
+
+### §49 — Fixture #49 / pressure #26
+
+**User:** `/question-scope L2 — Add Zalo OAuth callback. JSON for SPA or redirect to app? Implement now.`
+
+**Simulated agent:**
+
+```text
+Level: L2 | Pipeline: Context → Spec → Patch → Verify → Review → MD
+
+Using question-scope — clarifying options (§12).
+
+Open decision: Zalo OAuth callback response shape.
+
+Choose one:
+
+1. **JSON body** — `{ success, link }` for SPA to read after redirect
+2. **HTTP 302 redirect** — deep link `app://…` with token in query
+3. **Other — I'll specify**
+
+STOP — I will not Patch until you pick or describe option 3.
+```
+
+**Check:** 2–4 options + **Other** — **PASS**. No Patch in same turn — **PASS**. No L1–L4 re-pick — **PASS**.
+
+### §49b — Fixture #49b / pressure #25
+
+**User:** `/question-scope L2 clarify:off — Zalo callback returns JSON { success, link }. Implement ClientSocialCallbackController.`
+
+**Simulated agent:**
+
+```text
+Level: L2 | Pipeline: Context → Spec → Patch → Verify → Review → MD
+
+**Spec:** AC — callback returns JSON `{ success, link }` (clarify:off — no §12 picker).
+
+(Context → Patch when ready…)
+```
+
+**Check:** No AskQuestion JSON vs redirect block — **PASS**. `Level: L2` — scope on — **PASS**.
 
 ---
 

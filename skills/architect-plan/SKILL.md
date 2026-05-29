@@ -23,6 +23,12 @@ User wants a bounded plan for a feature — write tasks in chat, `docs/plans/…
 
 L3–L4 Plan phase — checkbox tasks in `l3-01-define.md` (or L4 define); escalate to **`writing-plans`** when pre-flight fails.
 
+**Plan attach (scope on):** IDE-ALIGNED §1 — approved `.plan.md` / Cursor Plan → **Plan exists**; write **delta tasks** only.
+
+**Open TBD in plan (scope on):** IDE-ALIGNED §12 — clarifying options + **Other** before Code.
+
+**Assessment-only:** IDE-ALIGNED §3 — skip Plan until user asks to implement.
+
 ### Combines with (optional)
 
 - `brainstorming` — when spec not approved

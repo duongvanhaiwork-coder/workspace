@@ -18,7 +18,13 @@ User provides or points to a plan (`docs/plans/…`, phase file, or checklist in
 
 ### With question-scope
 
-Default **execute (B)** for L3–L4 when scope active; plan from **`architect-plan`** phase or **`writing-plans`**; honor `docs/work/…` and Verify/Regression gates.
+Default **execute (B)** for L3–L4 when scope active; plan from **`architect-plan`** phase, **`writing-plans`**, or **approved plan attach**; honor `docs/work/…` (unless `scope:light` / plan-only archive) and Verify/Regression gates.
+
+**Plan attach (scope on):** IDE-ALIGNED §1 — approved attach = valid plan source.
+
+**Assessment-only:** IDE-ALIGNED §3 — do not run until user asks to implement.
+
+Per-task **verify:** IDE-ALIGNED §5 — paste evidence in **chat**, not only phase MD.
 
 ### Combines with (optional)
 

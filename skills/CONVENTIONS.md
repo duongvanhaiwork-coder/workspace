@@ -49,6 +49,33 @@ Do **not** embed `rules/…` or `../rules/…` file paths in `SKILL.md`, `refere
 
 Phase → rule ID map: **`question-scope`** → `references/superpowers-supplement.md`.
 
+## Cross-referencing question-scope (IDE-ALIGNED)
+
+Child skills (`skills/<skill-id>/`, **outside** `question-scope/`) **must not** embed `../question-scope/references/…` paths in `SKILL.md`. Use **reference IDs** — same style as rule **`code-standards`**.
+
+| Cite in this skill | Agent loads (when coordinating scope) |
+| ------------------ | ------------------------------------- |
+| **IDE-ALIGNED** | Skill **`question-scope`** → reference **ide-aligned-practices** (full doc) |
+| **IDE-ALIGNED §N** | Same file, section **N** below |
+| **Task kind** | [COMPOSITION.md](./COMPOSITION.md) § Task kind |
+| **pipelines-quickref** | Skill **`question-scope`** → **pipelines-quickref** |
+
+| § | Topic |
+| - | ----- |
+| §1 | Plan attach = Spec |
+| §2 | JIT context |
+| §3 | Assessment-only |
+| §4 | Tiered test gates |
+| §5 | Verify evidence in chat |
+| §6 | Regression from diff |
+| §7 | Short review (L2–L3) |
+| §8 | `scope:light` / Rollup MD OK |
+| §9 | MCP |
+| §11 | Child skill matrix |
+| §12 | Clarifying options (scope active only; **Other** escape hatch) |
+
+Files inside `question-scope/` may link `ide-aligned-practices.md` or `clarifying-options.md` by relative path. Other skills: **IDE-ALIGNED §N** only.
+
 ## Rules vs skills (where content lives)
 
 | Layer | Edit | Holds |

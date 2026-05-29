@@ -28,6 +28,19 @@ Accept: `L2`, `choose L3`, `/question-scope L3`, etc.
 
 **Escalation:** Work exceeds level → stop; re-present options (at least adjacent pair); continue after confirm.
 
+### Task kind (same level, different pipeline)
+
+| User intent | After level is set | Do not run |
+| ----------- | ------------------ | ---------- |
+| **Implement** (fix, add, patch, build) | Full pipeline for L | — |
+| **Assessment** (gap, “need changes?”, review vs plan, compare) | Context → **Assessment** → Answer | Plan/Test/Code/Regression until user asks to implement |
+
+Assessment keeps **sticky L** — do not re-show the four-option picker. See [ide-aligned-practices.md](ide-aligned-practices.md) §3.
+
+### Clarifying options (not level picker)
+
+After the user picks **L1–L4**, ambiguous **how** decisions (API shape, UX, config) use **IDE-ALIGNED §12** — [clarifying-options.md](clarifying-options.md). **2–4** technical options + **`Other — I'll specify`**; **STOP** before Patch/Code. Do **not** mix level pick (L2 vs L3) with §12 in one `AskQuestion` block.
+
 ### Suggest heuristic (not a decision)
 
 | Signal                                   | Suggest |

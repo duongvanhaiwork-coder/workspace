@@ -21,6 +21,14 @@ Complete **before** deep Spec/Patch. If **any** box is checked → **stop**: do 
 
 ## Spec / AC
 
+### Open decisions (IDE-ALIGNED §12)
+
+If **how** to build is ambiguous, agent **STOP**s with 2–4 options + **`Other — I'll specify`** before Patch. Record chosen options here:
+
+| ID | Decision | Chosen |
+| -- | -------- | ------ |
+| D1 | … | … |
+
 ### Checklist (high level)
 
 - [ ] Problem stated

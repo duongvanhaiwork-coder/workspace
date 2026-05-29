@@ -14,7 +14,7 @@ Use [`l2-patch.md`](../templates/phases/l2/l2-patch.md) + `STATUS.md` (or [rollu
 
 - **Context (initial):** **Symptom** + **user-provided paths** (`@` or paths in message). No codebase-wide search before **Spec**.
 - **Context (expand):** After **Spec** — impacted paths + callers **1 hop** ([context budgets](../SKILL.md#progressive-context-jit)); list extra paths in Spec before opening file 3+ in one turn when practical.
-- **Spec:** AC (bullets or Given/When/Then). **Bugs:** root cause before Patch ([Bug overlay](../SKILL.md#bug-overlay-any-level-with-a-defect)).
+- **Spec:** AC (bullets or Given/When/Then). Open **how** decisions → **IDE-ALIGNED §12** ([clarifying-options](./clarifying-options.md)) before Patch. **Bugs:** root cause before Patch ([Bug overlay](../SKILL.md#bug-overlay-any-level-with-a-defect)).
 - **Test gate:** Behavior/contract changes → test cases in Spec **before Patch**. Pure refactor/rename → skip new tests.
 - **Patch:** incremental edits; rule **`code-standards`** / stack rules in touched scope.
 - **Verify:** impacted tests / smoke; not full-system regression.
@@ -27,8 +27,8 @@ Use [`l2-patch.md`](../templates/phases/l2/l2-patch.md) + `STATUS.md` (or [rollu
 Use phased [`l3-*`](../templates/phases/l3/) + `STATUS.md`. **Regression** and **Ship** are required.
 
 - Context: module boundary, API contract, tests dir, related config (usually after **define**).
-- **Spec:** AC; assumptions / out of scope (3 bullets). **Bugs:** root cause in Spec or `STATUS.md` before Code.
-- **Plan:** **`architect-plan`** in `l3-01-define.md` (default).
+- **Spec:** AC; assumptions / out of scope (3 bullets). Unresolved forks → **§12** before Test/Code. **Bugs:** root cause in Spec or `STATUS.md` before Code.
+- **Plan:** **`architect-plan`** in `l3-01-define.md` (default). Plan **TBD** items → **§12** before user confirms / before Code.
 - **Scaffold** (if needed): after Plan, before Test.
 - **Test** before **Code** — gate: test cases listed ([Gates](../SKILL.md#gates-at-a-glance)).
 - **Code:** **`code-standards`** / stack rules.

@@ -44,6 +44,10 @@ Same skill contract ([SKILL.md](../SKILL.md)); host differs for **level pick** a
 
 **Agent:** Do not re-ask level every turn (**sticky scope**) for the same work item. **New unrelated task** → user sends `/question-scope` or `/question-scope Ly` again. On Kiro without `AskQuestion`, never skip the STOP after presenting options.
 
+## Clarifying options (after level pick)
+
+**Level picker** chooses **L1–L4**. **How** to build (API, UX, config) uses **IDE-ALIGNED §12** — [clarifying-options.md](./clarifying-options.md) — not this file.
+
 ## Option copy (required — user must read before pick)
 
 Every level pick (4 options, 2 gray options, or **escalation** re-pick) must show **what that L will do** next to the ID — not ID-only (`L1`, `L2`, …).

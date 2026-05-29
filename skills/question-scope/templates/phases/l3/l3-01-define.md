@@ -28,6 +28,14 @@ If **any** is true → stop; [L3 vs L4 AskQuestion](../../../references/gray-zon
 
 ## Spec / acceptance criteria
 
+### Open decisions (IDE-ALIGNED §12)
+
+Resolve before **Plan** confirm / **Test** / **Code**. Format: [clarifying-options.md](../../../references/clarifying-options.md).
+
+| ID | Decision | Chosen |
+| -- | -------- | ------ |
+| D1 | … | … |
+
 ### Checklist
 
 - [ ] Actors / boundaries clear

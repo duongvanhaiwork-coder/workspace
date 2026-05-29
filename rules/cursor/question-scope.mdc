@@ -47,6 +47,8 @@ No `/question-scope` at **message start or end** (after trim) → **normal chat*
 | `qs:off`, `no-scope`, `quick:` | Off (`quick:` beats `/question-scope Lx` in same message) |
 | `qs:meta`, `audit:` | Off — explicit audit/review (beats `/question-scope` in same message) |
 | `sp:off`, `no-sp` | Supplement off only when scope already active |
+| `scope:light` | On — L2 chat rollup, no required `docs/work/` (skill **ide-aligned-practices**) |
+| `clarify:off` | On — skip §12 clarifying options (skill **clarifying-options**) |
 
 ## No L on `/question-scope`
 
@@ -55,9 +57,11 @@ No `/question-scope` at **message start or end** (after trim) → **normal chat*
 ## After level is chosen
 
 1. Header `Level: Lx | Pipeline: …`
-2. **L2–L4:** `docs/work/YYYY-MM-DD-<slug>/` + `STATUS.md` (skill templates).
+2. **L2–L4:** `docs/work/YYYY-MM-DD-<slug>/` + `STATUS.md` (skill templates) — **unless** `scope:light` / Rollup MD OK (L2 chat only) or approved plan attach (skill **ide-aligned-practices**).
+3. **Assessment** (gap/review, no implement ask): Context → Assessment → Answer — no Patch/Code until user requests.
+4. **Clarifying options (§12):** After level set, open **how** decisions in Spec/Plan → **2–4** options + **`Other — I'll specify`** → **STOP** before Patch/Code — skill `references/clarifying-options.md`.
 
-**Superpowers:** `@workflow` or skill → `references/superpowers-supplement.md`.
+**Superpowers:** `@workflow` or skill → `references/superpowers-supplement.md`. **IDE-aligned:** skill → `references/ide-aligned-practices.md`.
 
 **Human guide (Vietnamese):** skill → `README.md`. **Quickstart:** `rules/QUICKSTART.md`.
 

@@ -9,11 +9,23 @@
 | **Skill chain for your level** | **This file** § chains below |
 | One skill’s full behavior | [pipelines-skill-map.md §6](./pipelines-skill-map.md#6-skill-deep-dive--purpose-when-called-what-it-does) — **one** subsection only |
 | L2 vs L3 gray zone | [gray-zones.md](./gray-zones.md) |
+| How-to-build fork (after L picked) | [clarifying-options.md](./clarifying-options.md) §12 |
 | Supplement / plan A vs B | [superpowers-supplement.md](./superpowers-supplement.md) |
 
 **After level chosen:** emit `Level: Lx | Pipeline: …` → run chain below → invoke each skill’s own `SKILL.md` when that step starts.
 
 **Standalone / composition:** Skills below run without `/question-scope` when their `SKILL.md` matches, and combine per [COMPOSITION.md](../../COMPOSITION.md). Coordinated: [SKILL.md § Pipeline skills](../SKILL.md#pipeline-skills--standalone-coordinated-and-composition).
+
+**IDE-aligned (read once per session):** [ide-aligned-practices.md](./ide-aligned-practices.md) · task-kind table [COMPOSITION.md § Task kind](../../COMPOSITION.md#task-kind-question-scope-active).
+
+| Modifier / task | Effect on chains below |
+| --------------- | ---------------------- |
+| **`scope:light`** / Rollup MD OK | L2: chat rollup — **no** required `docs/work/`; gates unchanged |
+| **Plan attach** (approved `.plan.md`, Cursor Plan) | Spec/Plan satisfied — delta only; skip duplicate `docs/work/` / `docs/plans/` unless archiving |
+| **Assessment-only** (gap, “cần sửa gì”, vs plan — **no** implement ask) | Use **Assessment** chain — **no** `generate-test`, worktree, execute, TDD Code |
+| **Tiered test** | Config/comment → Verify only; new API/module → full Test gate (see `generate-test`) |
+| **Open how decision** | **IDE-ALIGNED §12** — [clarifying-options.md](./clarifying-options.md): 2–4 options + **Other**; **STOP** before Patch/Code |
+| **`clarify:off`** | Skip §12; scope + other gates unchanged |
 
 ---
 
@@ -31,28 +43,39 @@ No supplement. No `docs/work/`.
 
 ```text
 Level check → Context → Spec
-  → [generate-test? for TC rows]
+  → [generate-test? for TC rows — tiered; skip for config-only]
   → Patch (test-driven-development if behavior changes)
-  → verification-before-completion (scoped)
-  → caveman-review → STATUS + l2-patch
+  → verification-before-completion (scoped; evidence in chat)
+  → caveman-review (~5 lines) → [STATUS + l2-patch | chat rollup if scope:light]
 ```
 
 **Bug overlay (before Patch):** `systematic-debugging` → TDD repro → fix → verify.
 
-### L3 (supplement on, path B default)
+**`scope:light`:** end with chat rollup — optional `docs/work/` only if user wants archive.
+
+### L3 — Assessment-only (no implement ask)
 
 ```text
-superpowers (once)
-  → [brainstorming if no approved spec]
-  → architect-plan | writing-plans (if >12 tasks / subagents)
+Context (light) → [explain-code | analyze-impact?]
+  → Answer (gap vs plan / AC) → [optional short MD]
+```
+
+**Do not:** brainstorming (if spec/plan exists), generate-test, worktree, executing-plans, TDD Code, Ship.
+
+### L3 (supplement on, path B default — implement)
+
+```text
+superpowers (once) — honor ide-aligned
+  → [brainstorming if no approved spec/plan attach]
+  → architect-plan | writing-plans (if >12 tasks / subagents; skip if plan attach)
   → [Scaffold?]
   → generate-test (RED — STOP before prod code)
   → using-git-worktrees (skip sp:off)
   → executing-plans OR subagent-driven-development (A + docs/plans/)
       └── test-driven-development per task
-  → verification-before-completion (Verify)
-  → verification-before-completion (Regression: module + 1-hop)
-  → caveman-review → [requesting-code-review only if AC]
+  → verification-before-completion (Verify — chat + optional phase MD)
+  → verification-before-completion (Regression: infer tests from diff, module + 1-hop)
+  → caveman-review (~5; security deep if public/webhook) → [requesting-code-review only if AC]
   → l3-03 rollout/rollback
   → finishing-a-development-branch
 ```
@@ -89,7 +112,10 @@ l4-01: Context + Validate + [analyze-impact]
 | Execute inline | `executing-plans` | All tasks done → then Verify/Regression/Review/Ship |
 | Execute subagents | `subagent-driven-development` | Needs `docs/plans/` + user chose A |
 | Behavior change | `test-driven-development` | RED → GREEN → REFACTOR |
-| Any “passes” / “done” | `verification-before-completion` | Fresh command output in phase MD |
+| Any “passes” / “done” | `verification-before-completion` | Fresh command + exit code in **chat**; optional phase MD |
+| Assessment only | `explain-code`, `analyze-impact?`, `caveman-review` (read-only) | Answer; no Patch until user asks |
+| Plan already attached | — (Spec/Plan done) | `executing-plans` / TDD; skip duplicate plan skills |
+| `scope:light` L2 | Same L2 chain | Chat rollup instead of `docs/work/` |
 | Bug | `systematic-debugging` | Root cause in Spec before patch |
 | Blast radius | `analyze-impact` | Impact list; not test run |
 | Quick review | `caveman-review` | Terse findings on diff |

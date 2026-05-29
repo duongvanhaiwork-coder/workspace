@@ -4,7 +4,7 @@
 
 **Behavioral** (multi-turn, LLM): [behavioral-eval-fixtures.json](./behavioral-eval-fixtures.json). **Optional** spot-check — not required for every PR.
 
-**Fixture IDs (full list):** **1, 4, 4b, 6, 6b, 6c, 7, 8, 9, 10, 11, 14, 15, 19, 21, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42**
+**Fixture IDs (full list):** **1, 4, 4b, 6, 6b, 6c, 7, 8, 9, 10, 11, 14, 15, 19, 21, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 49, 49b**
 
 ## Default gate (enough for most changes)
 
@@ -26,6 +26,7 @@ Run only when a PR touches **Parsing, Meta, Scope Level, tokens**, `rules/cursor
 | 1 | **#1** | Gray zone: exactly **L2 vs L3** + **STOP** (export on existing API) |
 | 2 | **#6** | **Sticky** L2 — turn 2 must not re-ask four levels |
 | 3 | **#8** or **#21** | Opt-out wins (#8) or meta beats token (#21) |
+| 4 | **#49** or **#49b** | §12 STOP + Other (#49); `clarify:off` skips picker (#49b) |
 
 Full 16 scenarios: optional before a **major** contract release; log in [pressure-scenarios.md § Behavioral eval log](./pressure-scenarios.md#behavioral-eval-log-manual) if you run them.
 
@@ -78,6 +79,14 @@ Steps when editing contract in **AI Core repo**:
 | **33** | Ship PR keeps worktree | Option 2: **no** `worktree remove` |
 | **34** | Execute done ≠ Ship | **Review** + `l3-03` before **`finishing-a-development-branch`** only |
 | **35** | L4 discover impact | **`analyze-impact`** in discover when radius unclear |
+| **43** | Assessment-only L3 | Gap/review question → **Assessment** pipeline; **no** Code/Regression until user asks implement |
+| **44** | Plan attach Spec | Approved plan in message → **no** duplicate `docs/work/` unless archive requested |
+| **45** | Verify chat evidence | **No** “done” / “tests pass” without command + exit code in **chat** |
+| **46** | `scope:light` L2 | Scope **on**; **no** mandatory `docs/work/`; rollup in chat OK |
+| **47** | L3 test tier | Config/comment-only → Verify only; **new contract** → Test before Code |
+| **48** | L2–L3 review short | Default **≤5** caveman lines unless security-sensitive diff or `audit:` |
+| **49** | Clarifying options §12 | Open **how** fork in Spec → **2–4** options + **Other — I'll specify**; **STOP** before Patch/Code; scope only |
+| **49b** | `clarify:off` | Scope on; **no** §12 AskQuestion; may implement when AC clear |
 | **36** | L4 Regression scope | Per **impacted service** — not whole monorepo by default |
 | **37** | Impact search fallback | **search-based** — no **graph-complete** claim |
 | **38** | L4 pre-merge review | **`requesting-code-review`** before Ship merge/PR when supplement on |

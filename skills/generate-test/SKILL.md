@@ -21,6 +21,15 @@ User asks for tests, TC table, or coverage — run this skill; output tests + TC
 
 L3–L4 **Test** gate before Code (`l3-02`, `l4-03`); L2 optional TC rows in `l2-patch`.
 
+**Tiered (scope on):** IDE-ALIGNED §4.
+
+| Change | Action |
+| ------ | ------ |
+| Config / comments / typos only | **Skip** this skill — Verify (build/lint) only |
+| Bugfix or behavior change in tested module | Add/update ≥1 test case; RED acceptable |
+| **New** public API / module / contract | Full TC table + RED — **STOP** before prod code |
+| **Assessment-only** task | **Do not run** — no tests until user asks to implement |
+
 ### Combines with (optional)
 
 - `test-driven-development` — implement after RED

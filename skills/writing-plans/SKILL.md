@@ -19,6 +19,10 @@ User wants a detailed `docs/plans/…` or zero-context handoff — run this skil
 
 L3–L4 when plan is too large for **`architect-plan`** in phase file, user chose execute **(A)**, or L4 dual plan.
 
+**Plan attach (scope on):** IDE-ALIGNED §1 — no competing `docs/plans/…` unless handoff **(A)** needs a sliced copy.
+
+**Assessment-only:** IDE-ALIGNED §3 — skip until user asks to implement.
+
 ### Combines with (optional)
 
 - `executing-plans` (B) or `subagent-driven-development` (A) — after plan

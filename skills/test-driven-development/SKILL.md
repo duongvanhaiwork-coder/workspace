@@ -33,6 +33,8 @@ User asks to fix/add behavior, write tests first, or repro a bug — run this sk
 
 `/question-scope Lx` — L2 Patch / L3–L4 Code per supplement; gates (Spec, `generate-test` before Code on L3–L4) from **`question-scope`** apply first.
 
+**Tiered (scope on):** IDE-ALIGNED §4 — config-only / rename → existing tests after Patch; assessment-only → IDE-ALIGNED §3.
+
 ### Combines with (optional)
 
 - `systematic-debugging` — repro after root cause

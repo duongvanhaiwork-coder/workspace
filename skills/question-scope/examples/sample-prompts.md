@@ -15,6 +15,8 @@ Copy-paste into chat. Replace `<description>`, `@path`, date/slug. Agent contrac
 | Disable scope ceremony | `qs:off — <description>` |
 | Audit/review skill or rules | `qs:meta — <description>` or `audit: — <description>` |
 | L3/L4 without SP supplement | `/question-scope L3 — <description>. sp:off` |
+| Skip §12 option picker (scope on) | `/question-scope L2 clarify:off — <description>` |
+| Ambiguous how (§12) | `/question-scope L2 — <description>; callback JSON or redirect?` |
 | Resume session | `@docs/work/.../STATUS.md` + `/question-scope L3 — continue` (command at **start** or **end** of message) |
 
 ## Presets
@@ -27,12 +29,15 @@ Full table + anti-patterns: [README.md § Presets & anti-patterns](../README.md#
 | Explain | No repo edits | `/question-scope L1 — <question>` |
 | Patch | Few files, clear AC | `/question-scope L2 — <description> (@file)` |
 | Patch light | L2, minimal MD | `/question-scope L2 — <description>. Rollup MD OK.` |
+| scope:light | L2, no `docs/work/` folder | `/question-scope L2 scope:light — <description>` |
+| Assessment | Gap/review only | `/question-scope L3 — <feature>: gap vs plan / cần sửa gì?` |
+| Plan attached | Spec = plan | `/question-scope L3 — follow attached plan` + `@plan.md` |
 | Feature | Bounded module/API + AC | `/question-scope L3 — <description>` + AC; `docs/work/YYYY-MM-DD-<slug>/` |
 | Feature (less SP) | L3 without full supplement | `/question-scope L3 — <description>. sp:off` |
 | System | Multi-service / large migration | `/question-scope L4 — <description>` |
 | Pick level | Unsure L1–L4 | `/question-scope` + description (no L on command) |
 
-**Anti-patterns:** no `/question-scope` in message (scope off); `level L2 — …` without `/question-scope` (scope off); `/question-scope L2` + `quick:` same message (opt-out wins); `quick:` when you want L2 + rollup MD (use `/question-scope L2 — … Rollup MD OK.`); `sp:off` alone; `?fix` without `/question-scope`; `/question-scopeL2` (no space before L); meta audit — prefer `qs:meta — …` or `audit: — …`.
+**Anti-patterns:** no `/question-scope` in message (scope off); `level L2 — …` without `/question-scope` (scope off); `/question-scope L2` + `quick:` same message (opt-out wins); `quick:` when you want L2 + rollup (use `/question-scope L2 scope:light — …`); `sp:off` alone; `?fix` without `/question-scope`; `/question-scopeL2` (no space before L); meta audit — prefer `qs:meta — …` or `audit: — …`.
 
 **L2 vs L3 (5 questions):** any **yes** → lean L3 — see [gray-zones.md § Quick checklist](../references/gray-zones.md#quick-checklist-l2-vs-l3).
 
@@ -66,6 +71,14 @@ quick: remove unused import in @src/utils/date.ts
 
 ```text
 /question-scope L2 — bug: UserService.create test fails after schema change (@tests/user.service.test.ts @src/services/user.ts).
+```
+
+```text
+/question-scope L2 clarify:off — Zalo callback returns JSON { success, link }. Patch ClientSocialCallbackController.
+```
+
+```text
+/question-scope L2 — Zalo OAuth callback: JSON for SPA or HTTP redirect to app? (agent runs §12 — STOP before Patch)
 ```
 
 ```text

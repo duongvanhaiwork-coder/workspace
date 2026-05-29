@@ -43,6 +43,8 @@ No `/question-scope` (or opt-out) — run **`skill-check-first`**, then invoke m
 
 `/question-scope Lx` — scope gates and supplement table win; then invoke skills at mapped phases.
 
+On **`skill-check-first`** when scope is on: **IDE-ALIGNED** (skill **`question-scope`**) and **pipelines-quickref** for the active level chain.
+
 ### Combines with (optional)
 
 **`question-scope`** when user sends `/question-scope`; any skill ID when task matches.

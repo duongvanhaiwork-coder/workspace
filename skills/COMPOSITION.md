@@ -52,3 +52,19 @@ Use this table when unsure. Everything **not** listed is optional pairing.
 ## question-scope
 
 **Optional coordinator** — not a prerequisite for other skills. When active, it sets **L**, gates, and `docs/work/…`; skills still follow their own **Invocation modes** sections.
+
+When scope is on, load **IDE-ALIGNED** via skill **`question-scope`** ([CONVENTIONS.md](./CONVENTIONS.md) § Cross-referencing question-scope).
+
+## Task kind (question-scope active)
+
+Detect from the user message **after** level is chosen. Do not run implement skills on assessment-only turns.
+
+| Task kind | User signals (examples) | Run | Skip until user asks implement |
+| --------- | ------------------------- | --- | ------------------------------ |
+| **Implement** | fix, add, build, patch, implement plan | Full chain for chosen L per [pipelines-quickref](./question-scope/references/pipelines-quickref.md) | — |
+| **Assessment** | gap, “cần sửa gì”, review vs plan, compare AC, audit diff (no patch ask) | `explain-code`, `analyze-impact?`, `caveman-review` (read-only), Answer | `generate-test`, `using-git-worktrees`, `executing-plans`, TDD Code, Ship |
+| **Plan exists** | attached `.plan.md`, Cursor Plan confirmed, “follow attached plan” | `executing-plans`, TDD, verify | `brainstorming`, duplicate `architect-plan` / `writing-plans` body |
+
+**Plan source priority:** (1) user-approved attach → (2) `docs/work/…` or `docs/plans/…` → (3) new chat Spec.
+
+**Evidence chain (implement):** `generate-test` (when tier applies) → `test-driven-development` → `verification-before-completion` (chat) → `finishing-a-development-branch`.
