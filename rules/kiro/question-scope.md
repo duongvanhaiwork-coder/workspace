@@ -4,7 +4,7 @@ inclusion: always
 
 # Question Scope
 
-**Contract:** `qs-2026-05-29.2` (full contract: skill **`question-scope`** → `SKILL.md`).
+**Contract:** `qs-2026-05-29.3` (full contract: skill **`question-scope`** → `SKILL.md`).
 
 **Command placement:** `/question-scope` or `/question-scope L2` must be at the **start or end** of the message (after trim) — **not** mid-sentence (e.g. use `fix auth /question-scope L2`, not `Please /question-scope fix auth`).
 
@@ -31,8 +31,8 @@ No `/question-scope` at **message start or end** (after trim) → **normal chat*
 
 | User sends | Agent |
 | ---------- | ----- |
-| **`/question-scope`** + task (no L on command) | Idea → suggest → **4 options (L1–L4)** → **STOP** |
-| **`/question-scope L1`…`L4`** + task | Run that pipeline — **no** 4-option step |
+| **`/question-scope`** + task (no L on command) | Idea → suggest → **level picker** (**2** if one gray pair fits, else **4** L1–L4) → **STOP** |
+| **`/question-scope L1`…`L4`** + task | Run that pipeline — **no** level-picker step |
 
 **Only** `/question-scope` and `/question-scope L1`…`L4` activate scope (`/question-scope L2`, not `/question-scopeL2`). **Placement:** command at **start or end** of message (after trim) — **not** mid-sentence (skill **Parsing**). **`level Lx` and `?` + keyword do not.** **Glued `L`:** reply once: `Detected /question-scopeL2 — use /question-scope L2` (skill **Parsing**).
 
@@ -48,7 +48,7 @@ No `/question-scope` at **message start or end** (after trim) → **normal chat*
 
 ## No L on `/question-scope`
 
-Four options → **STOP** until pick. Each option **must** include what that L does (pipeline note in `AskQuestion` label / numbered list) — skill `references/level-picker.md` § Option copy. **Gray zone:** two labeled options — still STOP. Skip when message has **`/question-scope L2`** (etc.).
+**Level picker** → **STOP** until pick: **2** labeled options when only one gray pair fits, else **4** (L1–L4). Each option **must** include what that L does — skill `references/level-picker.md` § Option copy. Skip picker when message has **`/question-scope L2`** (etc.).
 
 ## After level is chosen
 
