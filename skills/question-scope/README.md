@@ -365,18 +365,18 @@ Full table: [SKILL.md § When this skill applies](./SKILL.md#when-this-skill-app
 | ----- | ------------------ | ---------- | -------------------- |
 | `orchestra-decision` | Fast direction when idea is still vague | Before L pick / unclear AC | Q1–Q4 → 2–5 options → **1 decision**; no spec/plan write |
 | `superpowers` | Know which skills run after L is chosen | Right after L2–L4 pick | Read supplement; map phase → skill; honor `sp:off` |
-| `explain-code` | Explain code, no edits | L1; before editing unfamiliar code | `get_context` / read files → entry flow → dependencies |
+| `explain-code` | Explain code, no edits | L1; before editing unfamiliar code | Rule **`mcp-code-intelligence`** → entry flow → dependencies; label graph vs search |
 | `brainstorming` | Spec/design **approved** before code | L3–L4 Spec (skip if spec exists) | Ask gradually → 2–3 directions → `docs/specs/…` → user approve |
 | `architect-plan` | Moderate plan in phase file | L3 Plan (≤12 tasks) | Checkbox tasks + files + `verify:` in `l3-01` |
 | `writing-plans` | Large plan / handoff / subagent A | >12 tasks or user picks A | Detailed `docs/plans/…`; phase file links only |
-| `generate-test` | Tests **before** production code | L3–L4 Test; L2 optional | TC table + **RED** tests; log fail; no prod code |
+| `generate-test` | Tests **before** production code | L3–L4 Test; L2 optional | TC table + **RED**; MCP/rule for helpers; **`analyze-impact`** if shared symbol |
 | `using-git-worktrees` | Isolated branch/worktree | L3–L4 before Code | `.worktrees/…` + baseline test |
 | `executing-plans` (B) | Execute plan same session, checkpoints | L3–L4 Code (default) | Per task: TDD → verify → done → Regression/Ship |
 | `subagent-driven-development` (A) | One subagent per task + review | L3–L4 when `docs/plans/` + pick A | Implementer → spec review → code review / task |
 | `test-driven-development` | Behavior change proven by tests | L2 Patch; each L3–L4 task; bugs | RED → GREEN → REFACTOR |
 | `verification-before-completion` | No “done” without command log | Verify, Regression, Ship, bug fix | Run **fresh** commands → paste output → then claim |
 | `systematic-debugging` | Root cause before fix | Bug (usually L2 Spec) | 4 investigation phases → record cause in Spec |
-| `analyze-impact` | Which files/services are affected | L4 Discover; L3/L2 optional | MCP/rg → impact list; **does not** replace Regression tests |
+| `analyze-impact` | Which files/services are affected | L4 Discover; L3/L2 optional | Rule **`mcp-code-intelligence`** → impact list; **does not** replace Regression tests |
 | `caveman-review` | Short diff review with concrete fixes | Review L2+ | `L42: bug. fix.` per line |
 | `requesting-code-review` | Formal pre-merge review | L4 (default); L3 if AC | Subagent reviewer after green tests + caveman |
 | `receiving-code-review` | Handle PR comments correctly | After PR opened | Read → understand → verify → fix each item + test |

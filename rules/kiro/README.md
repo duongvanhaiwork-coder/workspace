@@ -7,6 +7,7 @@
 | `code-standards.mdc` | `code-standards.md` | `always` |
 | `dotnet.mdc` | `dotnet.md` | `fileMatch` |
 | `java.mdc` | `java.md` | `fileMatch` |
+| `mcp-code-intelligence.mdc` | `mcp-code-intelligence.md` | `always` |
 | `python.mdc` | `python.md` | `fileMatch` |
 | `question-scope.mdc` | `question-scope.md` | `always` |
 | `react.mdc` | `react.md` | `fileMatch` |

@@ -51,31 +51,17 @@ Shared ✅/❌: [invocation-anti-patterns](../references/invocation-anti-pattern
 
 ## Steps
 
-1. Resolve **`project`** for MCP calls (when tools are used):
-   - Prefer the **exact id** the user states.
-   - Else, if the workspace defines a manifest (e.g. `projects.json`), map the open repo to a **`name`** field.
-   - Else use the **repo folder name** or ask once for the MCP app id.
-   - MCP file paths inside containers vary by setup — follow tool errors and adjust; do not hardcode host paths.
-2. Call **`get_context`** with a focused natural-language query (feature + key symbols).
-3. Use **`search_code`** for additional call sites or definitions if context is thin.
-4. If MCP is unavailable, errors, or results are empty: run **Editor fallback** (below) before explaining; state that the walkthrough is **file/search-based**, not graph-backed.
-5. Explain in order: entry → main flow → side effects → dependencies.
-6. Cite file paths from tool results; do not invent paths.
-
-## Editor fallback (MCP down or thin context)
-
-1. Start from user **`@file`** / symbol hints; otherwise `rg`/grep for the entry symbol or route name.
-2. **read_file** on the entry module and follow imports one level deep before widening.
-3. Use **codebase_search** (if available) or more `rg` for call sites; avoid loading unrelated directories.
-4. If still uncertain, say what is unknown instead of inferring behavior from names alone.
+1. Follow rule **`mcp-code-intelligence`** — MCP up: **`get_context`** then **`search_code`** if thin; MCP down: editor fallback only.
+2. Explain in order: entry → main flow → side effects → dependencies. If uncertain after tools, state unknowns — do not infer from names alone.
+3. Cite file paths from tool results; do not invent paths.
 
 ## Output shape
 
-- Short summary (1–2 sentences)
+- Short summary (1–2 sentences); note **graph-backed** vs **search-based** if editor fallback was used
 - Numbered flow steps
 - Optional diagram (mermaid) only if the flow has 4+ steps
 
 ## Prerequisites
 
-- **Best:** project indexed; MCP healthy (per team ops docs).
-- **Fallback:** any repo with readable source — follow **Editor fallback**; do not imply you used the graph when you did not.
+- **Best:** project indexed; MCP healthy (rule **`mcp-code-intelligence`**).
+- **Fallback:** any repo with readable source — do not imply graph-backed results when using editor fallback.

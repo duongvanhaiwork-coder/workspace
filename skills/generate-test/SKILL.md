@@ -63,9 +63,9 @@ Do not skip the TC table gate (L3–L4) to write production code first.
 ## Steps
 
 1. Read Spec / `Then` rows from `l3-01-define.md` (or linked `docs/specs/…`).
-2. Read the target module and **existing tests** (naming, mocks, fixtures).
-3. Use `get_context` / `search_code` if helpers or dependencies are unclear.
-4. For shared symbols, call **`analyze-impact`** to see what else might need test updates.
+2. Read the target module and **existing tests** (naming, mocks, fixtures) — `@file` or **Read** when entry is known.
+3. If helpers, call sites, or fixtures are unclear, follow rule **`mcp-code-intelligence`** — MCP up: **`get_context`** then **`search_code`** if thin; MCP down: editor fallback per rule. Label **graph-backed** vs **search-based** when fallback applies.
+4. For shared or exported symbols, run skill **`analyze-impact`** to scope test updates (does not replace step 3 for local helpers).
 5. Fill or update the **TC table** in the phase file; write test files: happy, error, one edge per AC.
 6. Run the project's test command. **RED gate:** tests must **fail for missing behavior** (not yet implemented). Fix only **test/setup/compile** issues — **do not** add production code in this phase to make tests pass.
 7. Log commands and output in **Test design — command log** (see `l3-02` template). Use **`verification-before-completion`** for the run — claim **RED as expected** (e.g. `3 failed — handler not implemented`), **not** “all tests pass” or “done”.
@@ -79,14 +79,10 @@ Do not skip the TC table gate (L3–L4) to write production code first.
 
 See **`test-driven-development`** § Pipeline and § When NOT (tests already failing).
 
-## Editor fallback (MCP down or thin context)
+## Prerequisites
 
-When `get_context`, `search_code`, or `analyze_impact` is unavailable, errors, or returns nothing useful:
-
-1. **read_file** the target module and the nearest existing test file(s) in the repo.
-2. Use `rg`/grep for the symbol, route, or handler name to find helpers and call sites.
-3. Infer mocks/fixtures from those tests — do not invent a new framework or folder layout.
-4. State that coverage reasoning is **search-based**, not graph-backed, if impact was not verified.
+- **Best:** project indexed; MCP healthy (rule **`mcp-code-intelligence`**).
+- **Fallback:** infer mocks/fixtures from nearest tests + `rg` — do not invent a new framework or folder layout; state **search-based** coverage when not graph-backed.
 
 ## Conventions
 

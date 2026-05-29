@@ -10,7 +10,7 @@ description: >
 
 **Stop when:** Blast radius (files/services/symbols) is documented or honestly bounded (search-only cap stated).
 
-If MCP is down, follow **Search-only fallback** and state results are bounded — not graph-complete.
+If using editor fallback, state results are **search-based**, not graph-complete (rule **`mcp-code-intelligence`**).
 
 ## Invocation modes
 
@@ -70,29 +70,20 @@ Shared ✅/❌: [invocation-anti-patterns](../references/invocation-anti-pattern
 
 ## Steps
 
-1. Resolve **`project`** (MCP / indexed graph):
-   - Prefer the **exact id** the user states.
-   - Else, if the workspace defines a manifest (e.g. `projects.json`), match the current repo folder to a **`name`** field there.
-   - Else use a **short slug from the repo root folder** or ask once: "Which app name should MCP use?"
-   - Do not assume a local folder literally named `projects/` is the MCP id.
-2. If MCP **`analyze_impact`** is available and the project is indexed: call it with `{ "project": "<name>", "symbol": "<symbol>" }`.
-3. Summarize affected files; suggest order of edits and tests.
-4. If the tool is unavailable, errors, empty, or the symbol cannot be resolved on the graph: run **Search-only fallback** (below). Say clearly the list is **search-based**, not graph-complete — do **not** claim all consumers are found.
+1. Follow rule **`mcp-code-intelligence`** — MCP up: **`analyze_impact`** with `{ "project": "<name>", "symbol": "<symbol>" }`; MCP down or graph inconclusive: editor fallback per rule.
+2. Summarize affected files, services, and symbols; suggest edit order and test suites for Regression scope.
+3. If using editor fallback: cap listing (~30 paths, state **truncated**); include re-exports when obvious. If uncertain after tools, state gaps — do not claim all consumers found.
 
-## Search-only fallback (MCP down, unindexed, or inconclusive)
+## Output shape
 
-Use this when Step 2 does not yield a trustworthy graph:
+- Group by service or module when multi-repo
+- List symbols and file paths from tool results; do not invent paths
+- Label **graph-backed** vs **search-based** in the summary
 
-1. **Say upfront** that results are bounded search, not a full code graph.
-2. Find the **definition** (open the declaring file from user hint or `rg`/IDE search for the symbol).
-3. List **imports and call sites** in the open repo: `rg`/grep for the symbol name with sensible filters; include re-exports if obvious.
-4. **Cap** listing (e.g. first 30 unique paths) if huge; state **truncated**.
-5. If partial MCP works, still prefer **`search_code`** / **`get_context`** before blind grep; otherwise **read_file** + workspace search tools.
+## Prerequisites
 
-## Prerequisites (full graph mode)
-
-- MCP server running and healthy (team health check or equivalent)
-- Project indexed (MCP `index_project`, team indexer, or equivalent)
+- **Best:** project indexed; MCP healthy (rule **`mcp-code-intelligence`**).
+- **Fallback:** search-based blast radius — cap and state truncated when large; do not imply graph-complete coverage.
 
 ## Do not
 
