@@ -2,7 +2,7 @@
 inclusion: always
 ---
 
-# MCP code intelligence
+# MCP intelligence
 
 **Server:** AI Core MCP (`ai-core`). Tools: `get_context`, `search_code`, `analyze_impact`.
 

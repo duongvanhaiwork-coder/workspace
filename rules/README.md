@@ -43,6 +43,7 @@ Details: [CONVENTIONS.md](./CONVENTIONS.md).
 | File | `alwaysApply` | `globs` | Contents |
 | ---- | ------------- | ------- | -------- |
 | `code-standards.mdc` | `true` | — | Shared defaults (all files) |
+| `mcp-intelligence.mdc` | `true` | — | MCP discovery vs editor fallback → skills **`explain-code`**, **`analyze-impact`**, **`generate-test`** |
 | `question-scope.mdc` | `true` | — | Question Scope triggers → skill **`question-scope`** |
 | `typescript.mdc` | `false` | `**/*.ts` | Backend / shared TS |
 | `react.mdc` | `false` | `**/*.tsx`, `**/*.jsx`, `**/app/**/*.js` | React UI |

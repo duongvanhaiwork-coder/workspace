@@ -86,7 +86,7 @@ Load each skill’s `SKILL.md` for full rules. **`code-standards`** applies on e
 
 | Step | Goal | Skill(s) | Skill actions (concrete) | Phase / artifact |
 | ---- | ---- | -------- | ------------------------ | ---------------- |
-| Context (light) | Enough code context to answer | [`explain-code`](#63-explain-code) (optional) | 1. Symptom + `@` only (0–2 files). 2. Rule **`mcp-code-intelligence`**: **`get_context`** → **`search_code`** if thin; else editor fallback. 3. **No** wide grep. | Chat; optional `@` list |
+| Context (light) | Enough code context to answer | [`explain-code`](#63-explain-code) (optional) | 1. Symptom + `@` only (0–2 files). 2. Rule **`mcp-intelligence`**: **`get_context`** → **`search_code`** if thin; else editor fallback. 3. **No** wide grep. | Chat; optional `@` list |
 | Answer | Meet stated outcome in chat | — | 1. Summary → numbered flow → trade-offs if compare. 2. Cite real paths. 3. Point to symbols if user will edit next. | Chat |
 | MD (optional) | Archive | — | 1. Write `docs/answers/YYYY-MM-DD-<slug>.md` from [l1 template](../templates/phases/l1/answer.md). | Optional answer MD |
 
@@ -280,7 +280,7 @@ Load each skill’s `SKILL.md` for full rules. Subsections use the same shape:
 | **Purpose (why this skill exists)** | Build accurate mental model **without** changing the repo |
 | **Invoked when** | L1 Answer needs code; or L2+ before touching unfamiliar module |
 | **Inputs** | Symbol, `@file`, or feature name from user |
-| **Agent does (concrete)** | 1. Follow rule **`mcp-code-intelligence`**: resolve **`project`** → MCP up: **`get_context`** then **`search_code`** if thin; MCP down: editor fallback per rule (`@` / **Read** → 1-hop `rg`, widen only if needed). 2. Reply: 1–2 sentence summary → numbered flow → dependencies. 3. Label **graph-backed** vs **search-based** when fallback used |
+| **Agent does (concrete)** | 1. Follow rule **`mcp-intelligence`**: resolve **`project`** → MCP up: **`get_context`** then **`search_code`** if thin; MCP down: editor fallback per rule (`@` / **Read** → 1-hop `rg`, widen only if needed). 2. Reply: 1–2 sentence summary → numbered flow → dependencies. 3. Label **graph-backed** vs **search-based** when fallback used |
 | **Outputs** | Chat explanation with real paths |
 | **Done when** | User’s “how does X work?” is answerable from cited code |
 | **Must not** | Edit files; claim tests pass without [§6.13](#613-verification-before-completion) |
@@ -328,7 +328,7 @@ Load each skill’s `SKILL.md` for full rules. Subsections use the same shape:
 | **Purpose (why this skill exists)** | Enforce **tests before production code** (L3–L4 gate) |
 | **Invoked when** | L3/L4 **Test** step after Plan/[Scaffold]; L2 optional before Patch |
 | **Inputs** | Spec `Then` rows; module + existing test patterns |
-| **Agent does (concrete)** | 1. Read Spec `Then` rows + target module and existing tests. 2. If helpers/call sites unclear: rule **`mcp-code-intelligence`** (`get_context` / `search_code`); shared symbols → **`analyze-impact`**. 3. Map each `Then` → `TC-xx` (happy/error/edge); write tests (mock IO). 4. Run project test cmd; confirm **missing behavior** failures. 5. Fix only test/setup/compile; log RED in phase § Test design |
+| **Agent does (concrete)** | 1. Read Spec `Then` rows + target module and existing tests. 2. If helpers/call sites unclear: rule **`mcp-intelligence`** (`get_context` / `search_code`); shared symbols → **`analyze-impact`**. 3. Map each `Then` → `TC-xx` (happy/error/edge); write tests (mock IO). 4. Run project test cmd; confirm **missing behavior** failures. 5. Fix only test/setup/compile; log RED in phase § Test design |
 | **Outputs** | Failing tests + filled TC table |
 | **Done when** | RED logged; **no** production implementation started |
 | **Must not** | Green tests via prod code; skip table; renumber TC-xx |
@@ -412,7 +412,7 @@ Load each skill’s `SKILL.md` for full rules. Subsections use the same shape:
 | **Purpose (why this skill exists)** | Know **what** breaks before editing cross-cutting symbols |
 | **Invoked when** | L4 Discover if blast radius unclear; L3 optional; L2 large shared patch |
 | **Inputs** | Symbol/service to change |
-| **Agent does (concrete)** | 1. Follow rule **`mcp-code-intelligence`**: MCP up → **`analyze_impact`**; MCP down → editor fallback (`rg`, cap ~30 paths, state truncated). 2. List services/files/symbols; suggest edit order + **which test suites** for Regression. 3. Label **graph-backed** vs **search-based** |
+| **Agent does (concrete)** | 1. Follow rule **`mcp-intelligence`**: MCP up → **`analyze_impact`**; MCP down → editor fallback (`rg`, cap ~30 paths, state truncated). 2. List services/files/symbols; suggest edit order + **which test suites** for Regression. 3. Label **graph-backed** vs **search-based** |
 | **Outputs** | § analyze-impact notes in `l4-01` / plan |
 | **Done when** | Regression table can list per-service rows |
 | **Must not** | Run tests here; claim full graph on search-only |

@@ -6,7 +6,7 @@
 
 **Portable conventions:** [CONVENTIONS.md](CONVENTIONS.md) — skill IDs, handoffs, paths, canonical tools, § Skill authoring (polarity). **Composition (standalone + combine):** [COMPOSITION.md](COMPOSITION.md). **Handoff graph:** [SKILLS-REGISTRY.md](SKILLS-REGISTRY.md). **Audit:** [references/SKILLS-AUDIT.md](references/SKILLS-AUDIT.md) — P0–P4 complete. **IDE sync:** [README.md](../README.md) (Đồng bộ skills & rules).
 
-**Agent policy:** [../AGENTS.md](../AGENTS.md) · **Workflow rules:** load `@workflow` on demand · **Always-on:** `question-scope`, `code-standards` (+ stack rules by file type)
+**Agent policy:** [../AGENTS.md](../AGENTS.md) · **Workflow rules:** load `@workflow` on demand · **Always-on:** `question-scope`, `code-standards`, `mcp-intelligence` (+ stack rules by file type)
 
 ## Superpowers bundle (14 skills)
 

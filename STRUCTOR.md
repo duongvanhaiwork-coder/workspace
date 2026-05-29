@@ -1,34 +1,33 @@
-# Cấu trúc repo (đã rút gọn)
+# Cấu trúc repo
 
-Tài liệu inventory chi tiết từng file **không còn duy trì** tại đây.
+Repo **skills + rules** — không chứa intelligence-engine / mcp-server trong cây này.
 
 ## Tham chiếu
 
 | Nội dung | File |
-|----------|------|
-| Tổng quan & lệnh nhanh | [README.md](README.md) |
-| Cài đặt | [docs/SETUP.md](docs/SETUP.md) |
-| Kiến trúc | [docs/architecture.md](docs/architecture.md) |
-| Indexing | [docs/indexing-flow.md](docs/indexing-flow.md) |
-| Retrieval | [docs/retrieval-flow.md](docs/retrieval-flow.md) |
-| MCP tools | [docs/mcp-tools.md](docs/mcp-tools.md) |
-| Thêm project | [docs/ADD-PROJECT.md](docs/ADD-PROJECT.md) |
-| Roadmap | [docs/ROADMAP.md](docs/ROADMAP.md) |
+| -------- | ---- |
+| Tổng quan & lệnh | [README.md](README.md) |
+| Agent policy | [AGENTS.md](AGENTS.md) |
+| Workflow (VI) | [docs/WORKFLOW-QUICKSTART.md](docs/WORKFLOW-QUICKSTART.md) |
+| Rules layout | [rules/CONVENTIONS.md](rules/CONVENTIONS.md) |
+| Skills layout | [skills/STRUCTURE.md](skills/STRUCTURE.md) |
 
-## Cây thư mục (tóm tắt)
+## Cây thư mục
 
 ```text
 Workspace/
-├── intelligence-engine/   # FastAPI — index, search, graph
-├── mcp-server/            # MCP HTTP bridge
-├── projects/              # App repos (gitignored, clone local)
-├── projects.json          # Cấu hình index (local, gitignored)
-├── config/                # MCP templates
-├── scripts/               # setup, index, verify
+├── AGENTS.md
+├── README.md
 ├── docs/
-├── skills/                # Nguồn skills (canonical)
+│   └── WORKFLOW-QUICKSTART.md
+├── scripts/               # sync-ide, verify (không symlink vào IDE)
+├── skills/                # Canonical agent skills
 ├── rules/
-│   ├── cursor/            # Cursor rules .mdc (sửa tại đây)
-│   └── kiro/              # Kiro steering (tự sinh)
-└── .cursor/               # MCP config; rules/skills → `make sync-ide` → ~/.cursor/, ~/.kiro/
+│   ├── cursor/            # Cursor .mdc — sửa tại đây
+│   ├── kiro/              # Kiro steering — tự sinh
+│   ├── CONVENTIONS.md
+│   └── QUICKSTART.md
+└── rules.zip / skills.zip # optional bundles
 ```
+
+**IDE:** Sau `./scripts/sync-ide.sh` → `~/.cursor/rules`, `~/.cursor/skills`, `~/.kiro/steering`, `~/.kiro/skills` trỏ vào repo.

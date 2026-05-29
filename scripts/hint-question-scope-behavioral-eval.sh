@@ -40,7 +40,7 @@ unique="$(printf '%s\n' "${changed[@]}" | sort -u)"
 echo "== question-scope contract changed =="
 printf '%s\n' "$unique" | sed 's/^/  - /'
 echo ""
-echo "Default gate: make verify (see README.md § Lệnh chạy)."
+echo "Default gate: ./scripts/verify.sh (see README.md § Lệnh chạy)."
 echo "Optional: spot-check fixtures #1, #6, #8/#21, #24–#42 in a NEW chat — see behavioral-gates.md"
 echo "Then: IDE sync + reload Cursor — README.md § Đồng bộ skills & rules."
 echo ""

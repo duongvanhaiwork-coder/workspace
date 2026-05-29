@@ -4,18 +4,18 @@ Hướng dẫn ngắn khi làm task trong Cursor/Kiro với skills/rules của r
 
 | Tài liệu | Ngôn ngữ | Đối tượng |
 | -------- | -------- | --------- |
-| [rules/QUICKSTART.md](../rules/QUICKSTART.md) | English | Rules + prompt ngắn |
-| [skills/question-scope/README.md](../skills/question-scope/README.md) | Tiếng Việt | Prompt copy-paste (`question-scope` → `README.md`) |
-| Skill **`question-scope`** (`skills/question-scope/SKILL.md`) | English | Contract agent L1–L4 (invoke-skill) |
+| [rules/QUICKSTART.md](../rules/QUICKSTART.md) | English | Rules + prompt ngắn (cùng logic L3/L2) |
+| [skills/question-scope/README.md](../skills/question-scope/README.md) | Tiếng Việt | Prompt copy-paste |
+| Skill **`question-scope`** (`skills/question-scope/SKILL.md`) | English | Contract agent L1–L4 |
 | [rules/cursor/workflow.mdc](../rules/cursor/workflow.mdc) | English | Rule ID Superpowers (`@workflow`) |
 | [AGENTS.md](../AGENTS.md) | English | Chính sách agent workspace |
 
 ## Sync (một lần / sau khi sửa skills hoặc rules)
 
-```bash
-cd /path/to/Workspace
-make sync-ide
-```
+Lệnh chạy **chỉ** trong [README.md](../README.md) § *Lệnh chạy*:
+
+- `./scripts/sync-ide.sh` — symlink skills + rules → `~/.cursor/`, `~/.kiro/`
+- `./scripts/link-global-ide.sh` — alias cùng lệnh trên
 
 Symlink **chỉ** thư mục home (mọi project trên máy):
 
@@ -23,7 +23,7 @@ Symlink **chỉ** thư mục home (mọi project trên máy):
 - `~/.kiro/steering` → `rules/kiro/`
 - `~/.cursor/skills`, `~/.kiro/skills` → `skills/`
 
-Không symlink vào `Workspace/.cursor/` hay `Workspace/.kiro/`. `make link-global` = `make sync-ide`.
+Không symlink vào `Workspace/.cursor/` hay `Workspace/.kiro/`.
 
 ## Hai lớp (nhớ một câu)
 
@@ -33,6 +33,8 @@ Không symlink vào `Workspace/.cursor/` hay `Workspace/.kiro/`. `make link-glob
 | **Superpowers supplement** | Làm **đúng chất lượng** (TDD, verify, plan, worktree…) | `@workflow` + skills |
 
 **Mặc định:** L3/L4 → bật supplement. L2 → TDD + verify tối thiểu. L1 → không full Superpowers flow.
+
+**MCP discovery:** Rule `mcp-intelligence` (always-on) — MCP up → `get_context` / `search_code` / `analyze_impact`; MCP down → editor fallback. Opt-out: `mcp:off`, `no-mcp`.
 
 ## Chọn level
 
@@ -54,6 +56,7 @@ Không symlink vào `Workspace/.cursor/` hay `Workspace/.kiro/`. `make link-glob
 | Chưa chắc level | `/question-scope` + mô tả → chọn L1–L4 |
 | Tắt ceremony scope | `qs:off — <mô tả>` |
 | Có scope, không Superpowers | `/question-scope L3 — <task>. sp:off` |
+| Có scope, không MCP discovery | thêm `mcp:off` hoặc `no-mcp` |
 
 Thêm ví dụ dài: [skills/question-scope/README.md](../skills/question-scope/README.md).
 
@@ -65,9 +68,10 @@ Thêm ví dụ dài: [skills/question-scope/README.md](../skills/question-scope/
 | `quick:` | Tắt (fast path) | Tắt |
 | `qs:meta` / `audit:` | Tắt (audit/review) | Tắt |
 | `sp:off`, `no-sp` | Bật | Tắt |
+| `mcp:off`, `no-mcp` | Bật | — (editor fallback cho discovery) |
 | `/question-scope Lx` | Bật, bỏ bước chọn 4 option | Theo level |
 
-**Lưu ý:** `level Lx` và `?` **không** bật scope. Lệnh `/question-scope` chỉ ở **đầu hoặc cuối** tin nhắn (không giữa câu). Level cần **space**: `/question-scope L2` (không `/question-scopeL2`; nếu dính `L` agent nhắc `Detected /question-scopeL2 — use /question-scope L2`). Review/audit: `qs:meta — …` hoặc `audit: — …` (khuyến nghị). `quick:` **không** phải “L3 nhưng bỏ design” — dùng `/question-scope L3` + `sp:off`; **không** phải “L2 + rollup MD” — dùng `/question-scope L2` + “Rollup MD OK.”. Sau sửa contract trong repo AI Core: `make verify` (đủ cho hầu hết PR); spot-check 2–3 chat chỉ khi đổi trigger/meta (xem `behavioral-gates.md`); rồi `make sync-ide` + reload window/chat. Sau sync **không có** `scripts/` — chỉ rules + skills trong `~/.cursor/`.
+**Lưu ý:** `level Lx` và `?` **không** bật scope. Lệnh `/question-scope` chỉ ở **đầu hoặc cuối** tin nhắn. Level cần **space**: `/question-scope L2` (không `/question-scopeL2`). `quick:` **không** phải “L3 nhưng bỏ design” — dùng `/question-scope L3` + `sp:off`. Sau sửa contract trong repo này: `./scripts/verify.sh` (đủ cho hầu hết PR); spot-check 2–3 chat khi đổi trigger/meta (`behavioral-gates.md`); rồi `./scripts/sync-ide.sh` + reload window/chat.
 
 ## Tài liệu trên disk (repo đang sửa)
 
@@ -79,24 +83,28 @@ Thêm ví dụ dài: [skills/question-scope/README.md](../skills/question-scope/
 
 Một nguồn sự thật — xem [skills/CONVENTIONS.md](../skills/CONVENTIONS.md).
 
-## Luồng L3 điển hình
+## Luồng L3 điển hình (supplement bật)
+
+Cùng logic với [rules/QUICKSTART.md](../rules/QUICKSTART.md):
 
 ```text
-/question-scope L3 → docs/work/ + STATUS
-  → design-approval-gate (nếu lớn)
-  → implementation-plan: architect-plan trong docs/work/ (B mặc định) HOẶC writing-plans → docs/plans/ (A)
-  → isolated-workspace
-  → execute-inline-checkpoints (B, mặc định) HOẶC execute-via-subagents (A, cần docs/plans/)
-  → tdd-during-implementation
-  → verify-before-done
-  → finish-branch-options
+/question-scope L3 → docs/work/ + STATUS.md
+  → brainstorming (nếu chưa có spec approve)
+  → architect-plan (l3-01, B mặc định) | writing-plans → docs/plans/ (A)
+  → generate-test (l3-02 TC table) — trước Code
+  → using-git-worktrees
+  → executing-plans (B) | subagent-driven-development (A)
+  → test-driven-development (trong Code)
+  → verification-before-completion
+  → caveman-review → l3-03-ship → finishing-a-development-branch
 ```
 
 ## Bug (thường L2)
 
 ```text
 /question-scope L2 — bug: <triệu chứng> (@files)
-→ debug-root-cause-first → tdd-failing-repro → verify-fix-evidence
+→ systematic-debugging → test-driven-development (repro)
+→ verification-before-completion
 ```
 
 ## Rule graph đầy đủ

@@ -57,7 +57,7 @@ Every `rules/cursor/*.mdc` file **must** start with YAML frontmatter:
 | File | `alwaysApply` | Scope |
 | ---- | ------------- | ----- |
 | `code-standards.mdc` | `true` | All projects — clean code, security, testing, APIs |
-| `mcp-code-intelligence.mdc` | `true` | MCP up → use `get_context` / `search_code` / `analyze_impact`; MCP down → editor fallback |
+| `mcp-intelligence.mdc` | `true` | MCP up → use `get_context` / `search_code` / `analyze_impact`; MCP down → editor fallback |
 | `question-scope.mdc` | `true` | L1–L4 triggers → skill **`question-scope`** |
 | `typescript.mdc` | `false` | `**/*.ts` |
 | `react.mdc` | `false` | `**/*.tsx`, `**/*.jsx` |
@@ -72,7 +72,7 @@ Stack rules **detect** frameworks from the repo — they do not mandate NestJS, 
 
 | Rules | Skills |
 | ----- | ------ |
-| Always-on guardrails (`code-standards`, `mcp-code-intelligence`, `question-scope`) | Playbooks (`skills/<id>/SKILL.md`) |
+| Always-on guardrails (`code-standards`, `mcp-intelligence`, `question-scope`) | Playbooks (`skills/<id>/SKILL.md`) |
 | On-demand workflow graph (`workflow.mdc`) | Superpowers + team skills |
 | File-type conventions (`typescript`, `react`, …) | Stack helpers (`generate-test`, …) |
 
@@ -129,7 +129,7 @@ Mixed:     Do not <creep>. Prefer <minimal correct approach> in touched files.
 | File | Role | Polarity mix |
 | ---- | ---- | ------------- |
 | `question-scope.mdc` | Triggers, STOP, opt-outs | Mixed (trigger table + negatives) |
-| `mcp-code-intelligence.mdc` | MCP vs editor discovery | Positive (when→then) + negative (gates) + mixed (scope) |
+| `mcp-intelligence.mdc` | MCP vs editor discovery | Positive (when→then) + negative (gates) + mixed (scope) |
 | `code-standards.mdc` | Style, security, change scope, git gates | Positive (Clean Code) + negative (Security, Change scope, Commits) |
 | `workflow.mdc` | Handoffs, flows | Positive (flows) + **Hard gates** (negatives) |
 | Stack `*.mdc` | Framework patterns | Mostly positive; security lines negative |

@@ -375,7 +375,7 @@ require_pattern_any "#42 receiving need clarification" "Need clarification" \
 require_pattern "#42 fixture incoming_clarify" "$FIXTURES" "incoming_pr_clarify_before_partial_fix"
 
 echo ""
-echo "Note: make verify is the default gate. Optional LLM spot-check (#1, #6, #8/#21, #24–#42): behavioral-gates.md."
+echo "Note: ./scripts/verify.sh is the default gate. Optional LLM spot-check (#1, #6, #8/#21, #24–#42): behavioral-gates.md."
 echo ""
 echo "Ran $tests checks; failures: $failures"
 if [[ "$failures" -gt 0 ]]; then

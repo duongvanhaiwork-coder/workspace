@@ -10,7 +10,7 @@ description: >
 
 **Stop when:** Blast radius (files/services/symbols) is documented or honestly bounded (search-only cap stated).
 
-If using editor fallback, state results are **search-based**, not graph-complete (rule **`mcp-code-intelligence`**).
+If using editor fallback, state results are **search-based**, not graph-complete (rule **`mcp-intelligence`**).
 
 ## Invocation modes
 
@@ -70,7 +70,7 @@ Shared ✅/❌: [invocation-anti-patterns](../references/invocation-anti-pattern
 
 ## Steps
 
-1. Follow rule **`mcp-code-intelligence`** — MCP up: **`analyze_impact`** with `{ "project": "<name>", "symbol": "<symbol>" }`; MCP down or graph inconclusive: editor fallback per rule.
+1. Follow rule **`mcp-intelligence`** — MCP up: **`analyze_impact`** with `{ "project": "<name>", "symbol": "<symbol>" }`; MCP down or graph inconclusive: editor fallback per rule.
 2. Summarize affected files, services, and symbols; suggest edit order and test suites for Regression scope.
 3. If using editor fallback: cap listing (~30 paths, state **truncated**); include re-exports when obvious. If uncertain after tools, state gaps — do not claim all consumers found.
 
@@ -82,7 +82,7 @@ Shared ✅/❌: [invocation-anti-patterns](../references/invocation-anti-pattern
 
 ## Prerequisites
 
-- **Best:** project indexed; MCP healthy (rule **`mcp-code-intelligence`**).
+- **Best:** project indexed; MCP healthy (rule **`mcp-intelligence`**).
 - **Fallback:** search-based blast radius — cap and state truncated when large; do not imply graph-complete coverage.
 
 ## Do not

@@ -51,7 +51,7 @@ Shared ✅/❌: [invocation-anti-patterns](../references/invocation-anti-pattern
 
 ## Steps
 
-1. Follow rule **`mcp-code-intelligence`** — MCP up: **`get_context`** then **`search_code`** if thin; MCP down: editor fallback only.
+1. Follow rule **`mcp-intelligence`** — MCP up: **`get_context`** then **`search_code`** if thin; MCP down: editor fallback only.
 2. Explain in order: entry → main flow → side effects → dependencies. If uncertain after tools, state unknowns — do not infer from names alone.
 3. Cite file paths from tool results; do not invent paths.
 
@@ -63,5 +63,5 @@ Shared ✅/❌: [invocation-anti-patterns](../references/invocation-anti-pattern
 
 ## Prerequisites
 
-- **Best:** project indexed; MCP healthy (rule **`mcp-code-intelligence`**).
+- **Best:** project indexed; MCP healthy (rule **`mcp-intelligence`**).
 - **Fallback:** any repo with readable source — do not imply graph-backed results when using editor fallback.

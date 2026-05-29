@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
-# Workspace verification entrypoint (Makefile: make verify)
+# Workspace verification entrypoint — see README.md § Lệnh chạy
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 
-echo "== AI Core verify =="
+echo "== Workspace verify (skills + rules) =="
 echo "Repo: $ROOT"
 echo ""
 

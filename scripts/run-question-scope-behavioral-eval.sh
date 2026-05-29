@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-# Optional: print agent spot-check checklist (AI Core repo only — not installed by make sync-ide).
-# Default gate: make verify. Use this only for optional 2–3 chat spot-checks when Parsing/Meta/tokens change.
+# Optional: print agent spot-check checklist (workspace repo only — not installed by sync-ide).
+# Default gate: ./scripts/verify.sh. Use this only for optional 2–3 chat spot-checks when Parsing/Meta/tokens change.
 # See skills/question-scope/references/behavioral-gates.md
 set -euo pipefail
 
@@ -17,7 +17,7 @@ fi
 
 echo "== question-scope spot-check checklist (optional) =="
 echo ""
-echo "Default gate: make verify. This script is optional — for Parsing/Meta/token contract changes."
+echo "Default gate: ./scripts/verify.sh. This script is optional — for Parsing/Meta/token contract changes."
 echo "Minimum spot-check: scenarios #1, #6, #8 or #21 (see $GATES)."
 echo "Open a NEW chat per scenario; paste user lines below; tick expect bullets."
 echo ""
