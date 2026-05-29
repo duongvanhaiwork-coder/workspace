@@ -8,6 +8,8 @@ description: >
 
 **Announce when applying:** `Using analyze-impact for <symbol>.`
 
+**Stop when:** Blast radius (files/services/symbols) is documented or honestly bounded (search-only cap stated).
+
 If MCP is down, follow **Search-only fallback** and state results are bounded — not graph-complete.
 
 ## Invocation modes
@@ -41,7 +43,7 @@ User asks what breaks if they change X, or before a refactor — run this skill;
 | Feed Regression scope in phase MD when scope on | Run as substitute for **`verification-before-completion`** |
 | **NEXT:** `refactor-code` or plan with impacted scope noted | Skip when renaming shared symbols “because it’s small” |
 
-**NEXT:** `refactor-code` / Regression scope · Shared ✅/❌: [invocation-anti-patterns](../references/invocation-anti-patterns.md)
+Shared ✅/❌: [invocation-anti-patterns](../references/invocation-anti-patterns.md). **Handoff:** Record in phase MD → **`refactor-code`** or Regression via **`verification-before-completion`** (not in this skill).
 
 ## With question-scope (impact ≠ Regression)
 

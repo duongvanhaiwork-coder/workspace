@@ -4,7 +4,7 @@ inclusion: always
 
 # Question Scope
 
-**Contract:** `qs-2026-05-29.1` (full contract: skill **`question-scope`** → `SKILL.md`).
+**Contract:** `qs-2026-05-29.2` (full contract: skill **`question-scope`** → `SKILL.md`).
 
 **Command placement:** `/question-scope` or `/question-scope L2` must be at the **start or end** of the message (after trim) — **not** mid-sentence (e.g. use `fix auth /question-scope L2`, not `Please /question-scope fix auth`).
 

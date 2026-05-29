@@ -25,7 +25,8 @@ Single source for common **composition** mistakes. Per-skill § **Composition (q
 | ----- | ------------------ |
 | **`architect-plan`** | **`executing-plans` (B)** |
 | **`writing-plans`** | **`subagent-driven-development` (A)** or **`executing-plans` (B)** if user chose B |
-| **`generate-test`** (L3–L4) | **`using-git-worktrees`** → Code + **`test-driven-development`** |
+| **`generate-test`** (L3–L4) | **`using-git-worktrees`** (default) → Code + **`test-driven-development`** |
+| **`subagent-driven-development` (A)** | Per-task TDD + verify; user commits unless asked | Agent commits without user request |
 | **`refactor-code`** | **`verification-before-completion`** |
 | **`explain-code`** → patch | **`test-driven-development`** |
 | **`dispatching-parallel-agents`** | Integrate → **`verification-before-completion`** |

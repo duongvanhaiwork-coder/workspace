@@ -7,6 +7,8 @@ description: >
 
 Write code review comments terse and actionable. One line per finding. Location, problem, fix. No throat-clearing.
 
+**Announce when applying:** `Using caveman-review on <diff/PR scope>.`
+
 ## Invocation modes
 
 See [COMPOSITION.md](../COMPOSITION.md) § Requires (hard). Skills **compose** unless noted in **Requires (hard)** below.
@@ -29,6 +31,16 @@ User asks to review a diff/PR — run this skill; no `/question-scope` required.
 - None
 
 **Instruction precedence:** User message → this skill → formal **`requesting-code-review`** only when user/AC/L4 supplement asks ([CONVENTIONS.md](../CONVENTIONS.md) § Invocation modes).
+
+### Composition (quick ref)
+
+| ✅ Do | ❌ Don't |
+| ----- | -------- |
+| Terse `L<n>: problem. fix.` on diff/PR | **`requesting-code-review`** when L4 formal gate or user asked formal review |
+| **L2+** Review step in phase MD when scope on | Per-task formal review when **`subagent-driven-development` (A)** already reviewed |
+| **NEXT:** **`requesting-code-review`** when L4 supplement requires formal pre-merge | Incoming PR comments — use **`receiving-code-review`** |
+
+Shared ✅/❌: [invocation-anti-patterns](../references/invocation-anti-patterns.md).
 
 ## Rules
 

@@ -37,6 +37,8 @@ BEFORE claiming any status or expressing satisfaction:
 Skip any step = lying, not verifying
 ```
 
+**Announce when applying:** `Using verification-before-completion before claiming <done|fixed|tests pass>.`
+
 ## Invocation modes
 
 See [COMPOSITION.md](../COMPOSITION.md) § Requires (hard). Skills **compose** unless noted in **Requires (hard)** below.
@@ -59,7 +61,16 @@ Required at L2 Verify, L3–L4 Verify + Regression, Ship, and after bug fixes; l
 - None
 
 **Instruction precedence:** User message → this skill → **`question-scope`** gates only when `/question-scope Lx` is active ([CONVENTIONS.md](../CONVENTIONS.md) § Invocation modes).
-See [CONVENTIONS.md](../CONVENTIONS.md) § Invocation modes.
+
+### Composition (quick ref)
+
+| ✅ Do | ❌ Don't |
+| ----- | -------- |
+| Fresh command output in **this** message before “done” / “fixed” / “pass” | Previous run, linter-only, or “should pass” |
+| Log Verify + Regression in phase MD when scope on | Skip Regression on L3–L4 when supplement requires it |
+| **NEXT:** **`finishing-a-development-branch`** when integrating work | Merge/PR claims without Step 1 verify here |
+
+Shared ✅/❌: [invocation-anti-patterns](../references/invocation-anti-patterns.md).
 
 ## Terminology (question-scope)
 

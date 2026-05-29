@@ -8,6 +8,8 @@ description: >
 
 # Requesting Code Review
 
+**Announce when applying:** `Using requesting-code-review for <branch/PR scope>.`
+
 Dispatch a code reviewer subagent to catch issues before they cascade. The reviewer gets precisely crafted context for evaluation — never your session's history. This keeps the reviewer focused on the work product, not your thought process, and preserves your own context for continued work.
 
 **Core principle:** Review early, review often.
@@ -34,6 +36,16 @@ User asks for formal review before merge, or after a feature slice — run this 
 - None
 
 **Instruction precedence:** User message → this skill → **`question-scope`** Ship/Review order only when scope active ([CONVENTIONS.md](../CONVENTIONS.md) § Invocation modes).
+
+### Composition (quick ref)
+
+| ✅ Do | ❌ Don't |
+| ----- | -------- |
+| **Once per branch** formal review (L4 default) | Per-task review when **`subagent-driven-development` (A)** already reviewed each task |
+| Tests green via **`verification-before-completion`** first | Review before fresh verify evidence |
+| **NEXT:** **`finishing-a-development-branch`** or merge per user | **`receiving-code-review`** — that is incoming feedback |
+
+Shared ✅/❌: [invocation-anti-patterns](../references/invocation-anti-patterns.md).
 
 ## With question-scope (vs `caveman-review`)
 

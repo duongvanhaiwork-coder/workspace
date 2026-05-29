@@ -10,7 +10,7 @@
 
 | Doc | Audience |
 | --- | -------- |
-| [CONVENTIONS.md](./CONVENTIONS.md) | Frontmatter, language policy, edit checklist |
+| [CONVENTIONS.md](./CONVENTIONS.md) | Frontmatter, language policy, **Rule authoring** (polarity), edit checklist |
 | [QUICKSTART.md](./QUICKSTART.md) | English workflow + prompt cheat sheet |
 | [RECOVERY.md](./RECOVERY.md) | Post-restore notes (what was merged / not restored) |
 | [cursor/workflow.mdc](./cursor/workflow.mdc) | Superpowers rule IDs (on demand) |

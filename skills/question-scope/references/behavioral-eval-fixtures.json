@@ -321,7 +321,7 @@
           "expect": [
             "Reply once: Detected /question-scopeL2 — use /question-scope L2 (or equivalent)",
             "Does not treat as preset L2 (no immediate L2 Spec/Patch without level pick)",
-            "Presents four options or asks user to resend with space before L; STOP before Patch"
+            "Presents level picker (2 or 4 labeled options) or asks user to resend with space before L; STOP before Patch"
           ]
         }
       ]

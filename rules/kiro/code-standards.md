@@ -17,9 +17,18 @@ Universal principles for every language and framework. For stack-specific patter
 - Remove unused imports and dead code in touched files.
 - Prefer explicit over clever implementations.
 
+## Change scope (task size)
+
+Not to be confused with **data access scope** (Security below).
+
+- **Do not** expand work beyond what the user requested (no drive-by refactors, unrelated files, or “while we’re here” features).
+- **Do not** refactor unrelated large files only to meet size limits or style nits.
+- Prefer the **smallest correct change** that meets acceptance criteria.
+- In touched files, **match existing** naming, layout, and patterns before introducing new abstractions.
+
 ### Size Limits (new code)
 
-Defaults for **new or heavily edited** code. Do not refactor unrelated large files only to meet limits.
+Defaults for **new or heavily edited** code (see **Change scope** above).
 
 | Unit | Soft limit | Hard limit |
 | ---- | ---- | ---- |
@@ -147,6 +156,11 @@ Defaults for **new or heavily edited** code. Do not refactor unrelated large fil
 
 ## Commits and PRs
 
+- **Do not** create git commits unless the user explicitly asked (or a user rule requires it for this task).
+- **Do not** push to remote unless the user explicitly asked.
+- **Never** force-push to `main` or `master`; warn before any other force-push.
+- **Do not** skip hooks (`--no-verify`, `--no-gpg-sign`) unless the user explicitly asked.
+- **Do not** amend a commit that was already pushed unless the user explicitly asked (amend needs force-push).
 - Follow the repo branch policy (feature branches, no direct commits to main/master).
 - One logical change per commit; do not commit secrets or generated env-specific files.
 - **PR body (when non-trivial):** what changed, **how to verify**, and **risk or rollback** so reviewers can decide quickly.

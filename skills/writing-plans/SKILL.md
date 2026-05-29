@@ -29,7 +29,16 @@ L3–L4 when plan is too large for **`architect-plan`** in phase file, user chos
 - Approved spec or explicit AC before large `docs/plans/…`
 
 **Instruction precedence:** User message → this skill → **`question-scope`** gates only when `/question-scope Lx` is active ([CONVENTIONS.md](../CONVENTIONS.md) § Invocation modes).
-See [CONVENTIONS.md](../CONVENTIONS.md) § Invocation modes.
+
+### Composition (quick ref)
+
+| ✅ Do | ❌ Don't |
+| ----- | -------- |
+| Large / zero-context `docs/plans/…` + user chose execute **(A)** | Run when **≤12** tasks fit **`architect-plan`** + **`executing-plans` (B)** |
+| Approved spec or explicit AC first | `docs/plans/…` alone does not force **A** without user choice |
+| **NEXT:** **`subagent-driven-development` (A)** or **`executing-plans` (B)** per plan header | Both A and B on the same plan |
+
+Shared ✅/❌: [invocation-anti-patterns](../references/invocation-anti-patterns.md).
 
 ## When to use (and when to stop)
 

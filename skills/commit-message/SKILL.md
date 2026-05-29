@@ -9,6 +9,8 @@ description: >
 
 # Branch Commit Message
 
+**Announce when applying:** `Using commit-message for LINKID commit/PR body.`
+
 > Output MUST include **Title** and **Description** per `templates/TEMPLATE.md` in this skill.
 
 ## Invocation modes
@@ -30,6 +32,15 @@ Not a pipeline phase; may run after **`finishing-a-development-branch`** on L3�
 ### Requires (hard)
 
 - None
+
+### Composition (quick ref)
+
+| ✅ Do | ❌ Don't |
+| ----- | -------- |
+| LINKID template from `templates/TEMPLATE.md` when user/repo requires | **`caveman-commit`** short Conventional format in same commit |
+| User asked for commit message / PR body | Create git commit unless user asked — **`code-standards`** |
+
+Shared ✅/❌: [invocation-anti-patterns](../references/invocation-anti-patterns.md).
 
 ## When to use
 

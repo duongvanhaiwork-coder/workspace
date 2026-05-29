@@ -76,7 +76,7 @@ What to do? → Ask only / no repo edits → /question-scope L1
 - [Presets & anti-patterns](#presets-and-anti-patterns)
 - [One-liner memory](#one-liner-memory)
 - [Choose level (L1–L4)](#choose-level-l1-l4)
-- [No L on command — agent presents 4 options](#no-l-on-command-agent-presents-four-options)
+- [No L on command — level picker (2 or 4)](#no-l-on-command--level-picker-2-or-4-options)
 - [Tokens — enable / disable & triggers](#tokens-enable-disable-triggers)
 - [Pipeline skill summary](#pipeline-skill-summary)
 - [Superpowers supplement by level](#superpowers-supplement-by-level)
@@ -167,7 +167,7 @@ English presets: [examples/sample-prompts.md § Presets](examples/sample-prompts
 | **Feature** | Bounded module/API/worker + AC | `/question-scope L3 — <description>` + AC; `docs/work/YYYY-MM-DD-<slug>/` |
 | **Feature (minimal SP)** | L3 but no full worktree/SP plan | `/question-scope L3 — <description>. sp:off` |
 | **System** | Multi-service, large migration | `/question-scope L4 — <description>` |
-| **Pick L** | Unsure L1–L4 — agent asks **4 options** (or **2** in gray zone) | `/question-scope` + description (command **without** L1–L4) |
+| **Pick L** | Unsure L1–L4 — agent runs **level picker** (**2** labeled options in gray zone, else **4**) | `/question-scope` + description (command **without** L1–L4) |
 | **Continue session** | Work in progress | `@docs/work/.../STATUS.md` + `/question-scope L3 — continue` |
 | **Vague idea** | No problem statement / AC yet | `/question-scope` + description; agent may run **orchestra-decision** before asking 4L |
 
@@ -315,7 +315,7 @@ Agent **does not** auto-pick a heavier level when a lighter one fits. Cursor: **
 
 ---
 
-## No L on command — agent presents 4 options
+## No L on command — level picker (2 or 4 options)
 
 When you type **`/question-scope`** + description and the command **does not** include `L1`…`L4` (i.e. not `/question-scope L2`):
 
@@ -337,7 +337,7 @@ When you type **`/question-scope`** + description and the command **does not** i
 /question-scope
 
 Need image upload API max 5MB, S3, URL TTL 7 days.
-→ Agent: Idea + Suggest + 4 options → you reply L3 → L3 pipeline starts
+→ Agent: Idea + Suggest + level picker (2 or 4) → you reply L3 → L3 pipeline starts
 ```
 
 ---

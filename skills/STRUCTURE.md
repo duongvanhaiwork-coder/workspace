@@ -4,7 +4,7 @@ Every skill under `skills/<skill-id>/` uses the **same folder pattern**. The age
 
 Portable rules: [CONVENTIONS.md](./CONVENTIONS.md). Composition (standalone + combine): [COMPOSITION.md](./COMPOSITION.md). Catalog: [README.md](./README.md).
 
-**Catalog-wide references** (not a skill ID): [references/invocation-anti-patterns.md](./references/invocation-anti-patterns.md) — shared ✅/❌ for composition; per-skill § **Composition (quick ref)** links here.
+**Catalog-wide references** (not a skill ID): [references/invocation-anti-patterns.md](./references/invocation-anti-patterns.md) — shared ✅/❌ for composition; per-skill § **Composition (quick ref)** links here. **Skills audit:** [references/SKILLS-AUDIT.md](./references/SKILLS-AUDIT.md).
 
 ---
 
@@ -58,18 +58,22 @@ skills/<skill-id>/
 
 | skill-id | README | prompts | references | templates | examples | scripts |
 | -------- | ------ | ------- | ---------- | --------- | -------- | ------- |
-| superpowers | — | — | ✓ | — | — | — |
-| question-scope | ✓ | — | ✓ | ✓ phases | ✓ sample-prompts | — |
-| brainstorming | — | ✓ | ✓ | — | — | ✓ |
+| superpowers | — | — | ✓ red-flags, invoke-flow | — | — | — |
+| question-scope | ✓ | — | ✓ + parsing/JIT/session | ✓ phases | ✓ sample-prompts | — |
+| brainstorming | — | ✓ | ✓ design-process, visual-companion | — | — | ✓ |
 | writing-plans | — | ✓ | — | — | — | — |
-| subagent-driven-development | — | ✓ | — | — | — | — |
-| requesting-code-review | — | ✓ | — | — | — | — |
-| systematic-debugging | — | — | ✓ | — | — | ✓ |
+| subagent-driven-development | — | ✓ | ✓ example-advantages-red-flags | — | — | — |
+| requesting-code-review | — | ✓ | ✓ feedback-playbook | — | — | — |
+| systematic-debugging | — | — | ✓ debugging-pressure | — | — | ✓ |
 | test-driven-development | — | — | ✓ | — | — | — |
-| writing-skills | — | — | ✓ | — | ✓ | ✓ |
+| writing-skills | — | — | ✓ discipline-cso, skill-md-skeleton | — | ✓ | ✓ |
+| test-driven-development | — | — | ✓ tdd-cycle, pressure, completion, anti-patterns | — | — | — |
+| using-git-worktrees | — | — | ✓ red-flags, worktree-steps | — | — | — |
+| finishing-a-development-branch | — | — | ✓ red-flags, ship-process | — | — | — |
 | commit-message | — | — | — | ✓ | — | — |
 | caveman, caveman-commit, caveman-review, cavecrew | ✓ | — | — | — | — | — |
-| architect-plan, analyze-impact, explain-code, refactor-code, generate-test, orchestra-decision, executing-plans, dispatching-parallel-agents, using-git-worktrees, verification-before-completion, finishing-a-development-branch, receiving-code-review | — | — | — | — | — | — |
+| architect-plan | — | — | ✓ plan-output-guide | — | — | — |
+| analyze-impact, explain-code, refactor-code, generate-test, orchestra-decision, executing-plans, dispatching-parallel-agents, verification-before-completion | — | — | — | — | — | — |
 
 **Minimal skills** (`SKILL.md` only): sufficient for short playbooks — no empty subfolders required.
 

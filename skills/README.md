@@ -4,7 +4,7 @@
 
 **Directory layout (all skills):** [STRUCTURE.md](STRUCTURE.md) — `SKILL.md`, `prompts/`, `references/`, `templates/`, …
 
-**Portable conventions:** [CONVENTIONS.md](CONVENTIONS.md) — skill IDs, handoffs, paths, canonical tools. **Composition (standalone + combine):** [COMPOSITION.md](COMPOSITION.md). **Handoff graph:** [SKILLS-REGISTRY.md](SKILLS-REGISTRY.md).
+**Portable conventions:** [CONVENTIONS.md](CONVENTIONS.md) — skill IDs, handoffs, paths, canonical tools, § Skill authoring (polarity). **Composition (standalone + combine):** [COMPOSITION.md](COMPOSITION.md). **Handoff graph:** [SKILLS-REGISTRY.md](SKILLS-REGISTRY.md). **Audit:** [references/SKILLS-AUDIT.md](references/SKILLS-AUDIT.md) — P0–P4 complete. After **rule** edits only: `make sync-ide` + reload Cursor (skills-only changes do not require sync).
 
 **Agent policy:** [../AGENTS.md](../AGENTS.md) · **Workflow rules:** load `@workflow` on demand · **Always-on:** `question-scope`, `code-standards` (+ stack rules by file type)
 

@@ -5,6 +5,8 @@ description: Low-loop decision orchestration using a 4-quadrant matrix and a min
 
 # Orchestra Decision (Low-loop Orchestrator)
 
+**Announce when applying:** `Using orchestra-decision to classify <topic>.`
+
 ## Instruction precedence (must follow)
 
 Always apply instructions in this order:
@@ -51,6 +53,8 @@ May run **before** L pick or early define when idea is vague; then return to sco
 | **NEXT:** **`brainstorming`** after direction when full design gate applies | Treat orchestra output as **`architect-plan`** or **`writing-plans`** |
 
 **NEXT:** `brainstorming` (L3–L4 spec) or active L pipeline · Shared ✅/❌: [invocation-anti-patterns](../references/invocation-anti-patterns.md)
+
+**Hard gate:** **Do not** write production code, open Spec/Plan phase files, or run **`brainstorming`** / **`architect-plan`** until the **Decide** phase completes and the user picks a direction (or explicitly waives orchestra).
 
 ## Quick start
 

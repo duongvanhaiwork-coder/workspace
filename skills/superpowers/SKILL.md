@@ -15,6 +15,8 @@ IF A SKILL APPLIES TO THAT WORK, YOU DO NOT HAVE A CHOICE. YOU MUST USE IT.
 **Exception:** catalog/meta, policy-only, or explain-only requests — see **When skills are optional** below; do not invoke brainstorming, writing-plans, or full feature flow for those.
 </EXTREMELY-IMPORTANT>
 
+**Announce when applying:** `Using superpowers to check applicable skills first.`
+
 ## Conventions (read first)
 
 Portable rules for every skill in this bundle: **[../CONVENTIONS.md](../CONVENTIONS.md)** — skill IDs, handoffs (`**NEXT:**` / `**REQUIRES:**`), artifact paths, canonical tool names. **Do not** use `superpowers:<id>` or vendor-only paths inside skill instructions.
@@ -53,10 +55,10 @@ None for this meta skill.
 
 | ✅ Do | ❌ Don't |
 | ----- | -------- |
-| **`/question-scope`** waiting for L → run **question-scope** only (Idea → options → STOP) | **`brainstorming`** or **`writing-plans`** while scope STOP waits for L1–L4 |
-| After level chosen → invoke skills at mapped phase per supplement | Substitute **`skill-check-first`** for the L1–L4 picker |
+| **`/question-scope`** waiting for L → run **question-scope** only (Idea → options → STOP) | Substitute **`skill-check-first`** for the L1–L4 picker |
+| After level chosen → invoke per supplement; [red-flags.md](references/red-flags.md); flow [invoke-flow.md](references/invoke-flow.md) | Force **`brainstorming`** / **`writing-plans`** on catalog or explain-only requests |
 | Bounded plan → **`architect-plan`** + **`executing-plans` (B)** | **`writing-plans`** when ≤12 tasks still fit architect pre-flight |
-| Large plan / explicit A → **`writing-plans`** → **`subagent-driven-development` (A)** | Auto-select **A** because `docs/plans/…` exists |
+| Large plan / explicit A → **`writing-plans`** → **`subagent-driven-development` (A)** | Skip **question-scope** when user sent **`/question-scope`** |
 
 **REQUIRES:** invoke matching skills when implementation applies · **ALT (plan):** `architect-plan` + B \| `writing-plans` + A
 
@@ -124,35 +126,7 @@ Skill bodies use **canonical** names (`invoke-skill`, `task-tracker`, `subagent`
 
 **Question-scope** when triggered: run level picker first — do not substitute other process skills for the L1–L4 STOP.
 
-```dot
-digraph skill_flow {
-    "User message received" [shape=doublecircle];
-    "About to plan-mode?" [shape=doublecircle];
-    "Already brainstormed?" [shape=diamond];
-    "Invoke brainstorming skill" [shape=box];
-    "Might any skill apply?" [shape=diamond];
-    "invoke-skill" [shape=box];
-    "Announce: Using skill-id to purpose" [shape=box];
-    "Has checklist?" [shape=diamond];
-    "task-tracker per item" [shape=box];
-    "Follow skill exactly" [shape=box];
-    "Respond (including clarifications)" [shape=doublecircle];
-
-    "About to plan-mode?" -> "Already brainstormed?";
-    "Already brainstormed?" -> "Invoke brainstorming skill" [label="no"];
-    "Already brainstormed?" -> "Might any skill apply?" [label="yes"];
-    "Invoke brainstorming skill" -> "Might any skill apply?";
-
-    "User message received" -> "Might any skill apply?";
-    "Might any skill apply?" -> "invoke-skill" [label="yes, even 1%"];
-    "Might any skill apply?" -> "Respond (including clarifications)" [label="definitely not"];
-    "invoke-skill" -> "Announce: Using skill-id to purpose";
-    "Announce: Using skill-id to purpose" -> "Has checklist?";
-    "Has checklist?" -> "task-tracker per item" [label="yes"];
-    "Has checklist?" -> "Follow skill exactly" [label="no"];
-    "task-tracker per item" -> "Follow skill exactly";
-}
-```
+Flowchart: [references/invoke-flow.md](references/invoke-flow.md) (render via `writing-skills/scripts/render-graphs.js` if needed).
 
 ## When skills are optional (do not over-invoke)
 
@@ -166,25 +140,9 @@ Skip the full skill-check loop when the request is clearly **non-implementation*
 
 **Still invoke** when any implementation, bugfix, refactor, test, or phased delivery applies — or when the user sends **`/question-scope`**.
 
-## Red Flags
+## Red flags
 
-These thoughts mean STOP—you're rationalizing:
-
-| Thought | Reality |
-|---------|---------|
-| "This is just a simple question" | If it's explain-only, use **When skills are optional**; if it changes code, check skills. |
-| "I need more context first" | Skill check comes BEFORE clarifying questions. |
-| "Let me explore the codebase first" | Skills tell you HOW to explore. Check first. |
-| "I can check git/files quickly" | Files lack conversation context. Check for skills. |
-| "Let me gather information first" | Skills tell you HOW to gather information. |
-| "This doesn't need a formal skill" | If a skill exists, use it. |
-| "I remember this skill" | Skills evolve. Read current version. |
-| "This doesn't count as a task" | Action = task. Check for skills. |
-| "The skill is overkill" | Simple things become complex. Use it. |
-| "I'll just do this one thing first" | Check BEFORE doing anything. |
-| "This feels productive" | Undisciplined action wastes time. Skills prevent this. |
-| "I know what that means" | Knowing the concept ≠ using the skill. Invoke it. |
-| "I'll run brainstorming / writing-plans while scope waits for L" | Scope STOP wins — pick L first, then supplement per level. |
+Full detail: [references/red-flags.md](references/red-flags.md).
 
 ## Skill Priority
 

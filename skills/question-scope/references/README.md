@@ -4,6 +4,11 @@ Load on demand (not every turn). **Naming:** kebab-case, one topic per file; see
 
 | File | When to read |
 | ---- | ------------ |
+| [CONTRACT-SYNC.md](./CONTRACT-SYNC.md) | Bump `qs-…` tag — sync rule + skill + `make sync-ide` |
+| [parsing-tokens.md](./parsing-tokens.md) | Parsing table, meta/audit, conflicting tokens, placement |
+| [session-continuity.md](./session-continuity.md) | `docs/work/…`, `STATUS.md`, phase files (L2–L4) |
+| [progressive-context-jit.md](./progressive-context-jit.md) | When to `@` files per level (JIT budgets) |
+| [level-picker-runtime.md](./level-picker-runtime.md) | STOP, sticky scope, escalation (option copy in [level-picker.md](./level-picker.md)) |
 | [gray-zones.md](./gray-zones.md) | L1/L2, L2/L3, L3/L4; **Quick checklist L2 vs L3**; AskQuestion pairs; L2 work-folder choice |
 | [level-picker.md](./level-picker.md) | Trigger flow (mermaid) + host UI (Cursor vs Kiro) |
 | [playbooks.md](./playbooks.md) | Step-by-step L1–L4 execution |
@@ -11,6 +16,7 @@ Load on demand (not every turn). **Naming:** kebab-case, one topic per file; see
 | [pipelines-skill-map.md](./pipelines-skill-map.md) | Full map — load **one § only** (level table or single §6 skill); §9 audit |
 | [superpowers-supplement.md](./superpowers-supplement.md) | L2+ supplement, rule IDs, plan A/B |
 | [pressure-scenarios.md](./pressure-scenarios.md) | Pressure scenarios + baseline results |
+| [SIMULATION-RUN.md](./SIMULATION-RUN.md) | Full case-by-case sim (`qs-2026-05-29.3`) — parsing #1–#24 + behavioral #1–#42 |
 | [behavioral-gates.md](./behavioral-gates.md) | Behavioral fixtures + live-paste eval runbook |
 | [behavioral-eval-fixtures.json](./behavioral-eval-fixtures.json) | Optional agent spot-check turns (schema v2) |
 | [l3-vs-l4-diff.md](./l3-vs-l4-diff.md) | L3 vs L4 decision checklist + examples |

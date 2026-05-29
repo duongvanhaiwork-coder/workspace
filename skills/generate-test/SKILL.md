@@ -31,17 +31,16 @@ L3–L4 **Test** gate before Code (`l3-02`, `l4-03`); L2 optional TC rows in `l2
 - None
 
 **Instruction precedence:** User message → this skill → **`question-scope`** gates only when `/question-scope Lx` is active ([CONVENTIONS.md](../CONVENTIONS.md) § Invocation modes).
-See [CONVENTIONS.md](../CONVENTIONS.md) § Invocation modes.
 
 ### Composition (quick ref)
 
 | ✅ Do | ❌ Don't |
 | ----- | -------- |
 | **L3–L4:** TC table + RED tests in Test phase **before Code** | Skip Test gate and write production code first |
-| Log RED failures; hand off GREEN to **`test-driven-development`** in Code | Implement production code here to green tests |
+| Log RED failures; **NEXT:** `using-git-worktrees` (L3–L4) → **`test-driven-development`** in Code | Implement production code here to green tests |
 | **L2:** optional TC rows in `l2-patch` then TDD in Patch | Duplicate full TC table in chat when phase file has TC-xx |
 
-**REQUIRES (coordinated L3–L4):** Test design before Code when scope + supplement on · **NEXT:** `test-driven-development` in Code
+**REQUIRES (coordinated L3–L4):** Test design before Code when scope + supplement on · **NEXT:** `using-git-worktrees` (L3–L4 default) → `test-driven-development` in Code
 
 Shared ✅/❌: [invocation-anti-patterns](../references/invocation-anti-patterns.md).
 

@@ -8,6 +8,8 @@ description: >
 
 **Announce when applying:** `Using explain-code to walk through <feature/symbol>.`
 
+**Stop when:** User has entry → flow → side effects (and unknowns stated); offer patch only if they ask.
+
 Before claiming tests or behavior are verified, use **`verification-before-completion`** when the user asked for proof — this skill is read-only explanation.
 
 ## Invocation modes

@@ -4,7 +4,14 @@
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+# shellcheck source=lib/question-scope-contract.sh
+source "$ROOT/scripts/lib/question-scope-contract.sh"
 FIXTURES="$ROOT/skills/question-scope/references/behavioral-eval-fixtures.json"
+RECEIVING_FEEDBACK="$ROOT/skills/receiving-code-review/references/feedback-playbook.md"
+PARSING_TOKENS="$ROOT/skills/question-scope/references/parsing-tokens.md"
+LEVEL_PICKER_RUNTIME="$ROOT/skills/question-scope/references/level-picker-runtime.md"
+TDD_PRESSURE="$ROOT/skills/test-driven-development/references/pressure-and-examples.md"
+SHIP_PROCESS="$ROOT/skills/finishing-a-development-branch/references/ship-process.md"
 SKILL="$ROOT/skills/question-scope/SKILL.md"
 GRAY="$ROOT/skills/question-scope/references/gray-zones.md"
 LEVEL_PICKER="$ROOT/skills/question-scope/references/level-picker.md"
@@ -58,12 +65,36 @@ require_pattern() {
   fi
 }
 
+require_pattern_any() {
+  local name="$1"
+  local pattern="$2"
+  shift 2
+  tests=$((tests + 1))
+  if qs_grep_any "$pattern" "$@"; then
+    pass "$name"
+  else
+    fail "$name — pattern not in any of: $*"
+  fi
+}
+
+require_qs_contract() {
+  local name="$1"
+  local pattern="$2"
+  tests=$((tests + 1))
+  if qs_contract_grep "$pattern"; then
+    pass "$name"
+  else
+    fail "$name — pattern not in question-scope contract files: $pattern"
+  fi
+}
+
 echo "== Behavioral contract anchors (SKILL + templates) =="
 
 # Scenario 1 — level pick L2 vs L3 (export CSV)
 require_pattern "#1 do not auto-lock" "$SKILL" "do not auto-lock"
 require_pattern "#1 Level picker one rule" "$SKILL" "Level picker (one rule)"
-require_pattern "#1 exactly two adjacent" "$SKILL" "Exactly two"
+require_pattern_any "#1 exactly two adjacent" "Exactly two" \
+  "$SKILL" "$GRAY" "$LEVEL_PICKER_RUNTIME"
 require_pattern "#1 export gray" "$GRAY" "users/export"
 require_pattern "#1 gray heavier" "$GRAY" "heavier"
 
@@ -90,7 +121,8 @@ require_pattern "#7 two-option in SKILL" "$SKILL" "two-option"
 require_pattern "#7 STOP after options" "$SKILL" "STOP"
 require_pattern "#7 no heavier default gray" "$GRAY" "heavier"
 require_pattern "#7 AskQuestion gray" "$GRAY" "AskQuestion"
-require_pattern "#7 option copy in SKILL" "$SKILL" "Option copy (required)"
+require_pattern_any "#7 option copy in SKILL" "Option copy \\(required\\)" \
+  "$SKILL" "$LEVEL_PICKER" "$LEVEL_PICKER_RUNTIME"
 require_pattern "#7 option copy canonical" "$LEVEL_PICKER" "Option copy (required"
 require_pattern "#7 AskQuestion label" "$LEVEL_PICKER" "AskQuestion"
 
@@ -103,22 +135,24 @@ require_pattern "#9 ? keyword in SKILL" "$SKILL" '?` + keyword'
 require_pattern "#10 level Lx in SKILL" "$SKILL" "level L1"
 
 # Scenario 11 — mid-sentence
-require_pattern "#11 Mid-sentence in SKILL" "$SKILL" "Mid-sentence"
+require_pattern_any "#11 Mid-sentence in SKILL" "Mid-sentence" \
+  "$SKILL" "$PARSING_TOKENS"
 require_pattern "#11 start or end placement" "$SKILL" "message start or end"
 
 # Scenario 14 — glued L
-require_pattern "#14 glued hint SKILL" "$SKILL" "Detected /question-scopeL2"
 require_pattern "#14 glued hint rule" "$RULE" "Detected /question-scopeL2"
-require_pattern "#14 glued hint SKILL" "$SKILL" "Detected /question-scopeL2"
-require_pattern "#14 glued parsing row" "$SKILL" "/question-scopeL1"
+require_qs_contract "#14 glued hint contract" "Detected /question-scopeL2"
+require_pattern "#14 glued parsing row" "$PARSING_TOKENS" "/question-scopeL1"
 
 # Scenario 15 / 19 / 21 — meta
 require_pattern "#15 Meta discussion" "$SKILL" "Meta discussion"
-require_pattern "#19 đánh giá question-scope" "$SKILL" "đánh giá question-scope"
-require_pattern "#21 Meta wins" "$SKILL" "Meta wins"
+require_pattern_any "#19 đánh giá question-scope" "đánh giá question-scope" \
+  "$SKILL" "$PARSING_TOKENS"
+require_pattern_any "#21 Meta wins" "Meta wins" "$SKILL" "$PARSING_TOKENS"
 
 require_pattern "#23 qs:meta in SKILL" "$SKILL" "qs:meta"
-require_pattern "#23 explicit audit tokens" "$SKILL" "Explicit audit tokens"
+require_pattern_any "#23 explicit audit tokens" "Explicit audit tokens" \
+  "$SKILL" "$PARSING_TOKENS"
 
 echo ""
 echo "== Behavioral eval tooling =="
@@ -218,7 +252,8 @@ require_pattern "#24 fixture l3_bounded" "$FIXTURES" "l3_bounded_no_writing_plan
 
 # Scenario 25 — L2 rename → no new TDD
 require_pattern "#25 TDD When NOT rename" "$TDD" "When NOT"
-require_pattern "#25 TDD rename red flag" "$TDD" "rename/move/format"
+require_pattern_any "#25 TDD rename red flag" "rename/move/format" \
+  "$TDD" "$TDD_PRESSURE"
 require_pattern "#25 playbook pure refactor" "$PLAYBOOKS" "Pure refactor"
 require_pattern "#25 fixture l2_rename" "$FIXTURES" "l2_rename_no_new_tdd"
 
@@ -274,10 +309,12 @@ require_pattern "l4-04 prove verify skill" "$L4_PROVE" "verification-before-comp
 require_pattern "finishing fresh verify" "$FINISH_BRANCH" "verification-before-completion"
 
 # Scenario 32–34 — Ship
-require_pattern "#32 finishing tests fail" "$FINISH_BRANCH" "Cannot proceed"
+require_pattern_any "#32 finishing tests fail" "Cannot proceed" \
+  "$FINISH_BRANCH" "$SHIP_PROCESS"
 require_pattern "#32 fixture ship_no_merge" "$FIXTURES" "ship_no_merge_when_tests_fail"
 
-require_pattern "#33 finishing PR worktree" "$FINISH_BRANCH" "Do NOT clean up worktree"
+require_pattern_any "#33 finishing PR worktree" "Do NOT clean up worktree" \
+  "$FINISH_BRANCH" "$SHIP_PROCESS"
 require_pattern "#33 fixture ship_pr_worktree" "$FIXTURES" "ship_pr_keeps_worktree"
 
 require_pattern "#34 executing not Ship yet" "$EXEC_PLANS" "not Ship yet"
@@ -300,7 +337,7 @@ require_pattern "#37 analyze search-based" "$ANALYZE_IMPACT" "search-based"
 require_pattern "#37 analyze not graph-complete" "$ANALYZE_IMPACT" "not graph-complete"
 require_pattern "#37 fixture analyze_fallback" "$FIXTURES" "analyze_impact_search_fallback_honest"
 
-require_pattern "question-scope Impact analysis row" "$SKILL" "Impact analysis"
+require_qs_contract "question-scope Impact analysis row" "Impact analysis"
 require_pattern "analyze-impact not Regression" "$ANALYZE_IMPACT" "replace Regression"
 
 # Scenario 38–40 — requesting-code-review
@@ -320,8 +357,8 @@ require_pattern "l4-04 prove caveman requesting" "$L4_PROVE" "requesting-code-re
 require_pattern "l4-05 pre-merge review section" "$ROOT/skills/question-scope/templates/phases/l4/l4-05-ship.md" "Pre-merge review"
 
 # Scenario 41–42 — receiving-code-review (incoming PR)
-require_pattern "question-scope Feedback PR row" "$SKILL" "receiving-code-review"
-require_pattern "question-scope incoming rule" "$SKILL" "incoming-code-review"
+require_qs_contract "question-scope Feedback PR row" "receiving-code-review"
+require_qs_contract "question-scope incoming rule" "incoming-code-review"
 require_pattern "#41 receiving With question-scope" "$RECEIVING_REVIEW" "incoming-code-review"
 require_pattern "#41 receiving verify before" "$RECEIVING_REVIEW" "Verify before implementing"
 require_pattern "#41 superpowers incoming" "$ROOT/skills/superpowers/SKILL.md" "receiving-code-review"
@@ -331,8 +368,10 @@ require_pattern "#41 l4 PR feedback section" "$L4_PROVE" "receiving-code-review"
 require_pattern "#41 playbooks PR feedback" "$PLAYBOOKS" "receiving-code-review"
 require_pattern "#41 fixture incoming_verify" "$FIXTURES" "incoming_pr_verify_before_implement"
 
-require_pattern "#42 receiving Clarify All" "$RECEIVING_REVIEW" "Clarify All Items"
-require_pattern "#42 receiving need clarification" "$RECEIVING_REVIEW" "Need clarification"
+require_pattern_any "#42 receiving Clarify All" "Clarify [Aa]ll [Ii]tems" \
+  "$RECEIVING_REVIEW" "$RECEIVING_FEEDBACK"
+require_pattern_any "#42 receiving need clarification" "Need clarification" \
+  "$RECEIVING_REVIEW" "$RECEIVING_FEEDBACK"
 require_pattern "#42 fixture incoming_clarify" "$FIXTURES" "incoming_pr_clarify_before_partial_fix"
 
 echo ""

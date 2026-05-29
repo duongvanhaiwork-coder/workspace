@@ -103,7 +103,7 @@ Two-week backward compatibility; rollout + rollback in docs/work/.
 Need product image upload max 5MB, store on S3, public URL with 7-day TTL.
 ```
 
-After agent shows 4 options: `L3` or `/question-scope L3 — continue as described above.`
+After agent runs level picker (2 or 4 labeled options): `L3` or `/question-scope L3 — continue as described above.`
 
 ## Opt-out & session
 

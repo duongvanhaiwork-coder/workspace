@@ -9,6 +9,8 @@ description: >
 
 Write commit messages terse and exact. Conventional Commits format. No fluff. Why over what.
 
+**Announce when applying:** `Using caveman-commit for short Conventional message.`
+
 ## Invocation modes
 
 See [COMPOSITION.md](../COMPOSITION.md).
@@ -28,6 +30,15 @@ Not a pipeline phase; anytime.
 ### Requires (hard)
 
 - None
+
+### Composition (quick ref)
+
+| ✅ Do | ❌ Don't |
+| ----- | -------- |
+| `feat`/`fix`/`refactor` subject ≤50 chars when user wants short commit | **`commit-message`** LINKID template in same commit |
+| User asked for message or `/commit` | Create git commit unless user asked — **`code-standards`** |
+
+Shared ✅/❌: [invocation-anti-patterns](../references/invocation-anti-patterns.md).
 
 ## Rules
 

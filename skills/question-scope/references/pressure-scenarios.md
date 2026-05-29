@@ -18,18 +18,18 @@ Reference table for triggers, gates, and gray-zone logic. Contract: [SKILL.md](.
 | 10 | `level L2 — fix X` (no `/question-scope`) | **No** scope — use `/question-scope L2` |
 | 11 | `Please /question-scope fix auth` (mid-sentence) | **No** — token must be at **start or end**; use `/question-scope L2 — fix auth` or `fix auth /question-scope L2` |
 | 11b | `fix auth /question-scope L2` (end placement) | **Yes** — priority 1 at L2 |
-| 11c | `Add export CSV /question-scope` (end, no L) | **Yes** — priority 2 (four options) |
+| 11c | `Add export CSV /question-scope` (end, no L) | **Yes** — priority 2; **L2 vs L3** two-option picker (export gray — same as #1) |
 | 16 | `When teaching, say Please /question-scope fix auth as an example` | **No** — mid-sentence (meta optional) |
 | 12 | `/question-scope l2` (lowercase L) | **Yes** — priority 1 at L2 |
 | 13 | `/question-scope L2` + `quick:` same message | Same as #8 — opt-out wins |
-| 14 | `/question-scopeL2 — fix X` (no space before L) | **No** preset L2 — four options; tell user correct form |
+| 14 | `/question-scopeL2 — fix X` (no space before L) | **No** preset L2 — hint once; level picker (2 or 4); tell user correct form |
 | 15 | `Kiểm tra skills/question-scope` or `Don't use /question-scope for this audit` | **No** scope — meta/audit (optional `qs:off`) |
 | 17 | `qs:off — …` or `no-scope — …` alone (no `/question-scope`) | **No** scope — normal chat |
 | 18 | `?fix api` or `?explain` (no `/question-scope`) | **No** scope — legacy `?` + keyword does not activate |
 | 19 | `Kiểm tra lại rule question-scope` / `Đánh giá question-scope` (no path) | **No** scope — meta (Vietnamese audit phrases) |
 | 20 | `Ship it. quick: typo only` (`quick:` not at line start) | **No** scope — `(^|\s)quick:` opt-out |
 | 21 | `/question-scope — kiểm tra lại về rule` + path `skills/question-scope` | **No** scope — meta beats token |
-| 22 | `/question-scopeL2 — fix X` | **No** preset L2 — four options; agent says `Detected /question-scopeL2 — use /question-scope L2` once |
+| 22 | `/question-scopeL2 — fix X` | **No** preset L2 — hint once; level picker (2 or 4); agent says `Detected /question-scopeL2 — use /question-scope L2` once |
 | 23 | `qs:meta — review question-scope rules` | **No** scope — explicit audit token |
 | 23b | `/question-scope L2 — fix X. qs:meta — audit only` | **No** scope — `qs:meta` beats `/question-scope Lx` |
 | 24 | `audit: đánh giá skills/question-scope` | **No** scope — explicit `audit:` token |
@@ -53,3 +53,4 @@ Fixtures **1, 4, 4b, 6, 6b, 6c, 7, 8, 9, 10, 11, 14, 15, 19, 21, 23, 24, 25, 26,
 | Date | Agent / chat | Scenarios | Result | Notes |
 | ---- | ------------ | --------- | ------ | ----- |
 | 2026-05-28 | meta audit chat | 15, 19, 21 | PASS (meta) | Path + VI audit phrases — scope correctly off |
+| 2026-05-29 | contract sim (`qs-2026-05-29.3`) | Parsing #1–#24 + fixtures 1–42 | PASS (sim) | Full log: [SIMULATION-RUN.md](./SIMULATION-RUN.md); parser: `verify-question-scope-triggers.sh`; spot-check text #1, #6, #7, #8, #14 |

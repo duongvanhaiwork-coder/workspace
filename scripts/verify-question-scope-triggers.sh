@@ -5,6 +5,8 @@
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+# shellcheck source=lib/question-scope-contract.sh
+source "$ROOT/scripts/lib/question-scope-contract.sh"
 SKILL="$ROOT/skills/question-scope/SKILL.md"
 RULE="$ROOT/rules/cursor/question-scope.mdc"
 README_HUMAN="$ROOT/skills/question-scope/README.md"
@@ -327,10 +329,10 @@ check_repo_docs() {
   fi
 
   tests=$((tests + 1))
-  if grep -q 'Detected /question-scopeL2' "$SKILL" && grep -q 'Detected /question-scopeL2' "$RULE"; then
-    pass "glued-L user hint in rule + SKILL"
+  if grep -q 'Detected /question-scopeL2' "$RULE" && qs_contract_grep 'Detected /question-scopeL2'; then
+    pass "glued-L user hint in rule + contract files"
   else
-    fail "glued-L user hint missing in rule or SKILL"
+    fail "glued-L user hint missing in rule or question-scope contract files"
   fi
 
   tests=$((tests + 1))
@@ -348,17 +350,17 @@ check_repo_docs() {
   fi
 
   tests=$((tests + 1))
-  if grep -q 'kiểm tra lại về rule' "$SKILL"; then
+  if qs_contract_grep 'kiểm tra lại về rule'; then
     pass "SKILL meta: kiểm tra lại về rule"
   else
-    fail "SKILL missing meta phrase kiểm tra lại về rule"
+    fail "contract files missing meta phrase kiểm tra lại về rule"
   fi
 
   tests=$((tests + 1))
-  if grep -q 'discussing.*without intent to run' "$SKILL"; then
+  if qs_contract_grep 'discussing.*without intent to run'; then
     pass "SKILL meta: discuss without run intent"
   else
-    fail "SKILL missing meta: discuss without run intent"
+    fail "contract files missing meta: discuss without run intent"
   fi
 
   tests=$((tests + 1))

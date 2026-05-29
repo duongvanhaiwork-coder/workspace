@@ -33,7 +33,6 @@ Default **execute (B)** for L3–L4 when scope active; plan from **`architect-pl
 - Written plan with executable tasks (chat, `docs/plans/…`, or phase `### Tasks`)
 
 **Instruction precedence:** User message → this skill → **`question-scope`** gates only when `/question-scope Lx` is active ([CONVENTIONS.md](../CONVENTIONS.md) § Invocation modes).
-See [CONVENTIONS.md](../CONVENTIONS.md) § Invocation modes.
 
 ### Composition (quick ref)
 

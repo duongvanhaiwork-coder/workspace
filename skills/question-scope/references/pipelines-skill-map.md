@@ -1,6 +1,6 @@
 # Pipelines & skill map (question-scope)
 
-**Contract version:** `qs-2026-05-28.5` (keep in sync with [SKILL.md](../SKILL.md) when pipelines change).
+**Contract version:** `qs-2026-05-29.3` (keep in sync with [SKILL.md](../SKILL.md) when pipelines change).
 
 > **Token discipline:** Do **not** read this entire file (~700 lines) each session.  
 > **Default during work:** [pipelines-quickref.md](./pipelines-quickref.md) (~120 lines).  
@@ -46,8 +46,8 @@ flowchart TD
   G -->|yes| O[orchestra-decision §6.1]
   O --> F
   G -->|no| H{Gray pair only?}
-  H -->|yes| T[2 options STOP]
-  H -->|no| I[4 options STOP]
+  H -->|yes| T[2-option level picker STOP]
+  H -->|no| I[4-option level picker STOP]
   T --> J[User picks L1-L4]
   I --> J
   J --> RUN
@@ -460,7 +460,7 @@ Load each skill’s `SKILL.md` for full rules. Subsections use the same shape:
 | **Purpose (why this skill exists)** | Controlled git endgame (merge/PR/discard) |
 | **Invoked when** | After `l3-03` / `l4-05` rollout+rollback filled; tests green |
 | **Inputs** | Phase Ship content; worktree path if any |
-| **Agent does (concrete)** | 1. Re-run full test suite ([§6.13](#613-verification-before-completion)). 2. Show 4 options. 3. On user pick: merge / `gh pr create` / keep / discard + worktree cleanup per skill |
+| **Agent does (concrete)** | 1. Re-run full test suite ([§6.13](#613-verification-before-completion)). 2. Present **`finishing-a-development-branch`** menu (**4 git** options — merge / PR / keep / discard; not L1–L4 level picker). 3. On user pick: execute choice + worktree cleanup per skill |
 | **Outputs** | PR URL or merge note in Ship file; `STATUS.md` complete |
 | **Done when** | User choice executed; worktree state documented |
 | **Must not** | Skip rollout section; merge on red tests |

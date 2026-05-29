@@ -28,9 +28,19 @@ Independent of L1–L4; does not replace scope gates.
 
 - None
 
+### Composition (quick ref)
+
+| ✅ Do | ❌ Don't |
+| ----- | -------- |
+| Terse overlay when user enabled caveman mode | Apply ultra mode to every response unless user asked |
+| Keep technical substance + code blocks exact | Drop errors, security gates, or verify evidence |
+| Composes with any technical skill | Replace **`question-scope`** STOP or TDD Iron Law |
+
+Shared ✅/❌: [invocation-anti-patterns](../references/invocation-anti-patterns.md).
+
 ## Persistence
 
-ACTIVE EVERY RESPONSE. No revert after many turns. No filler drift. Still active if unsure. Off only: "stop caveman" / "normal mode".
+Active **only when the user enabled caveman mode** (this turn or earlier in the thread). No revert after many turns while mode is on. Off when user says "stop caveman" / "normal mode" / equivalent. Do not apply ultra compression to normal replies unless mode is on.
 
 Default: **full**. Switch: `/caveman lite|full|ultra`.
 

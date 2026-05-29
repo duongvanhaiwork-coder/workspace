@@ -92,6 +92,44 @@ Always-on rules stay **short**. Full pipelines live in **skills** (`skills/<id>/
 
 **Do not:** paste full L3/L4 pipelines into `.mdc`; set `workflow.mdc` to `alwaysApply: true` without team agreement; add Vietnamese prose in rule bodies (see **Language** above).
 
+### Goal → polarity (how agents weight instructions)
+
+Models tend to treat **negatives** as hard constraints and **positives** as planning context. Match polarity to the goal:
+
+| Goal | Prefer | Example phrasing |
+| ---- | ------ | ---------------- |
+| Block dangerous behavior | **Negative** | `NEVER log tokens`; `Do not commit unless the user asked` |
+| Steer workflow / multi-step work | **Positive** | `When scope is on → follow supplement table`; `NEXT → verify-before-done` |
+| Coding style / conventions | **Positive** | `Match existing layout`; `Prefer early returns` |
+| Security / auth boundary | **Negative** | `Parameterized queries only`; `deny by default` |
+| Scope control (task size) | **Mixed** | Negative: `Do not expand beyond the request`; positive: `Prefer the smallest correct change` |
+
+### Two-line templates
+
+```text
+Negative:  NEVER <forbidden action> (no exceptions on <path>).
+Positive:  When <trigger> → <required action> (see skill `<skill-id>`).
+Mixed:     Do not <creep>. Prefer <minimal correct approach> in touched files.
+```
+
+### Anti-patterns
+
+- **Too many negatives** in one always-on rule → agent freezes or over-asks; cap at ~five scoped negatives per rule (see checklist).
+- **Positive disguised as negative** → `avoid X unless necessary` still allows X; use `Do not X` for boundaries.
+- **Vague positive for boundaries** → `be careful with secrets` → use `Never log tokens, passwords, or API keys`.
+- **Full pipelines in `.mdc`** → put steps in skills; rules only gate and point.
+
+### Where polarity lives today
+
+| File | Role | Polarity mix |
+| ---- | ---- | ------------- |
+| `question-scope.mdc` | Triggers, STOP, opt-outs | Mixed (trigger table + negatives) |
+| `code-standards.mdc` | Style, security, change scope, git gates | Positive (Clean Code) + negative (Security, Change scope, Commits) |
+| `workflow.mdc` | Handoffs, flows | Positive (flows) + **Hard gates** (negatives) |
+| Stack `*.mdc` | Framework patterns | Mostly positive; security lines negative |
+
+Localized human guide (optional): [../docs/WORKFLOW-QUICKSTART.md](../docs/WORKFLOW-QUICKSTART.md). Skill authors: [../skills/CONVENTIONS.md](../skills/CONVENTIONS.md) § Rules vs skills.
+
 ## Editing checklist
 
 - [ ] Change only `rules/cursor/*.mdc`

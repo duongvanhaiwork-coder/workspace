@@ -5,6 +5,8 @@ description: Use when facing 2+ independent tasks that can be worked on without 
 
 # Dispatching Parallel Agents
 
+**Announce when applying:** `Using dispatching-parallel-agents for <N> independent domain(s).`
+
 ## Invocation modes
 
 See [COMPOSITION.md](../COMPOSITION.md) § Requires (hard). Skills **compose** unless noted in **Requires (hard)** below.
@@ -24,7 +26,7 @@ Bug **Iterate** or multi-domain failures — same pattern under scope; one agent
 
 ### Requires (hard)
 
-- None
+- **`systematic-debugging`** (root cause per domain) before integrating fixes from parallel agents
 
 **Instruction precedence:** User message → this skill → **`question-scope`** overlay when scope active ([CONVENTIONS.md](../CONVENTIONS.md) § Invocation modes).
 

@@ -90,7 +90,7 @@ When **both** levels in a pair above fit and the user has **not** sent **`/quest
 | **L2 vs L3** | **L2** — Patch: less ceremony; scoped Verify; rollup MD OK | **L3** — Small feature: Plan, test before code, Regression + Ship |
 | **L3 vs L4** | **L3** — Bounded feature: one service/repo; risks in define | **L4** — Large system: multi-service; formal Validate before heavy design |
 
-If **three or more** levels could fit, use the normal **four options** in [SKILL.md § Scope Level](../SKILL.md#scope-level--user-chooses-do-not-auto-lock) instead of a two-option question.
+If **three or more** levels could fit, use the normal **four-option** level picker in [SKILL.md § Scope Level](../SKILL.md#scope-level--user-chooses-do-not-auto-lock); when only one gray pair fits (table above), use **two** labeled options instead.
 
 **After the user picks:** emit header `Level: Lx | Pipeline: …` and run that level only. Fill the **30-second level check** in [`l2-patch.md`](../templates/phases/l2/l2-patch.md) or [`l3-01-define.md`](../templates/phases/l3/l3-01-define.md) when creating those files.
 

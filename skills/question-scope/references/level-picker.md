@@ -15,8 +15,9 @@ flowchart TD
   D -->|no| E{/question-scope at start or end?}
   E -->|no| Z
   E -->|yes| G{/question-scopeL1-L4 glued no space?}
-  G -->|yes| WARN[4 options STOP + tell user add space before L]
+  G -->|yes| HINT[Hint once - no preset Lx]
   G -->|no| F[Idea + Suggest Lx]
+  HINT --> F
   F --> H{Only one gray pair fits?}
   H -->|no| I[4 options L1-L4 STOP]
   H -->|L1 vs L2| T[Exactly 2 options STOP]
@@ -25,7 +26,6 @@ flowchart TD
   T --> J[User picks]
   I --> J
   J --> RUN
-  WARN --> J
 ```
 
 Details: [gray-zones.md](./gray-zones.md) · triggers: [SKILL.md](../SKILL.md#when-this-skill-applies)

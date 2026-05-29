@@ -49,6 +49,38 @@ Do **not** embed `rules/…` or `../rules/…` file paths in `SKILL.md`, `refere
 
 Phase → rule ID map: **`question-scope`** → `references/superpowers-supplement.md`.
 
+## Rules vs skills (where content lives)
+
+| Layer | Edit | Holds |
+| ----- | ---- | ----- |
+| **Rules** | `rules/cursor/*.mdc` only → `make sync-ide` | Triggers, STOP, hard gates, short WHEN→THEN tables |
+| **Skills** | `skills/<skill-id>/SKILL.md` | Multi-step playbooks, TC tables, pressure scenarios |
+
+**Polarity (negative vs positive phrasing):** [rules/CONVENTIONS.md](../rules/CONVENTIONS.md) § **Rule authoring** — goal→polarity table, templates, anti-patterns. When trimming a skill, move gates into rules; keep steps in skills.
+
+## Skill authoring (positive + negative)
+
+Skills are **playbooks** (multi-step, judgment). Rules are **gates** (short, always-on). Do not paste rule trigger tables into `SKILL.md`.
+
+| Goal | Prefer in skill | Example |
+| ---- | ---------------- | ------- |
+| Block wrong phase (no code before spec) | **Negative** | `Do not implement until user approves design` |
+| Step-by-step workflow | **Positive** | `1. Run repro test 2. …` |
+| Discipline (TDD, verify, debug) | **Negative** gates + **positive** cycle | Iron Law + RED→GREEN→REFACTOR |
+| Scope / handoff | **Mixed** | `Do not skip Regression` + `NEXT: verification-before-completion` |
+| Security / git / secrets | **One line + rule ID** | Follow **`code-standards`** — do not restate full Security section |
+
+**Checklist for a new or edited skill:**
+
+1. YAML `description`: **Use when…** (symptoms only — not workflow summary; see `writing-skills`).
+2. § **Invocation modes**: standalone, coordinated, Combines, Requires (hard).
+3. § **Composition (quick ref)**: 3–6 rows + link [references/invocation-anti-patterns.md](./references/invocation-anti-patterns.md).
+4. **Announce** line when the skill is non-obvious (`Using <skill-id> to …`).
+5. **Stop when** / **NEXT** for handoff-heavy skills.
+6. Heavy tables, pressure scenarios, CSO → `references/` not inline bloat.
+
+**Audit:** [references/SKILLS-AUDIT.md](./references/SKILLS-AUDIT.md).
+
 ## Referencing other skills
 
 Portable cross-skill rules for `SKILL.md`, `references/`, `templates/`, and `examples/`:

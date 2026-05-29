@@ -11,6 +11,8 @@ description: >
 
 Cavecrew = **three roles** with **compressed** tool output (caveman-style), so results injected into the main thread cost fewer tokens than long prose. Same jobs as generic “explore / edit / review” flows; names like `cavecrew-investigator` are **one possible preset mapping** in Cursor, not a universal product ID.
 
+**Announce when applying:** `Using cavecrew — <locate|build|review> role.`
+
 ## Invocation modes
 
 See [COMPOSITION.md](../COMPOSITION.md).
