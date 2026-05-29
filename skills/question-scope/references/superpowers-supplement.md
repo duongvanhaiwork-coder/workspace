@@ -13,7 +13,7 @@ Load **after** level is chosen (L2–L4). STOP gates and level budgets in [SKILL
 | Level | Question-scope (primary) | Superpowers supplement |
 | ----- | ------------------------ | ---------------------- |
 | L1 | Answer; no patch | None (optional `explain-code`) |
-| L2 | Spec → Patch → Verify → Review | `tdd-during-implementation` if behavior changes; `verify-before-done` before “done”; skip `design-approval-gate` / `implementation-plan` unless user escalates to L3 |
+| L2 | Spec (+ TC if behavior change) → Patch → Verify → Review | `tdd-during-implementation` if behavior changes; `verify-before-done` before “done”; skip `design-approval-gate` / `implementation-plan` unless user escalates to L3 |
 | L3 | Spec → Plan → Test → Code → … → phased `docs/work/…` | `isolated-workspace` before code; `tdd-during-implementation`; **default execute:** `execute-inline-checkpoints` (B); `execute-via-subagents` (A) **only** with `writing-plans` or user asks for subagents; `verify-before-done`; `finish-branch-options` at ship |
 | L4 | Full 15-step + architecture/AI/delivery layers | Near-full feature flow + `design-approval-gate` and `implementation-plan` when scope is large; `outgoing-code-review` before merge when applicable |
 

@@ -10,9 +10,11 @@ Load on demand (not every turn). **Naming:** kebab-case, one topic per file; see
 | [progressive-context-jit.md](./progressive-context-jit.md) | When to `@` files per level (JIT budgets) |
 | [ide-aligned-practices.md](./ide-aligned-practices.md) | IDE-aligned rules; other skills cite **IDE-ALIGNED §N** (no `../` paths) — [CONVENTIONS.md](../../CONVENTIONS.md) |
 | [clarifying-options.md](./clarifying-options.md) | **§12** — how-to-build forks; 2–4 options + **Other**; scope active only |
+| [confirmation-prompts.md](./confirmation-prompts.md) | **Rich Idea/Suggest + options** (level pick, §12, escalation, after-brainstorming dedup) — required agent shape |
 | [level-picker-runtime.md](./level-picker-runtime.md) | STOP, sticky scope, escalation (option copy in [level-picker.md](./level-picker.md)) |
-| [gray-zones.md](./gray-zones.md) | L1/L2, L2/L3, L3/L4; **Quick checklist L2 vs L3**; AskQuestion pairs; L2 work-folder choice |
-| [level-picker.md](./level-picker.md) | Trigger flow (mermaid) + host UI (Cursor vs Kiro) |
+| [gray-zones.md](./gray-zones.md) | L1/L2, L2/L3, L3/L4; **Quick checklist L2 vs L3**; two-option level pick (all hosts); L2 work-folder choice |
+| [host-ui.md](./host-ui.md) | **All AI IDEs** — structured picker vs numbered list; universal STOP |
+| [level-picker.md](./level-picker.md) | Trigger flow (mermaid) + level option copy |
 | [playbooks.md](./playbooks.md) | Step-by-step L1–L4 execution |
 | **[pipelines-quickref.md](./pipelines-quickref.md)** | **Default during work** — skill chains by level (~120 lines); low token |
 | [pipelines-skill-map.md](./pipelines-skill-map.md) | Full map — load **one § only** (level table or single §6 skill); §9 audit |

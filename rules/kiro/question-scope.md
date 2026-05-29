@@ -52,7 +52,7 @@ No `/question-scope` at **message start or end** (after trim) → **normal chat*
 
 ## After level is chosen
 
-1. Header `Level: Lx | Pipeline: …`
+1. Header `Level: Lx | Pipeline: …` — canonical strings in skill **§ Output header**: L2 **(+ TC if behavior change)** when relevant; L3 implement **`Test`** before **`Code`**; L4 **Test Design** before Implement; L3 assessment-only → `Context → Assessment → Answer` (no Test/Code).
 2. **L2–L4:** `docs/work/YYYY-MM-DD-<slug>/` + `STATUS.md` (skill templates) — **unless** `scope:light` / Rollup MD OK (L2 chat only) or approved plan attach (skill **ide-aligned-practices**).
 3. **Assessment** (gap/review, no implement ask): Context → Assessment → Answer — no Patch/Code until user requests.
 4. **Clarifying options (§12):** After level set, open **how** decisions in Spec/Plan → **2–4** options + **`Other — I'll specify`** → **STOP** before Patch/Code — skill `references/clarifying-options.md`.
@@ -61,4 +61,4 @@ No `/question-scope` at **message start or end** (after trim) → **normal chat*
 
 **Human guide (Vietnamese):** skill → `README.md`. **Quickstart:** `rules/QUICKSTART.md`.
 
-Kiro: numbered list if `AskQuestion` is unavailable.
+Any host without a structured picker: numbered list + STOP (same labels) — skill `references/host-ui.md`.

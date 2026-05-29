@@ -12,7 +12,17 @@
 | How-to-build fork (after L picked) | [clarifying-options.md](./clarifying-options.md) §12 |
 | Supplement / plan A vs B | [superpowers-supplement.md](./superpowers-supplement.md) |
 
-**After level chosen:** emit `Level: Lx | Pipeline: …` → run chain below → invoke each skill’s own `SKILL.md` when that step starts.
+**After level chosen:** emit `Level: Lx | Pipeline: …` from [SKILL.md § Output header](../SKILL.md#output-header-after-level-is-chosen) → run chain below → invoke each skill’s own `SKILL.md` when that step starts.
+
+**Canonical headers (implement):**
+
+```text
+Level: L2 | Pipeline: Context → Spec (+ TC if behavior change) → Patch → Verify → Review → MD
+Level: L3 | Pipeline: Context → Spec → Plan → [Scaffold] → Test → Code → Verify → Regression → Review → [Iterate] → [Refine] → Ship → MD
+Level: L4 | Pipeline: Full Flow (15 steps; Test Design before Implement)
+```
+
+L3 **assessment-only:** `Level: L3 | Pipeline: Context → Assessment → Answer` — no Test/Code until user asks to implement.
 
 **Standalone / composition:** Skills below run without `/question-scope` when their `SKILL.md` matches, and combine per [COMPOSITION.md](../../COMPOSITION.md). Coordinated: [SKILL.md § Pipeline skills](../SKILL.md#pipeline-skills--standalone-coordinated-and-composition).
 
@@ -21,7 +31,7 @@
 | Modifier / task | Effect on chains below |
 | --------------- | ---------------------- |
 | **`scope:light`** / Rollup MD OK | L2: chat rollup — **no** required `docs/work/`; gates unchanged |
-| **Plan attach** (approved `.plan.md`, Cursor Plan) | Spec/Plan satisfied — delta only; skip duplicate `docs/work/` / `docs/plans/` unless archiving |
+| **Plan attach** (approved `.plan.md`, host Plan output) | Spec/Plan satisfied — delta only; skip duplicate `docs/work/` / `docs/plans/` unless archiving |
 | **Assessment-only** (gap, “cần sửa gì”, vs plan — **no** implement ask) | Use **Assessment** chain — **no** `generate-test`, worktree, execute, TDD Code |
 | **Tiered test** | Config/comment → Verify only; new API/module → full Test gate (see `generate-test`) |
 | **Open how decision** | **IDE-ALIGNED §12** — [clarifying-options.md](./clarifying-options.md): 2–4 options + **Other**; **STOP** before Patch/Code |
@@ -64,6 +74,8 @@ Context (light) → [explain-code | analyze-impact?]
 
 ### L3 (supplement on, path B default — implement)
 
+Emit L3 header with **`Test`** before **`Code`** before opening `l3-02` or production edits.
+
 ```text
 superpowers (once) — honor ide-aligned
   → [brainstorming if no approved spec/plan attach]
@@ -84,10 +96,12 @@ Record **B or A** in `STATUS.md` at Plan. **PR comments:** `receiving-code-revie
 
 ### L4 (preset skips Idea/Scope)
 
+Emit L4 header mentioning **Test Design** (step 8) before **Implement** (step 9).
+
 ```text
 l4-01: Context + Validate + [analyze-impact]
   → brainstorming → architect-plan + [writing-plans dual]
-  → generate-test → worktree → execute B/A + TDD
+  → generate-test (step 8 Test Design — RED before prod code) → worktree → execute B/A + TDD
   → l4-04: Verify → caveman-review → requesting-code-review (default)
   → Regression per impacted service → Iterate
   → l4-05 Architecture/AI/Delivery → finishing-a-development-branch
@@ -101,7 +115,7 @@ l4-01: Context + Validate + [analyze-impact]
 
 | Step type | Skill | Done when |
 | --------- | ----- | --------- |
-| Vague idea | `orchestra-decision` | One decision; return to L pick |
+| Vague idea | `orchestra-decision` | One decision; return to L pick ([confirmation-prompts.md](./confirmation-prompts.md) § A) |
 | After L chosen | `superpowers` | Know which skills run; `sp:off` honored |
 | Explain only | `explain-code` | User understands flow |
 | Design gate | `brainstorming` | User **approved** spec on disk |

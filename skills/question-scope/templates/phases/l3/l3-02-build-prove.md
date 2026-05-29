@@ -1,6 +1,6 @@
 # L3 — Phase 2: Build + Prove
 
-**Canonical steps:** Scaffold (if needed), Test Design, Implement, Verify, Review, Regression (required for L3), Iterate
+**Canonical steps (this file):** [Scaffold] → **Test** (`generate-test`, TC table, RED) → **Code** → Verify → Review → Regression (required for L3) → Iterate. Full L3 pipeline: [SKILL.md § Pipelines](../../../SKILL.md#pipelines-ui).
 
 ## Isolated workspace (before code)
 

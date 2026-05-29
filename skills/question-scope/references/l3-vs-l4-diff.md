@@ -1,6 +1,6 @@
 # L3 vs L4 — when to pick which (question-scope)
 
-Load when **L3 and L4 both seem plausible** or the user asks “is this L3 or L4?”. Gray-zone AskQuestion: [gray-zones.md § L3 vs L4](./gray-zones.md#l3-vs-l4-eg-migration-in-one-service-vs-many). Human guide: [README.md § Choose level — gray zone](../README.md#choose-level-l1-l4) + [Quick checklist below](#quick-checklist-l3-vs-l4).
+Load when **L3 and L4 both seem plausible** or the user asks “is this L3 or L4?”. Gray-zone level pick: [gray-zones.md § L3 vs L4](./gray-zones.md#l3-vs-l4-eg-migration-in-one-service-vs-many) · [host-ui.md](./host-ui.md). Human guide: [README.md § Choose level — gray zone](../README.md#choose-level-l1-l4) + [Quick checklist below](#quick-checklist-l3-vs-l4).
 
 ## One-line rule
 
@@ -23,7 +23,7 @@ Load when **L3 and L4 both seem plausible** or the user asks “is this L3 or L4
 
 ## Quick checklist (L3 vs L4)
 
-If **any** is **yes** → lean **L4** (or two-option AskQuestion L3 vs L4).
+If **any** is **yes** → lean **L4** (or two-option L3 vs L4 level pick).
 
 | # | Question |
 | - | -------- |

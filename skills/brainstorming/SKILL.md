@@ -37,7 +37,7 @@ New feature or design — run this skill; save `docs/specs/…` per repo; no `/q
 
 **When NOT (scope on):** IDE-ALIGNED §1 (plan/spec on disk), §3 (assessment-only), L2 default.
 
-**Scope on + product fork:** Prefer **IDE-ALIGNED §12** (options + **Other**) once level is set; use this skill for open-ended design before Spec exists.
+**Scope on + forks:** **Many** open product directions → **this skill** until spec is approved. **One** technical fork after level is set → **IDE-ALIGNED §12**, not a full brainstorm. **After** user approves spec here → **do not** re-run §12 for the same decision ([question-scope confirmation-prompts § After brainstorming](../question-scope/references/confirmation-prompts.md#after-brainstorming--do-not-duplicate-12)).
 
 ### Combines with (optional)
 

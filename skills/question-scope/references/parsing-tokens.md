@@ -64,7 +64,7 @@ If the same message contains **both** a scope trigger (`/question-scope` or `/qu
 
 | Token | Match | Effect |
 | ----- | ----- | ------ |
-| **`clarify:off`** | `(^|\s)clarify:off\b` | Scope **on**. **Do not** run **IDE-ALIGNED §12** (no AskQuestion clarifying block; no mandatory **Other** option). Agent may still ask **one** plain-language question if truly blocked — do not present a multi-option picker. |
+| **`clarify:off`** | `(^|\s)clarify:off\b` | Scope **on**. **Do not** run **IDE-ALIGNED §12** (no multi-option clarifying block; no mandatory **Other** option). Agent may still ask **one** plain-language question if truly blocked — do not present a multi-option picker (any host). |
 
 **Not** `quick:` — scope pipelines and gates still apply. Combine: `/question-scope L2 clarify:off — …` when AC is clear or you will decide in chat without a formal option list.
 

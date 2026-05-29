@@ -31,13 +31,13 @@ Add context **when the active pipeline step needs it**, not all at task start.
 
 **New session:** `@` `STATUS.md` + current phase file.
 
-## Attached plan / Cursor Plan mode
+## Attached plan / host Plan mode
 
 | Signal | Context rule |
 | ------ | ------------- |
 | User attached **approved plan** (`.plan.md`, Plan tool output, ticket with AC) | Treat as **Spec** — JIT from plan sections + `@` files cited in plan only |
 | **STOP before wide context (L2)** | **Waived** when plan already lists AC and touched paths |
-| Cursor **Plan mode** (read-only) | Equals **Plan** step; after user confirms → **Test** (L3+) then **Code** — do not duplicate full plan into `docs/work/` unless archiving |
+| Host **Plan mode** (read-only — any IDE) | Equals **Plan** step; after user confirms → **Test** (L3+) then **Code** — do not duplicate full plan into `docs/work/` unless archiving |
 
 See [ide-aligned-practices.md](ide-aligned-practices.md).
 

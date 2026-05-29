@@ -15,6 +15,11 @@
         "skills/question-scope/references/gray-zones.md": [
           "L2 vs L3",
           "heavier"
+        ],
+        "skills/question-scope/references/confirmation-prompts.md": [
+          "For this task",
+          "Idea",
+          "You get"
         ]
       },
       "turns": [
@@ -22,6 +27,8 @@
           "user": "/question-scope Add GET /users/export CSV",
           "expect": [
             "Idea + Suggest present",
+            "Idea restates goal and done-when (structured, not one vague sentence)",
+            "Each level option includes task-specific For-this-task clause or gray-zone comparison (You get / You skip)",
             "Does not auto-pick L3 or L4 and does not start Spec/Patch/Code",
             "Exactly two options only: L2 vs L3 (not four options; export on existing users API per gray-zones)",
             "STOP — no Spec/Patch/Code before user picks"
@@ -142,7 +149,7 @@
         {
           "user": "/question-scope L3 — add GET /orders/export CSV with auth",
           "expect": [
-            "Header Level: L3",
+            "Header Level: L3 with Test before Code in Pipeline (canonical implement path)",
             "Does not present four L1-L4 options"
           ]
         },
@@ -199,7 +206,7 @@
         ],
         "skills/question-scope/references/gray-zones.md": [
           "heavier",
-          "AskQuestion",
+          "level pick",
           "L1 vs L2"
         ]
       },
@@ -498,6 +505,7 @@
         {
           "user": "/question-scope L3 — add rate limit on POST /login (existing auth module, clear AC)",
           "expect": [
+            "Emits Level: L3 header with Test before Code in Pipeline (canonical implement path)",
             "Does not jump straight to production implementation before Test design",
             "Uses or plans generate-test / TC table in l3-02 (or equivalent Test design section) mapped to Spec Then",
             "Worktree and Code follow Test gate — not before TC table for L3"
@@ -924,6 +932,10 @@
           "Other — I'll specify",
           "STOP"
         ],
+        "skills/question-scope/references/confirmation-prompts.md": [
+          "Why it matters",
+          "Decision"
+        ],
         "skills/question-scope/references/ide-aligned-practices.md": [
           "§12"
         ]
@@ -932,7 +944,8 @@
         {
           "user": "/question-scope L2 — Add Zalo OAuth callback. Not sure: return JSON for SPA or redirect to app deep link. Implement now.",
           "expect": [
-            "Presents 2–4 labeled options for callback response shape",
+            "States Decision headline and why it matters before options (not bare A/B labels only)",
+            "Presents 2–4 labeled options for callback response shape with behavior and trade-off per option",
             "Includes Other — I'll specify as last option",
             "STOP — does not implement Patch/Code until user picks or specifies Other",
             "Does not re-ask L1–L4 level picker"
@@ -957,7 +970,7 @@
         {
           "user": "/question-scope L2 clarify:off — Zalo callback: return JSON { success, link }. Implement in ClientSocialCallbackController.",
           "expect": [
-            "Does not present AskQuestion with JSON vs redirect options and Other",
+            "Does not present multi-option clarifying picker or equivalent numbered A/B block with JSON vs redirect and Other",
             "May proceed to Spec/Patch when AC is explicit",
             "Scope remains active (Level L2 header or L2 pipeline)"
           ]

@@ -6,7 +6,7 @@ Reference table for triggers, gates, and gray-zone logic. Contract: [SKILL.md](.
 
 | # | User message | Expected |
 | - | ------------ | -------- |
-| 1 | `/question-scope` + “Add GET /users/export CSV” (no L on command) | Idea + Suggest; **exactly L2 vs L3** (export on existing API — [gray-zones](./gray-zones.md)); **STOP**; never auto-pick heavier. Use **four options** only when three+ levels fit |
+| 1 | `/question-scope` + “Add GET /users/export CSV” (no L on command) | Structured Idea + Suggest; **exactly L2 vs L3** with **For this task:** / comparison table ([confirmation-prompts](./confirmation-prompts.md)); **STOP**; never auto-pick heavier. Use **four options** only when three+ levels fit |
 | 2 | `I already fixed the handler in the api route, can we deploy now?` (no `/question-scope`) | **No** scope activation |
 | 3 | `quick: fix typo in README` | No L1–L4 options; no `docs/work/` |
 | 4 | `/question-scope L2` then work needs new module + worker | **Escalate** L2→L3; stop patch; re-present options |
@@ -33,7 +33,7 @@ Reference table for triggers, gates, and gray-zone logic. Contract: [SKILL.md](.
 | 23 | `qs:meta — review question-scope rules` | **No** scope — explicit audit token |
 | 23b | `/question-scope L2 — fix X. qs:meta — audit only` | **No** scope — `qs:meta` beats `/question-scope Lx` |
 | 24 | `audit: đánh giá skills/question-scope` | **No** scope — explicit `audit:` token |
-| 25 | `/question-scope L2 clarify:off — patch handler` | **Yes** L2 — **no** §12 AskQuestion block; may patch when AC clear |
+| 25 | `/question-scope L2 clarify:off — patch handler` | **Yes** L2 — **no** §12 multi-option block; may patch when AC clear |
 | 26 | `/question-scope L2 — callback JSON or redirect?` (ambiguous how) | **Yes** L2 — **§12**: 2–4 options + **Other**; **STOP** before Patch |
 
 ## Behavioral (multi-turn)

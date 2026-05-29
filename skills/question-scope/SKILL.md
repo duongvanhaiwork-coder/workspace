@@ -11,9 +11,9 @@ description: Use when the user sends /question-scope or /question-scope L1–L4 
 
 **Language:** English only in this skill (`SKILL.md`, [README.md](README.md), `references/`, `templates/`, `examples/`).
 
-Cursor + Kiro share this skill. **User invocation (canonical):** `/question-scope` or `/question-scope L1`…`L4` only — see [README.md](README.md). **Difference:** Cursor may use `AskQuestion` for level pick; Kiro uses a numbered list — wait for `L1`…`L4` or `/question-scope Lx`.
+**All AI IDEs** (Cursor, Kiro, Windsurf, Copilot, JetBrains AI, Claude Code, …) share this skill. **User invocation (canonical):** `/question-scope` or `/question-scope L1`…`L4` only — see [README.md](README.md). **Host UI:** same Idea/options/STOP everywhere; use native multi-option picker when the host provides one, else numbered list — [references/host-ui.md](references/host-ui.md).
 
-**Deep dives (load when needed):** [references/README.md](references/README.md) — [parsing-tokens](references/parsing-tokens.md), [session-continuity](references/session-continuity.md), [progressive-context-jit](references/progressive-context-jit.md), **[ide-aligned-practices](references/ide-aligned-practices.md)**, gray-zones, level-picker, playbooks, pipelines-quickref, pipelines-skill-map, superpowers-supplement, pressure-scenarios, [CONTRACT-SYNC](references/CONTRACT-SYNC.md).
+**Deep dives (load when needed):** [references/README.md](references/README.md) — [parsing-tokens](references/parsing-tokens.md), [session-continuity](references/session-continuity.md), [progressive-context-jit](references/progressive-context-jit.md), **[ide-aligned-practices](references/ide-aligned-practices.md)**, [host-ui](references/host-ui.md), [confirmation-prompts](references/confirmation-prompts.md), gray-zones, level-picker, playbooks, pipelines-quickref, pipelines-skill-map, superpowers-supplement, pressure-scenarios, [CONTRACT-SYNC](references/CONTRACT-SYNC.md).
 
 **Rules (IDE — cite rule IDs only):** Always-on **`question-scope`**, **`code-standards`**, stack rules by file type. On demand: **`@workflow`** (Superpowers rule IDs). **This skill:** `question-scope`.
 
@@ -47,7 +47,7 @@ Cursor + Kiro share this skill. **User invocation (canonical):** `/question-scop
 
 **Pipeline skills (composable):** Skills in [Related skills](#related-skills) run **standalone**, **with scope**, or **combined with each other** — see [CONVENTIONS.md](../CONVENTIONS.md) § Invocation modes and [COMPOSITION.md](../COMPOSITION.md). This skill **coordinates** when active; it does **not** block other skills.
 
-**Suggest level / option labels:** [references/level-picker.md](references/level-picker.md) (flow, host UI, **Option copy** for pickers).
+**Suggest level / option labels:** [references/level-picker.md](references/level-picker.md) (flow, host UI, **Option copy**) · **rich confirmations:** [references/confirmation-prompts.md](references/confirmation-prompts.md).
 
 ## Invocation modes
 
@@ -85,7 +85,7 @@ Shared ✅/❌: [invocation-anti-patterns](../references/invocation-anti-pattern
 | **STOP before Patch (L2)** | Behavior/contract change without test cases in Spec (tiered — see IDE-aligned §4); **bug** without **root cause** in Spec/`STATUS.md` |
 | **STOP before Code (L3–L4)** | **Test** (L3) or **Test Design** (L4 §8) not done for **new contract/module** — not for assessment-only or config-only ([ide-aligned-practices](references/ide-aligned-practices.md)) |
 | **Assessment-only** | Gap/review (“cần sửa gì”, “vs plan”) → **no** Patch/Code until user asks to implement |
-| **Gray zone** | Two levels fit → two-option AskQuestion; never auto-pick heavier level — [gray-zones](references/gray-zones.md) |
+| **Gray zone** | Two levels fit → two-option level pick (structured UI or numbered list); never auto-pick heavier level — [gray-zones](references/gray-zones.md) |
 | **STOP before Patch/Code (§12)** | Open **how** decision in Spec/Plan → clarifying options (2–4 + **Other — I'll specify**); scope active only — [clarifying-options](references/clarifying-options.md) |
 | **Escalation** | Work exceeds chosen L → stop; re-present adjacent levels; user confirms |
 | **Sticky scope** | Same work item keeps L until done or new `/question-scope` / `/question-scope Ly` — no second four-option picker mid-task — [level-picker-runtime](references/level-picker-runtime.md) |
@@ -157,11 +157,22 @@ Full detail: [references/parsing-tokens.md](references/parsing-tokens.md) (place
 
 ## Output header (after level is chosen)
 
+Emit **`Level: Lx | Pipeline: …`** using the canonical pipeline for that level ([Pipelines (UI)](#pipelines-ui)). Include **Test** on **L3** implement paths; on **L2** note **(+ TC if behavior change)** in Spec when relevant.
+
 ```text
-Level: L2 | Pipeline: Context → Spec → Patch → Verify → Review → MD
+Level: L2 | Pipeline: Context → Spec (+ TC if behavior change) → Patch → Verify → Review → MD
+
+Level: L3 | Pipeline: Context → Spec → Plan → [Scaffold] → Test → Code → Verify → Regression → Review → [Iterate] → [Refine] → Ship → MD
+
+Level: L3 | Pipeline: Context → Assessment → Answer
+```
+(Second line = **assessment-only** — no Test/Code until user asks to implement.)
+
+```text
+Level: L4 | Pipeline: Full Flow (15 steps; Test Design before Implement)
 ```
 
-List canonical steps 1–15 only for **L4** or when the user asks.
+List steps **1–15** only when the user asks or you need step numbers ([playbooks § L4](references/playbooks.md#l4--full-flow-15-steps)).
 
 ## Session continuity
 
@@ -169,9 +180,11 @@ List canonical steps 1–15 only for **L4** or when the user asks.
 
 ## Scope Level — user chooses (do not auto-lock)
 
-1. **Idea** (2–4 lines): problem + expected outcome.
-2. **Suggest** one line: `Suggest: Lx — <short reason>` (heuristic only).
-3. **Level picker** — then **STOP** (one rule below).
+1. **Idea** — structured restatement (Goal, Where, Done when; optional Open/Out of scope) — not one vague sentence.
+2. **Suggest** — `Suggest: Lx (lean) — <reason tied to this message>`; if gray zone, name the pair (`L2 ↔ L3`) and lean (heuristic only — user picks).
+3. **Level picker** — canonical labels + **`For this task:`** clause per option; gray zone → optional comparison table — then **STOP**.
+
+**Required shape (examples):** [references/confirmation-prompts.md](references/confirmation-prompts.md) § A. **§12 how-to-build:** same file § B + [clarifying-options.md](references/clarifying-options.md).
 
 | ID  | Label                                                         |
 | --- | ------------------------------------------------------------- |
@@ -253,7 +266,7 @@ Do **not** duplicate SOLID/architecture here — rule **`code-standards`** and s
 | L1    | Answer meets outcome; MD if user wants archive       |
 | L2    | AC met; tests pass; Verify evidence in chat; Review done; `docs/work/` **or** chat rollup (`scope:light` / Rollup MD OK) |
 | L3    | Contract + tests; Regression pass; phased L3 + `STATUS.md` |
-| L4    | Full flow + layers; phased L4 + `STATUS.md` complete |
+| L4    | Full flow + layers; **Test Design** done for new contracts; tests + Regression pass; phased L4 + `STATUS.md` complete |
 
 ## Superpowers supplement
 

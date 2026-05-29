@@ -44,14 +44,14 @@ Steps when editing contract in **AI Core repo**:
 
 1. Repo verification ([README.md](../../../README.md))
 2. (Optional) spot-check 2–3 fixtures above in a **new** chat
-3. IDE sync + reload Cursor if rules changed ([README.md](../../../README.md))
+3. IDE sync + reload window / new chat (any host) if rules changed ([README.md](../../../README.md))
 4. Edit SKILL.md + `question-scope.mdc` together when triggers/tokens change
 
 ## Gates
 
 | ID | Pressure row | Gate |
 | -- | ------------ | ---- |
-| **1** | Level pick (no L on command) | Idea + Suggest; **exactly L2 vs L3** for export-on-existing-API; **STOP** before Spec/Patch/Code |
+| **1** | Level pick (no L on command) | Structured Idea + Suggest; options with **For this task:** (and gray comparison when 2 options); **exactly L2 vs L3** for export-on-existing-API; **STOP** before Spec/Patch/Code |
 | **4** | Escalation L2→L3 | Stop patch; re-present **L2 vs L3**; continue only after user confirms |
 | **4b** | Escalation L3→L4 | Stop L3 heavy design; re-present **L3 vs L4** before full L4 folder |
 | **6** | Sticky scope L2 | No second four-option picker while L2 continues |
@@ -69,7 +69,7 @@ Steps when editing contract in **AI Core repo**:
 | **23** | Explicit `qs:meta` | **No** scope; beats `/question-scope Lx` in same message |
 | **24** | L3 bounded plan | **`architect-plan`** in phase file; **no** `docs/plans/` / **`writing-plans`** as primary |
 | **25** | L2 rename only | **No** new failing TDD; **no** `writing-plans` / worktree default |
-| **26** | L3 Test gate | **TC table** / **`generate-test`** before Code; no skip to prod implementation |
+| **26** | L3 Test gate | **`Level: L3` header** includes **Test** before Code; **TC table** / **`generate-test`** before prod implementation |
 | **27** | Test design RED | **`generate-test`**: failing tests OK; **no** prod code to green in Test phase |
 | **28** | L3 bounded execute | **`executing-plans` (B)** on phase plan; **not** `subagent-driven-development` without `docs/plans/` |
 | **29** | `docs/plans/` + user B | **`executing-plans` (B)** when user chose inline; **no** auto-A because plan file exists |
@@ -85,8 +85,8 @@ Steps when editing contract in **AI Core repo**:
 | **46** | `scope:light` L2 | Scope **on**; **no** mandatory `docs/work/`; rollup in chat OK |
 | **47** | L3 test tier | Config/comment-only → Verify only; **new contract** → Test before Code |
 | **48** | L2–L3 review short | Default **≤5** caveman lines unless security-sensitive diff or `audit:` |
-| **49** | Clarifying options §12 | Open **how** fork in Spec → **2–4** options + **Other — I'll specify**; **STOP** before Patch/Code; scope only |
-| **49b** | `clarify:off` | Scope on; **no** §12 AskQuestion; may implement when AC clear |
+| **49** | Clarifying options §12 | **Decision** + **Why it matters**; **2–4** options (behavior + trade-off) + **Other**; **STOP** before Patch/Code; [confirmation-prompts.md](./confirmation-prompts.md) § B |
+| **49b** | `clarify:off` | Scope on; **no** §12 multi-option picker / numbered fork block; may implement when AC clear |
 | **36** | L4 Regression scope | Per **impacted service** — not whole monorepo by default |
 | **37** | Impact search fallback | **search-based** — no **graph-complete** claim |
 | **38** | L4 pre-merge review | **`requesting-code-review`** before Ship merge/PR when supplement on |

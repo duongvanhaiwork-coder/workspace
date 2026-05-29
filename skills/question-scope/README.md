@@ -2,9 +2,32 @@
 
 > **Language:** This file is the **English human guide**. The agent contract is **[SKILL.md](./SKILL.md)** (English).
 
-User guide for choosing level, tokens, prompts, and on-disk docs. Agents read the contract in **[SKILL.md](./SKILL.md)** + **[references/](./references/)** when needed. Cursor rules (no file paths needed): always-on **`question-scope`**, **`code-standards`**; for Superpowers handoff → type **`@workflow`**.
+User guide for choosing level, tokens, prompts, and on-disk docs. **All AI IDEs** (Cursor, Kiro, Windsurf, Copilot, JetBrains AI, Claude Code, …) use the same skill. Agents read **[SKILL.md](./SKILL.md)** + **[references/](./references/)** when needed. Rules (by ID): always-on **`question-scope`**, **`code-standards`**; Superpowers → **`@workflow`**.
 
 **Related:** [AGENTS.md](../../AGENTS.md) · **`superpowers`** · [STRUCTURE](../STRUCTURE.md) · rule IDs: [superpowers-supplement.md](references/superpowers-supplement.md)
+
+## Flow overview
+
+```text
+Trigger? (/question-scope, not qs:off/quick:/meta)
+  → [idea vague: orchestra-decision] → level pick (Idea/Suggest/options/STOP)  OR  preset Lx skips pick
+  → Level: Lx | Pipeline: …
+  → [many open directions: brainstorming → approved spec]  |  [one fork: §12 → STOP]  |  [AC clear: skip §12]
+  → Pipeline Lx (L3+: Test before Code) → verify → ship
+```
+
+**Assessment-only** (gap/review, no implement ask): `Context → Assessment → Answer` — no Test/Code until user asks to fix.
+
+## Trồng chéo — đọc file nào (agent)
+
+| Cần | File canonical | Không thay bằng |
+| ----- | ---------------- | ---------------- |
+| Shape level pick + §12 (Idea, Fits repo / New here) | [confirmation-prompts.md](references/confirmation-prompts.md) | Chỉ `level-picker` / `clarifying-options` |
+| Picker vs numbered list (mọi IDE) | [host-ui.md](references/host-ui.md) | Chỉ tên Cursor/Kiro |
+| Gates + trigger | [SKILL.md](SKILL.md) | Rule mirror (tóm tắt) |
+| Đang implement Lx | [pipelines-quickref.md](references/pipelines-quickref.md) | Full `pipelines-skill-map` (~700 dòng) |
+
+**Tránh nhầm skill:** `orchestra` = trước pick L · **level pick** = L1–L4 · **§12** = một fork sau header · **brainstorming** = cả spec (L3–L4) — sau approve **không** §12 lại cùng decision ([confirmation-prompts § After brainstorming](references/confirmation-prompts.md#after-brainstorming--do-not-duplicate-12)).
 
 ## Common workflow preset Lx only
 
@@ -43,12 +66,14 @@ Use [Checklist L2 ↔ L3 (5 questions)](#checklist-l2-vs-l3-five-questions): **o
 
 | Signal | L2 | L3 |
 | ------ | -- | -- |
-| Header | `Level: L2 \| Pipeline: …` | `Level: L3 \| Pipeline: …` |
+| Header | `Level: L2 \| Pipeline: Context → Spec (+ TC if behavior change) → Patch → …` | `Level: L3 \| Pipeline: … → **Test** → Code → …` (full string in [SKILL.md § Output header](SKILL.md#output-header-after-level-is-chosen)) |
 | Disk | `docs/work/…` + Spec in `l2-patch` (or rollup) | `l3-01`…`l3-03` + `STATUS.md` |
 | Before behavior change | TC in Spec / `l2-patch` | **`generate-test`** (RED) in `l3-02` **before** code |
 | Step done | Log test commands in phase MD | Verify + **Regression** (module + 1-hop) with output |
 
-If the agent **jumps to code**, skips `docs/work/`, or claims **“done”** without test logs → remind the gate (“no Spec yet”, “no TC table”, “run verify and paste output”). Details: [pipelines-quickref.md](references/pipelines-quickref.md).
+**L4 (same idea, heavier flow):** header should mention **Test Design** (step 8) before **Implement**; `l4-03` TC table + RED before production code; Regression per **impacted service** (not “run whole monorepo” by default).
+
+If the agent **jumps to code**, skips `docs/work/`, emits L3 header **without `Test`**, or claims **“done”** without test logs → remind the gate (“no Spec yet”, “no TC table”, “run verify and paste output”). Details: [pipelines-quickref.md](references/pipelines-quickref.md).
 
 **Stale rule cache:** after IDE sync ([README.md](../../README.md)), **reload window** or start a new chat if the agent still treats `level Lx` / `?` as triggers — optional session check ([README.md](../../README.md) § Script tùy chọn).
 
@@ -170,7 +195,7 @@ English presets: [examples/sample-prompts.md § Presets](examples/sample-prompts
 | **Assessment** | Review/gap vs plan — no code unless you ask | `/question-scope L3 — <feature>: cần sửa gì so với plan?` (agent: Assessment only) |
 | **Plan attached** | Spec = plan; skip duplicate work folder | `/question-scope L3 — implement attached plan` + `@plan.md` |
 | **Open how decision** | Agent offers 2–4 options + **Other — I'll specify**; STOP before code | `/question-scope L2 — … callback: JSON or redirect?` (see [clarifying-options](references/clarifying-options.md)) |
-| **Skip §12 picker** | Scope on; no multi-option AskQuestion for how | `/question-scope L2 clarify:off — …` (AC must be clear) |
+| **Skip §12 picker** | Scope on; no multi-option clarifying block for how | `/question-scope L2 clarify:off — …` (AC must be clear) |
 | **Feature** | Bounded module/API/worker + AC | `/question-scope L3 — <description>` + AC; `docs/work/YYYY-MM-DD-<slug>/` |
 | **Feature (minimal SP)** | L3 but no full worktree/SP plan | `/question-scope L3 — <description>. sp:off` |
 | **System** | Multi-service, large migration | `/question-scope L4 — <description>` |
@@ -260,7 +285,7 @@ The two layers **do not replace each other**. Scope picks “how much”; Superp
 | Level | Use when | Edit code? | Pipeline (summary) |
 | ----- | -------- | ---------- | ------------------- |
 | **L1** | Explain, compare, naming; no patch | No | Light context → Answer |
-| **L2** | Small patch, few files, clear AC | Yes | Context → Spec → Patch → Verify → Review → MD |
+| **L2** | Small patch, few files, clear AC | Yes | Context → Spec (+ TC if behavior change) → Patch → Verify → Review → MD |
 | **L3** | Bounded feature (module, API, worker) | Yes | Context → Spec → Plan → Test → Code → Verify → **Regression** → Review → Ship → MD |
 | **L4** | Multi-service, large migration, AI platform | Yes | **15-step** Full Flow + Architecture / AI / Delivery |
 
@@ -310,7 +335,7 @@ Gray zone detail: [references/gray-zones.md](references/gray-zones.md) · [SKILL
 
 ### Gray zone — pick L when boundary is fuzzy
 
-Agent **does not** auto-pick a heavier level when a lighter one fits. Cursor: **AskQuestion** with two choices (L1/L2, L2/L3, or L3/L4) then **STOP**.
+Agent **does not** auto-pick a heavier level when a lighter one fits. **All hosts:** two or four **labeled** choices (structured picker or numbered list) then **STOP** — [host-ui.md](references/host-ui.md).
 
 | Pair | Quick hint |
 | ---- | ---------- |
@@ -326,17 +351,19 @@ Agent **does not** auto-pick a heavier level when a lighter one fits. Cursor: **
 
 When you type **`/question-scope`** + description and the command **does not** include `L1`…`L4` (i.e. not `/question-scope L2`):
 
-1. Agent summarizes **Idea** + **suggests** one L (not locked).
-2. Shows **4 choices** (or **2** in gray zone) — each option includes **what that L will do** so you can compare (Cursor: `AskQuestion` labels; Kiro: numbered list). Copy: [level-picker.md § Option copy](references/level-picker.md#option-copy-required--user-must-read-before-pick).
+1. Agent restates **Idea** (Goal, Where, Done when — not one vague line) + **Suggest** (lean L + reason; names gray zone if applicable).
+2. Shows **4 choices** (or **2** in gray zone) — each option = pipeline note + **`For this task:`** (what you get on *your* request). Gray zone: optional **If you pick | You get | You skip** table. Copy: [level-picker.md § Option copy](references/level-picker.md#option-copy-required--user-must-read-before-pick) · full examples: [confirmation-prompts.md](references/confirmation-prompts.md).
 3. Agent **STOPs** — no Spec / code / `docs/work/` until you reply `L2`, `choose L3`, or resend `/question-scope L3 — …`
 4. **Gray zone** (L1↔L2, L2↔L3, L3↔L4): only **2 labeled options** — still must choose before continuing.
+
+**After you pick L:** ambiguous **how** (JSON vs redirect, storage, auth shape) → agent runs **§12 clarifying options** (Decision + Why it matters + 2–4 choices + **Other — I'll specify**) — see [confirmation-prompts.md § B](references/confirmation-prompts.md#b-clarifying-options-12). Skip with `clarify:off` when AC is already explicit.
 
 | ID | What you get if you pick it (agent shows this beside each option) |
 | -- | ------------------------------------------------------------------ |
 | **L1** | Explain only · **no repo edits** · answer in chat (optional archive) |
-| **L2** | Spec → patch **few files** → verify + review · light `docs/work/` |
-| **L3** | Plan + **test-before-code** → feature build → regression + ship · phased `l3-*` |
-| **L4** | **15-step** full flow · multi-service impact · phased `l4-*` |
+| **L2** | Spec (+ TC if behavior change) → patch **few files** → verify + review · light `docs/work/` |
+| **L3** | Plan → **Test** (`l3-02`, RED) → Code → regression + ship · phased `l3-*` |
+| **L4** | **15-step** full flow (incl. **Test Design**) · multi-service impact · phased `l4-*` |
 
 **Skip the pick step** if the prompt already has `/question-scope L2 — …` (or L1/L3/L4) + description.
 

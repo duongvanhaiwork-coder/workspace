@@ -26,11 +26,11 @@ Adopt what autonomous IDE agents do well **without** removing question-scope gat
 
 | Signal | Agent action |
 | ------ | ------------- |
-| User attached an **approved** plan (e.g. `.plan.md`, Cursor Plan output, PRD with AC) | **Spec satisfied** — summarize plan + list **delta** only (what changed vs plan, open questions) |
+| User attached an **approved** plan (e.g. `.plan.md`, host Plan output, PRD with AC) | **Spec satisfied** — summarize plan + list **delta** only (what changed vs plan, open questions) |
 | User says **follow attached plan** / plan is the task | **Do not** create `docs/work/…` unless user also wants team archive or multi-session handoff |
 | No plan, L2–L4 multi-session | Create `docs/work/…` per [session-continuity.md](session-continuity.md) |
 
-**Cursor Plan mode:** Treat read-only Plan step as **Plan** in the L3/L4 pipeline. After user **confirms** the plan → proceed to **Test** (L3+) then **Code** — do not re-write a second full plan in `docs/work/` unless archiving.
+**Host Plan mode** (read-only plan step — any IDE): Treat as **Plan** in the L3/L4 pipeline. After user **confirms** → **Test** (L3+) then **Code** — do not duplicate full plan into `docs/work/` unless archiving ([host-ui.md](./host-ui.md)).
 
 ---
 
@@ -57,6 +57,14 @@ Detect **assessment** when the user asks for gap/review/comparison **without** a
 **Sticky:** Same work item + assessment → stay assessment until user says implement/fix/patch.
 
 **Header example:** `Level: L3 | Pipeline: Context → Assessment → Answer`
+
+**Implement headers (emit after level pick — full strings in [SKILL.md § Output header](../SKILL.md#output-header-after-level-is-chosen)):**
+
+| Level | Pipeline string must include |
+| ----- | ---------------------------- |
+| L2 | **(+ TC if behavior change)** in Spec when relevant |
+| L3 implement | **`Test`** before **`Code`** (not vague “test-before-code” alone) |
+| L4 | **Test Design** before **Implement** (step 8 before 9) |
 
 ---
 
@@ -160,7 +168,7 @@ When **`/question-scope`** is active, each invoked skill should honor this table
 | `systematic-debugging` | JIT from stack trace + `@file` before wide grep |
 | `explain-code` | Plan attach → explain per plan sections |
 | `analyze-impact` | L3 optional once before Patch; suggest regression paths from diff |
-| `brainstorming` | **Skip** if plan attach, assessment-only, or AC on disk; else product forks → **§12** before heavy Plan |
+| `brainstorming` | **Skip** if plan attach, assessment-only, or AC on disk; **many** directions → brainstorming; **single fork** → §12 + [grounding](./confirmation-prompts.md#grounding--viability-without-full-brainstorming); **after** approved spec → no §12 duplicate ([§ After brainstorming](./confirmation-prompts.md#after-brainstorming--do-not-duplicate-12)) |
 | `architect-plan` / `writing-plans` | Plan attach → delta only; plan **TBD** → **§12** before Code; no duplicate `docs/plans/` |
 | `executing-plans` | Approved plan attach = valid plan source; verify per slice in chat |
 | `using-git-worktrees` | **Skip** on assessment-only, `scope:light`, unless user asks |
@@ -171,18 +179,18 @@ When **`/question-scope`** is active, each invoked skill should honor this table
 
 ## 12. Clarifying options (scope active only)
 
-Mirror Cursor Plan UX: when **how** to build is ambiguous, offer labeled choices + escape hatch — **only** when `/question-scope` is on.
+Mirror native **Plan / confirm** UX on any AI IDE: when **how** to build is ambiguous, offer labeled choices + escape hatch — **only** when `/question-scope` is on.
 
 | Step | Rule |
 | ---- | ---- |
-| **When** | After `Level: Lx` header, during **Spec** or **Plan** (L2–L4), or open items in attached plan / Cursor Plan **before** confirm |
+| **When** | After `Level: Lx` header, during **Spec** or **Plan** (L2–L4), or open items in attached plan / host **Plan mode** **before** confirm |
 | **Not for** | Level pick (L1–L4), assessment-only gap reports, or fully specified AC |
-| **Present** | **2–4** options; each label = name + one-line consequence |
+| **Present** | **Decision** + **Why it matters**; then **2–4** options (name · behavior · trade-off) |
 | **Last option** | **`Other — I'll specify`** (always) |
 | **STOP** | No Patch / new-contract Test / Code until user picks or supplies Other text |
 | **Record** | One bullet per decision in Spec, plan delta, or `STATUS.md` |
 | **Skip** | Message contains **`clarify:off`** — scope on; no §12 picker ([parsing-tokens.md](parsing-tokens.md)) |
 
-**Full runtime:** [clarifying-options.md](clarifying-options.md) · vs level picker: [level-picker-runtime.md](level-picker-runtime.md).
+**Full runtime:** [clarifying-options.md](clarifying-options.md) · **examples + level-pick shape:** [confirmation-prompts.md](confirmation-prompts.md) · vs level picker: [level-picker-runtime.md](level-picker-runtime.md).
 
-**Host:** Cursor → `AskQuestion`; Kiro → numbered list + **STOP** (same labels).
+**Host (all IDEs):** structured picker when available, else numbered list + **STOP** — [host-ui.md](host-ui.md).

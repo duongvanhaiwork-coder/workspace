@@ -7,7 +7,7 @@ When changing triggers, tokens, STOP gates, or precedence, update **both** in on
 | Always-on rule (short mirror) | `rules/cursor/question-scope.mdc` |
 | Canonical skill | `skills/question-scope/SKILL.md` |
 | Parsing / meta / tokens (detail) | `references/parsing-tokens.md` |
-| Kiro generated | `rules/kiro/question-scope.md` — regenerated on IDE sync ([README.md](../../../README.md)) |
+| Kiro generated | `rules/kiro/<stem>.md` — run `./scripts/sync-ide-rules.sh` from AI Core repo ([README.md](../../../README.md)) |
 
 ## Change checklist
 
@@ -40,7 +40,7 @@ When changing triggers, tokens, STOP gates, or precedence, update **both** in on
 - [pipelines-skill-map.md](./pipelines-skill-map.md) — §2–§3 rows annotated for ide-aligned.
 - [ide-aligned-practices.md](./ide-aligned-practices.md) §11 — child skill matrix.
 - Workspace `skills/` updated: `verification-before-completion`, `generate-test`, `architect-plan`, `writing-plans`, `executing-plans`, `caveman-review`, `brainstorming`, `using-git-worktrees`, `superpowers`, [COMPOSITION.md](../../COMPOSITION.md) § Task kind.
-- Sync rule + `question-scope` skill to IDE after pull; reload Cursor.
+- Sync rule + `question-scope` skill to IDE after pull; reload IDE window / new chat (any host).
 
 ## P3.4 note (IDE-ALIGNED reference IDs)
 
@@ -60,3 +60,46 @@ When changing triggers, tokens, STOP gates, or precedence, update **both** in on
 - Token **`clarify:off`**: scope on; skip §12 — [parsing-tokens.md](./parsing-tokens.md), [SKILL.md](../SKILL.md) tokens table, [clarifying-options.md](./clarifying-options.md).
 - Pressure parsing **#25–#26**; behavioral **#49**, **#49b**; [SIMULATION-RUN.md](./SIMULATION-RUN.md) Part 1 rows + Part 3 §49/§49b.
 - Spot-check when §12 changes: **#49**, **#49b** ([behavioral-gates.md](./behavioral-gates.md)).
+
+## P3.7 note (test visibility L2–L4)
+
+- **Level picker / gray zone:** L2 (+ TC in Spec); L3 explicit **Test** (`generate-test`, `l3-02`); L4 step 8 **Test Design** — [level-picker.md](./level-picker.md), [gray-zones.md](./gray-zones.md).
+- **Output header:** [SKILL.md](../SKILL.md) § Output header — L3 implement must list **Test** before **Code**; L3 assessment-only header unchanged.
+- **Phase:** [l3-01-define.md](../templates/phases/l3/l3-01-define.md) — next phase Test before Code.
+- **CHEATSHEET**, [pipelines-quickref.md](./pipelines-quickref.md), [README.md](../README.md) signal table, [SIMULATION-RUN.md](./SIMULATION-RUN.md) §6b; fixtures **#6b**, **#26** expect L3 header with **Test** before **Code**.
+- **Rule mirror:** `rules/cursor/question-scope.mdc` § After level is chosen — one-line header hints (L2 TC, L3 Test, L4 Test Design); reload IDE after sync.
+
+## P3.8 note (confirmation prompts — rich options)
+
+- New: [confirmation-prompts.md](./confirmation-prompts.md) — structured **Idea**, **Suggest**, task **`For this task:`** on level labels, gray-zone comparison table, §12 **Decision + Why it matters** + consequence labels.
+- Wired: [SKILL.md](../SKILL.md) § Scope Level, [level-picker-runtime.md](./level-picker-runtime.md), [level-picker.md](./level-picker.md), [clarifying-options.md](./clarifying-options.md), [gray-zones.md](./gray-zones.md), [README.md](../README.md) § No L on command, [CHEATSHEET.md](./CHEATSHEET.md).
+- Behavioral: fixtures **#1**, **#49** — richer expects; [SIMULATION-RUN.md](./SIMULATION-RUN.md) §1 / §49 examples updated.
+- Rule mirror unchanged (detail in skill); spot-check new chat after sync.
+
+## P3.9 note (all AI IDEs — host UI)
+
+- New: [host-ui.md](./host-ui.md) — universal minimum + structured picker vs chat fallback; not Cursor-only.
+- Renamed: gray-zones **Gray-zone level pick (all AI IDEs)** (was Cursor/Kiro AskQuestion).
+- Updated: [confirmation-prompts.md](./confirmation-prompts.md), [level-picker.md](./level-picker.md), [level-picker-runtime.md](./level-picker-runtime.md), [clarifying-options.md](./clarifying-options.md), [ide-aligned-practices.md](./ide-aligned-practices.md) §12, [SKILL.md](../SKILL.md) intro, [README.md](../README.md), `rules/cursor/question-scope.mdc` (description + fallback line).
+- Behavioral **#49b**: no longer requires “AskQuestion” by name.
+
+## P3.10 note (option viability without brainstorming)
+
+- [confirmation-prompts.md](./confirmation-prompts.md) § **Grounding & viability** — §12 options from **Fits repo** *or* **New here** (idea-driven); JIT optional; escalate when many directions open.
+- [clarifying-options.md](./clarifying-options.md), [ide-aligned-practices.md](./ide-aligned-practices.md) §11 child row for `brainstorming` vs §12.
+
+## P3.11 note (dedup §12 + README flow)
+
+- [confirmation-prompts.md](./confirmation-prompts.md): §12 count **2–4** unified; § **After brainstorming — do not duplicate §12**.
+- [clarifying-options.md](./clarifying-options.md), [skills/brainstorming/SKILL.md](../../brainstorming/SKILL.md) cross-link.
+- [README.md](../README.md): § **Flow overview** + § **Trồng chéo — đọc file nào**.
+
+## Rules sync (cursor ↔ kiro)
+
+After editing **`rules/cursor/*.mdc`**, from workspace root:
+
+```bash
+./scripts/sync-ide-rules.sh
+```
+
+Regenerates **`rules/kiro/<stem>.md`** (1:1) and symlinks `~/.cursor/rules`, `~/.kiro/steering`. **Do not** hand-edit `rules/kiro/*.md`.

@@ -5,7 +5,7 @@
 
 ## Level check (~30s) — is L2 enough?
 
-Complete **before** deep Spec/Patch. If **any** box is checked → **stop**: do not patch on L2; run [gray-zone AskQuestion](../../../references/gray-zones.md#gray-zone-askquestion) (L2 vs L3) or user sends `/question-scope L3`.
+Complete **before** deep Spec/Patch. If **any** box is checked → **stop**: do not patch on L2; run [gray-zone level pick](../../../references/gray-zones.md#gray-zone-level-pick-all-ai-ides) (L2 vs L3) or user sends `/question-scope L3`.
 
 - [ ] **New** top-level module, package, or folder boundary
 - [ ] **New** worker, queue consumer, cron, or async pipeline
@@ -23,7 +23,7 @@ Complete **before** deep Spec/Patch. If **any** box is checked → **stop**: do 
 
 ### Open decisions (IDE-ALIGNED §12)
 
-If **how** to build is ambiguous, agent **STOP**s with 2–4 options + **`Other — I'll specify`** before Patch. Record chosen options here:
+If **how** to build is ambiguous, agent **STOP**s with §12 shape (**Decision**, **Why it matters**, 2–4 options + **`Other — I'll specify`**) before Patch — [confirmation-prompts.md](../../../references/confirmation-prompts.md) § B. Record chosen options here:
 
 | ID | Decision | Chosen |
 | -- | -------- | ------ |

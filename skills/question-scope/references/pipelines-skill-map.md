@@ -99,11 +99,11 @@ Load each skill’s `SKILL.md` for full rules. **`code-standards`** applies on e
 
 ## 2. L2 — Patch
 
-**Pipeline:** Context → Spec → Patch → Verify → Review → MD
+**Pipeline:** Context → Spec (+ TC if behavior change) → Patch → Verify → Review → MD
 
 | Step | Goal | Skill(s) | Skill actions (concrete) | Phase / artifact |
 | ---- | ---- | -------- | ------------------------ | ---------------- |
-| Level check (~30s) | Confirm L2 is enough | `question-scope` | 1. Four checkboxes in [l2-patch](../templates/phases/l2/l2-patch.md). 2. If any checked → AskQuestion L2 vs L3. | `STATUS.md`: `Level check: L2 OK` |
+| Level check (~30s) | Confirm L2 is enough | `question-scope` | 1. Four checkboxes in [l2-patch](../templates/phases/l2/l2-patch.md). 2. If any checked → two-option L2 vs L3 level pick ([host-ui](./host-ui.md)). | `STATUS.md`: `Level check: L2 OK` |
 | Context (initial) | Bounded understanding | — | 1. Symptom + 0–1 `@`. 2. **STOP:** no wide search before Spec — **waived** if approved plan attach or ≤3 `@` with AC ([ide-aligned](./ide-aligned-practices.md)). | `STATUS.md` + `l2-patch.md`, [rollup](../templates/phases/rollup/work-item.md), or **chat** (`scope:light`) |
 | Context (expand) | Callers + impacted paths | — | 1. List paths + **1-hop** callers. 2. Open within [JIT](../SKILL.md#progressive-context-jit) budget. | `l2-patch.md` § Context |
 | Spec | AC + test gate | [`systematic-debugging`](#612-systematic-debugging) (bug); [`generate-test`](#67-generate-test) (optional) | 1. AC G/W/T — or plan attach = Spec (delta only). 2. **Bug:** root cause ([§5](#5-bug-overlay)). 3. Behavior change → TC rows (**tiered** — skip config-only). | `l2-patch.md` § Spec |

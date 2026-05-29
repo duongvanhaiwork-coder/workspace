@@ -20,9 +20,17 @@ docs/work/YYYY-MM-DD-<slug>/
 | Format | Space before `L`: `/question-scope L2` — not `/question-scopeL2` |
 | Legacy | `level L2 — …`, `?fix …` — **do not** activate scope |
 | New work item | Send `/question-scope Ly` again in same chat |
-| Unsure L2 vs L3 once | `/question-scope` + task → agent asks **two** options (gray zone) |
+| Unsure L2 vs L3 once | `/question-scope` + task → agent asks **two** options (gray zone) + **For this task:** per option |
+| Options feel too thin | Agent must follow [confirmation-prompts.md](./confirmation-prompts.md) (Idea bullets, §12 Decision + Why) |
 
-**Agent off-track?** No `Level: Lx` header · no `docs/work/` (L2–L4) · L3 code before `generate-test` / RED · “done” without test command output → cite gate; see [pipelines-quickref.md](./pipelines-quickref.md).
+**Agent off-track?** No `Level: Lx` header · no `docs/work/` (L2–L4) · L3 header missing **Test** or code before `generate-test` / RED in `l3-02` · “done” without test command output → cite gate; see [pipelines-quickref.md](./pipelines-quickref.md).
+
+**Canonical headers (implement):**
+
+```text
+Level: L2 | Pipeline: Context → Spec (+ TC if behavior change) → Patch → Verify → Review → MD
+Level: L3 | Pipeline: Context → Spec → Plan → [Scaffold] → Test → Code → Verify → Regression → Review → [Iterate] → [Refine] → Ship → MD
+```
 
 ## Activate scope (only these)
 
@@ -56,9 +64,9 @@ docs/work/YYYY-MM-DD-<slug>/
 | L | When | Code? |
 | - | ---- | ----- |
 | **L1** | Explain / compare only | No |
-| **L2** | Patch, few files, clear AC | Yes |
-| **L3** | Module, API, worker (bounded) | Yes + Regression + Ship |
-| **L4** | Multi-service, large migration | Yes + 15-step flow |
+| **L2** | Patch, few files, clear AC | Yes — TC in Spec if behavior changes |
+| **L3** | Module, API, worker (bounded) | Yes — **Test** (`l3-02`) before Code + Regression + Ship |
+| **L4** | Multi-service, large migration | Yes — step 8 **Test Design** + 15-step flow |
 
 **Gray zone:** agent asks **2 labeled options** only (e.g. L2 vs L3 for export on existing API) — each with a short “what happens” note — you must pick before work starts.
 
@@ -131,6 +139,6 @@ docs/work/YYYY-MM-DD-<slug>/
   l4-00-frame.md …   ← L4
 ```
 
-## Stale Cursor rules?
+## Stale IDE rules?
 
 After IDE sync ([README.md](../../../README.md)), only rules/skills install — **no scripts**. Reload window or new chat if chat shows old triggers (`level Lx`, `?` + keyword). Session check: [README.md](../../../README.md) § Script tùy chọn.

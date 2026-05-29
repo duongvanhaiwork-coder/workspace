@@ -24,7 +24,7 @@ Use [`l2-patch.md`](../templates/phases/l2/l2-patch.md) + `STATUS.md` (or [rollu
 
 ## L3
 
-Use phased [`l3-*`](../templates/phases/l3/) + `STATUS.md`. **Regression** and **Ship** are required.
+Use phased [`l3-*`](../templates/phases/l3/) + `STATUS.md`. **Regression** and **Ship** are required. On implement start, emit header with **`Test`** before **`Code`** ([SKILL.md § Output header](../SKILL.md#output-header-after-level-is-chosen)).
 
 - Context: module boundary, API contract, tests dir, related config (usually after **define**).
 - **Spec:** AC; assumptions / out of scope (3 bullets). Unresolved forks → **§12** before Test/Code. **Bugs:** root cause in Spec or `STATUS.md` before Code.
@@ -38,13 +38,15 @@ Use phased [`l3-*`](../templates/phases/l3/) + `STATUS.md`. **Regression** and *
 
 ## L4 — Full Flow (15 steps)
 
+On implement start, emit header: `Level: L4 | Pipeline: Full Flow (15 steps; Test Design before Implement)` ([SKILL.md § Output header](../SKILL.md#output-header-after-level-is-chosen)).
+
 1. Idea · 2. Scope · 3. Context · 4. Validate · 5. Spec · 6. Plan · 7. Scaffold · 8. Test Design · 9. Implement · 10. Verify · 11. Review · 12. Regression · 13. Iterate · 14. Refine · 15. Document
 
 Step **15. Document** = finalize phased MD + **Ship** in `l4-05-ship.md` (rollout, rollback, architecture/AI/delivery) — same intent as L3 **Ship**.
 
 **If user already sent `/question-scope L4`:** steps **1–2 done** — start at **3. Context**. No second Idea/Scope ceremony.
 
-Use `CreatePlan` + **`architect-plan`**. In Cursor plan mode, **extend** the existing plan file — no duplicate.
+Use host plan tools + **`architect-plan`**. In **Plan mode** (read-only), **extend** the existing plan file — no duplicate ([host-ui.md](./host-ui.md)).
 
 **Layers (when relevant):**
 

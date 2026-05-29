@@ -18,13 +18,13 @@ Load when **two levels both fit** and the user has not sent **`/question-scope L
 | No acceptance criteria for implementation | Measurable AC, repro steps, or “make it work” |
 | `@` files optional (0–2) for illustration | Symptom + likely paths; will need Spec/Patch |
 
-If **both** fit (e.g. “explain then fix”), use **two-option** AskQuestion with **labeled** choices (what each L does — [level-picker.md § Option copy](./level-picker.md#option-copy-required--user-must-read-before-pick)): **L1** vs **L2** — not four options. **STOP** until pick. Do not start Patch on L1.
+If **both** fit (e.g. “explain then fix”), use **two-option** level pick (structured picker or numbered list) with **labeled** choices — [level-picker.md § Option copy](./level-picker.md#option-copy-required--user-must-read-before-pick), [confirmation-prompts.md](./confirmation-prompts.md): **L1** vs **L2** — not four options. **STOP** until pick. Do not start Patch on L1.
 
 ## L2 vs L3 (e.g. “add one endpoint”)
 
 ### Quick checklist (L2 vs L3)
 
-Answer for the **current** work item. If **any** is **yes** → prefer **L3** (or AskQuestion L2 vs L3). If **all no** → **L2** is appropriate (note in `STATUS.md` / `l2-patch.md` level check).
+Answer for the **current** work item. If **any** is **yes** → prefer **L3** (or two-option L2 vs L3 pick). If **all no** → **L2** is appropriate (note in `STATUS.md` / `l2-patch.md` level check).
 
 | # | Question |
 | - | -------- |
@@ -42,14 +42,14 @@ Human copy: [README.md § Checklist L2 ↔ L3](../README.md#checklist-l2-vs-l3-f
 | Touch **≤ ~5 files** (route, service, test, config, i18n) | **New** worker, queue consumer, cron, or async pipeline |
 | **One** endpoint or narrow contract change; no API versioning story | **Multiple** endpoints, public contract doc, or versioning |
 | Single session / single PR likely | Likely **multi-session** or needs phased `l3-*` + Regression + Ship |
-| User wants **less ceremony** (scoped Verify, no full regression gate) | User wants Plan, test-before-code gate, regression, rollout notes |
+| User wants **less ceremony** (scoped Verify, no full regression gate) | User wants Plan → **Test** (`l3-02`) before Code, regression, rollout notes |
 
 **Agent:** If suggesting L3 but user may want light touch, add: `Override: /question-scope L2 — same task, less ceremony.`
 
 **Examples:**
 
 - `POST /users/:id/avatar` next to existing user routes, same service → **L2**.
-- `GET /users/export` CSV on existing users module/API (no new package) → **L2 vs L3** AskQuestion only — not four options.
+- `GET /users/export` CSV on existing users module/API (no new package) → **L2 vs L3** two-option pick only — not four options.
 - New `notifications/` module + email + push interface → **L3**.
 
 ## L3 vs L4 (e.g. migration in one service vs many)
@@ -79,21 +79,22 @@ Human copy: [README.md § Checklist L2 ↔ L3](../README.md#checklist-l2-vs-l3-f
 
 Rollup is **not** a different level — it is L2 with lighter MD.
 
-## Gray-zone AskQuestion
+## Gray-zone level pick (all AI IDEs)
 
 When **both** levels in a pair above fit and the user has **not** sent **`/question-scope Lx`**:
 
-- **Cursor:** `AskQuestion` with **exactly two** options (labels + one-line tradeoff each). **STOP** until the user picks.
-- **Kiro / fallback:** numbered list of the same two options; accept `L2`, `choose L3`, etc.
+- Present **exactly two** options — canonical label + **`For this task:`** + optional **If you pick | You get | You skip** table ([confirmation-prompts.md](./confirmation-prompts.md) § A).
+- Use host **structured picker** when available, else **numbered list** — same strings ([host-ui.md](./host-ui.md)).
+- **STOP** until the user picks; accept `L2`, `choose L3`, `/question-scope L3`, `1`/`2`, etc.
 
 | Gray pair | Option A | Option B |
 | --------- | -------- | -------- |
 | **L1 vs L2** | **L1** — Answer only; no repo edits | **L2** — Patch with Spec → Verify |
-| **L2 vs L3** | **L2** — Patch: less ceremony; scoped Verify; rollup MD OK | **L3** — Small feature: Plan, test before code, Regression + Ship |
+| **L2 vs L3** | **L2** — Patch: TC in Spec if behavior change; scoped Verify; rollup MD OK | **L3** — Small feature: Plan → **Test** (`l3-02`) before Code; Regression + Ship |
 | **L3 vs L4** | **L3** — Bounded feature: one service/repo; risks in define | **L4** — Large system: multi-service; formal Validate before heavy design |
 
 If **three or more** levels could fit, use the normal **four-option** level picker in [SKILL.md § Scope Level](../SKILL.md#scope-level--user-chooses-do-not-auto-lock); when only one gray pair fits (table above), use **two** labeled options instead.
 
 **After the user picks:** emit header `Level: Lx | Pipeline: …` and run that level only. Fill the **30-second level check** in [`l2-patch.md`](../templates/phases/l2/l2-patch.md) or [`l3-01-define.md`](../templates/phases/l3/l3-01-define.md) when creating those files.
 
-**Not AskQuestion:** user already set **`/question-scope Lx`**; mid-task **escalation** — explain, re-present at least the higher adjacent pair, continue after confirm.
+**Not a level pick:** user already set **`/question-scope Lx`**; mid-task **escalation** — explain, re-present at least the higher adjacent pair, continue after confirm.

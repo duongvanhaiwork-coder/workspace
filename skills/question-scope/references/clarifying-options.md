@@ -11,7 +11,7 @@
 | Picker | Question | When |
 | ------ | -------- | ---- |
 | **Level picker** | “How much ceremony?” (**L1–L4**) | `/question-scope` **without** `Lx` on command → **STOP** before Context/Spec |
-| **Clarifying options** | “How should we build it?” (API, UX, config, trade-off) | **After** level header, during **Spec** or **Plan** (and Cursor Plan confirm) |
+| **Clarifying options** | “How should we build it?” (API, UX, config, trade-off) | **After** level header, during **Spec** or **Plan** (and host Plan confirm) |
 
 Do **not** use clarifying options to re-ask L1–L4. Do **not** use the level picker for technical forks (e.g. JSON vs redirect).
 
@@ -22,10 +22,10 @@ Do **not** use clarifying options to re-ask L1–L4. Do **not** use the level pi
 | Open decision blocks AC, contract, UX, security, or rollout | AC and plan are fully specified |
 | Attached plan lists **Open decisions** / TBD | Plan attach answers everything — only **delta** in Spec |
 | L2+ **Spec** or L3/L4 **Spec / Plan** before Patch/Code | **Assessment-only** (gap/review) unless user must pick scope for the answer |
-| Cursor Plan mode **before** user confirms plan | L1 explain-only (optional one fork if it changes the answer) |
+| Host Plan mode **before** user confirms plan | L1 explain-only (optional one fork if it changes the answer) |
 | User sent **`clarify:off`** | Agent proceeds with stated AC or asks one plain question — no multi-option picker |
 
-**Batching:** Prefer **one** clarifying question per turn (or one `AskQuestion` block). If multiple independent decisions exist, list them in Spec as **Pending** and resolve **highest impact first**.
+**Batching:** Prefer **one** clarifying question per turn (one structured picker block **or** one numbered list). If multiple independent decisions exist, list them in Spec as **Pending** and resolve **highest impact first**.
 
 ## STOP gate
 
@@ -40,42 +40,51 @@ After presenting clarifying options:
 Present **2–4** options. Each option label must include:
 
 - **Short name** (what we’re choosing)
-- **One-line consequence** (trade-off or behavior)
+- **Behavior** (what happens for user/system)
+- **One-line trade-off** (cost, test impact, client impact)
+
+**Before options:** one **Decision** headline (`?`) + **Why it matters** (1–2 lines). **Do not** jump straight to A/B/C.
+
+**Worked examples + decision scan:** [confirmation-prompts.md](./confirmation-prompts.md) § B.
+
+**Viability (without full brainstorming):** [confirmation-prompts.md § Grounding](./confirmation-prompts.md#grounding--viability-without-full-brainstorming) — each option **Fits repo** *or* **New here** (idea-driven); trade-offs + STOP + Verify. Repo read is **optional** when forks are product/architecture alternatives. Use **`brainstorming`** when *many* directions are still open, not for every single §12 fork.
 
 **Always include a final option:**
 
-| Host | Label (canonical English) |
-| ---- | ------------------------- |
-| Cursor `AskQuestion` | `Other — I'll specify` |
-| Kiro / fallback | Same text as last numbered option |
+| Presentation | Last option label (canonical English) |
+| ------------ | ------------------------------------- |
+| Structured picker or numbered list | **`Other — I'll specify`** |
 
 **Do not** mark a technical default as “recommended” unless the user asked for a recommendation or one option is clearly required by repo policy / security (then say **why** in one line).
 
-### Example (OAuth callback)
+### Example (OAuth callback) — minimal vs required
+
+**Too thin (do not):**
 
 ```text
-Zalo OAuth callback response?
-A — JSON { success, link } for SPA to read
-B — HTTP 302 redirect to app deep link
-C — Other — I'll specify
+JSON or redirect?
+A — JSON
+B — Redirect
 ```
 
-## Host UI
+**Required shape:** see [confirmation-prompts.md § B](./confirmation-prompts.md#b-clarifying-options-12) (Decision + Why it matters + labeled consequences + **Other**).
 
-| Host | Behavior |
-| ---- | -------- |
-| **Cursor** | `AskQuestion` with 2–4 options + **Other** as last option; full label in each `label` field |
-| **Kiro** | Numbered list **A–D** + **Other — I'll specify**; **STOP** until reply |
+## Host UI (all AI IDEs)
 
-Same sticky rules as level picker: **same work item** → do not re-ask a **resolved** decision unless the user changes requirements or escalates level.
+| Presentation | Behavior |
+| ------------ | -------- |
+| **Structured picker** (when host provides) | 2–4 options + **Other** last; full label per option |
+| **Chat fallback** (always valid) | Numbered **A–D** or `1.`…`4.` + **Other — I'll specify**; **STOP** until reply |
 
-## Plan attach and Cursor Plan mode
+Details: [host-ui.md](./host-ui.md). Same sticky rules as level picker.
+
+## Plan attach and host Plan mode
 
 | Situation | Action |
 | --------- | ------ |
 | Approved plan with no open questions | **Skip** §12 |
 | Plan has TBD / “TBD” / “decide later” | §12 for each TBD **before** Code |
-| Cursor Plan (read-only) | Treat as **Plan** step; §12 on open items **before** user confirms plan |
+| Host Plan mode (read-only) | Treat as **Plan** step; §12 on open items **before** user confirms plan |
 | User confirms plan with unresolved TBD | **STOP** — clarify or update plan delta |
 
 Align with **IDE-ALIGNED §1** (plan attach = Spec).
@@ -95,7 +104,7 @@ For `scope:light` L2, decisions may live only in **chat rollup** if no `docs/wor
 
 | Skill | §12 interaction |
 | ----- | ----------------- |
-| `brainstorming` | Product/feature ambiguity **before** L3 Plan — may use 2–3 approaches; once scope + Spec exist, prefer §12 format (+ **Other**) |
+| `brainstorming` | **Whole** feature/spec still open (L3–L4, no approved spec) — approved design before Plan. **Not** for a single §12 fork — use §12 + [grounding](./confirmation-prompts.md#grounding--viability-without-full-brainstorming). **After** spec approved → **no** §12 for same decision ([confirmation-prompts § After brainstorming](./confirmation-prompts.md#after-brainstorming--do-not-duplicate-12)) |
 | `architect-plan` / `writing-plans` | Open decisions in plan → §12 before execute |
 | `orchestra-decision` | Idea **before** `/question-scope` — not a substitute for §12 after level is set |
 | `gray-zones` | Level pairs only — not technical forks |
@@ -106,4 +115,4 @@ For `scope:light` L2, decisions may live only in **chat rollup** if no `docs/wor
 - More than **four** technical options without grouping or a follow-up turn
 - Skipping **Other** to force a pick
 - Implementing a heavy default while “waiting” for user
-- Re-running §12 for decisions already recorded in `STATUS.md` / Spec for this work item
+- Re-running §12 for decisions already recorded in `STATUS.md` / Spec / **approved brainstorming spec** for this work item

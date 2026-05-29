@@ -25,7 +25,7 @@ Legend: **Parser** = `qs_classify` (automated). **Agent sim** = expected behavio
 | 2 | `I already fixed the handler… deploy now?` | `inactive` | No | Normal deploy advice | No `Level:` header | **PASS** |
 | 3 | `quick: fix typo in README` | `inactive` | No | Quick fix, no `docs/work/` | No picker | **PASS** |
 | 4 | `/question-scope L2` then needs module+worker | `preset:L2` (T1) | Yes (T1) | T1: L2 pipeline + level check; T2: escalate → **L2 vs L3** 2 options | No silent L3 folder | **PASS** |
-| 5 | `/question-scope L3 — feature. sp:off` | `preset:L3` | Yes | L3 phased work; supplement off | `Level: L3 \| Pipeline: …` | **PASS** |
+| 5 | `/question-scope L3 — feature. sp:off` | `preset:L3` | Yes | L3 phased work; supplement off; header includes **Test** before Code | `Level: L3 \| Pipeline: … → Test → Code → …` | **PASS** |
 | 6 | `/question-scope L2` then `continue — add test` | `preset:L2` / `inactive` T2 | Yes sticky | T1: L2 header; T2: continue L2, no re-pick | No 4-option picker T2 | **PASS** |
 | 7 | `/question-scope` + explain and fix 401 | `needs_pick` | Yes | Idea → Suggest → **L1 vs L2** (2 labeled) → STOP | Not 4 options; not auto L2 | **PASS** |
 | 8 | `/question-scope L2 — fix X. quick:` | `inactive` | No | Opt-out wins; fast path | No scope pipeline | **PASS** |
@@ -48,7 +48,7 @@ Legend: **Parser** = `qs_classify` (automated). **Agent sim** = expected behavio
 | 23 | `qs:meta — review…` | `inactive` | No | Audit chat | No scope | **PASS** |
 | 23b | `/question-scope L2… qs:meta…` | `inactive` | No | `qs:meta` beats Lx | No scope | **PASS** |
 | 24 | `audit: đánh giá skills/question-scope` | `inactive` | No | Explicit audit token | No scope | **PASS** |
-| 25 | `/question-scope L2 clarify:off — patch handler` | `preset:L2` | Yes | L2 pipeline; **no** §12 AskQuestion | May Patch when AC clear | **PASS** |
+| 25 | `/question-scope L2 clarify:off — patch handler` | `preset:L2` | Yes | L2 pipeline; **no** §12 multi-option block | May Patch when AC clear | **PASS** |
 | 26 | `/question-scope L2 — callback JSON or redirect?` | `preset:L2` | Yes | §12: options + **Other** → STOP | No Patch until pick | **PASS** |
 
 \*Case #14/#22: parser = `needs_pick` (not preset); agent must not treat as L2 until user picks after hint.
@@ -79,7 +79,7 @@ Simulated against [behavioral-gates.md](./behavioral-gates.md) + [behavioral-eva
 | 23 | qs:meta | No scope | Explicit token | Yes |
 | 24 | L3 bounded plan | architect-plan in phase | No default `docs/plans/` | Yes |
 | 25 | L2 rename | No new RED TDD | Verify after rename | Yes |
-| 26 | L3 test gate | generate-test before Code | TC table before implement | Yes |
+| 26 | L3 test gate | Header **Test** before Code; generate-test before prod | TC table in `l3-02` before implement | Yes |
 | 27 | Test RED | No prod in Test phase | Failing tests OK in Test | Yes |
 | 28 | Execute B | executing-plans on phase | Not subagent A default | Yes |
 | 29 | docs/plans + B | User chose B | No auto A | Yes |
@@ -103,7 +103,7 @@ Simulated against [behavioral-gates.md](./behavioral-gates.md) + [behavioral-eva
 
 ## Part 3 — Spot-check agent simulation (fixtures #1, #6, #7, #8, #14, #49, #49b)
 
-These blocks are **simulated agent turns** following the question-scope contract (not a live Cursor chat). Use to compare future LLM spot-checks.
+These blocks are **simulated agent turns** following the question-scope contract (any AI IDE host). Use to compare future LLM spot-checks.
 
 ### §1 — Fixture #1 / pressure #1
 
@@ -114,14 +114,23 @@ These blocks are **simulated agent turns** following the question-scope contract
 ```text
 Using question-scope — level picker.
 
-**Idea:** You want a GET endpoint on the existing users API that returns user data as CSV export — extending current users module behavior rather than a greenfield service.
+**Idea**
+- **Goal:** Add GET export returning users as CSV from the existing users API.
+- **Where:** Existing users module (not a new service).
+- **Done when:** Authenticated client can download CSV with expected columns.
+- **Open:** Column list / pagination — Spec after you pick L.
 
-**Suggest:** L2 or L3 — export on an existing users API fits the L2↔L3 gray zone ([gray-zones.md](references/gray-zones.md)); L3 if you want Plan, test-before-code, Regression, and Ship ceremony.
+**Suggest:** L2 or L3 — **Gray zone: L2 ↔ L3** on existing API; lean **L2** for a small PR; **L3** if you want Plan, `l3-02` Test gate, Regression, Ship.
 
-Choose one (gray zone — export on existing API):
+| If you pick | You get | You skip |
+| ----------- | ------- | -------- |
+| **L2** | Spec (+ TC) → patch route/service/tests → scoped Verify | Phased `l3-*`, full Regression + Ship |
+| **L3** | `docs/work/…`, Plan → **Test** before Code → Regression + Ship | Lightest path |
 
-1. **L2 — Extend existing pattern** · Few files · Context → Spec → Patch → Verify → Review · Scoped Verify (no full Regression gate)
-2. **L3 — New module/API/worker** · Plan + test gate + Regression + Ship · Phased `l3-*` + `STATUS.md`
+Choose one:
+
+1. **L2 — Extend existing pattern** · … · **For this task:** one GET on users module, likely route + service + test.
+2. **L3 — New module/API/worker** · Plan → **Test** (`l3-02`) before Code → … · **For this task:** phased folder, RED before handler, rollout in `l3-03`.
 
 STOP — reply with `L2`, `L3`, or `/question-scope L3` to continue. I will not open the codebase for Spec/Patch until you pick.
 ```
@@ -139,7 +148,7 @@ STOP — reply with `L2`, `L3`, or `/question-scope L3` to continue. I will not 
 ```text
 Using question-scope — L2.
 
-Level: L2 | Pipeline: Context → Spec → Patch → Verify → Review → MD
+Level: L2 | Pipeline: Context → Spec (+ TC if behavior change) → Patch → Verify → Review → MD
 
 I'll use `docs/work/YYYY-MM-DD-<slug>/` with `l2-patch.md` and run the L2 level check before deep patch work…
 ```
@@ -155,6 +164,24 @@ Updating Spec test cases / Patch for missing-phone coverage…
 ```
 
 **Check:** No four-option picker on T2 — **PASS**.
+
+---
+
+### §6b — Fixture #26 (L3 Test gate + header)
+
+**User:** `/question-scope L3 — add rate limit on POST /login (existing auth module, clear AC)`
+
+**Simulated agent (T1):**
+
+```text
+Using question-scope — L3.
+
+Level: L3 | Pipeline: Context → Spec → Plan → [Scaffold] → Test → Code → Verify → Regression → Review → [Iterate] → [Refine] → Ship → MD
+
+Creating `docs/work/YYYY-MM-DD-<slug>/` with `l3-01-define.md`… I will not write production handler code until `l3-02` Test design (`generate-test`, TC table, RED) is done.
+```
+
+**Check:** Header includes **Test** before **Code** — **PASS**. No prod code before `l3-02` — **PASS**.
 
 ---
 
@@ -174,7 +201,7 @@ Using question-scope — level picker.
 Choose one:
 
 1. **L1 — Explain only now** · No Spec/Patch/Code in repo · Light context → answer in chat
-2. **L2 — Fix in repo** · Context → Spec → Patch → Verify → Review
+2. **L2 — Fix in repo** · Context → Spec (+ TC if behavior change) → Patch → Verify → Review
 
 STOP — reply L1 or L2 (or `/question-scope L2`) before I implement or patch.
 ```
@@ -237,16 +264,18 @@ STOP — I have **not** started Patch; glued form did not preset L2.
 **Simulated agent:**
 
 ```text
-Level: L2 | Pipeline: Context → Spec → Patch → Verify → Review → MD
+Level: L2 | Pipeline: Context → Spec (+ TC if behavior change) → Patch → Verify → Review → MD
 
 Using question-scope — clarifying options (§12).
 
-Open decision: Zalo OAuth callback response shape.
+**Decision:** How should the Zalo OAuth callback respond after provider redirect?
+
+**Why it matters:** Drives handler return type, tests, and SPA vs deep-link client — cannot Patch safely without this.
 
 Choose one:
 
-1. **JSON body** — `{ success, link }` for SPA to read after redirect
-2. **HTTP 302 redirect** — deep link `app://…` with token in query
+1. **JSON body** — `{ success, link }` for SPA to read · Simpler SPA integration · **Tests:** assert JSON schema
+2. **HTTP 302 redirect** — deep link `app://…` with token/query · Native-friendly · **Tests:** assert `Location`
 3. **Other — I'll specify**
 
 STOP — I will not Patch until you pick or describe option 3.
@@ -261,14 +290,14 @@ STOP — I will not Patch until you pick or describe option 3.
 **Simulated agent:**
 
 ```text
-Level: L2 | Pipeline: Context → Spec → Patch → Verify → Review → MD
+Level: L2 | Pipeline: Context → Spec (+ TC if behavior change) → Patch → Verify → Review → MD
 
 **Spec:** AC — callback returns JSON `{ success, link }` (clarify:off — no §12 picker).
 
 (Context → Patch when ready…)
 ```
 
-**Check:** No AskQuestion JSON vs redirect block — **PASS**. `Level: L2` — scope on — **PASS**.
+**Check:** No §12 multi-option JSON vs redirect block — **PASS**. `Level: L2` — scope on — **PASS**.
 
 ---
 
