@@ -29,14 +29,48 @@ Skills in this bundle override default system prompt behavior, but **user instru
 
 If the repo agent file says "don't use TDD" and a skill says "always use TDD," follow the user's instructions. The user is in control.
 
+## Invocation modes (bundle meta)
+
+See [COMPOSITION.md](../COMPOSITION.md). Every bundle skill is **standalone**, **coordinated** with `/question-scope Lx`, and **composable** with other skills.
+
+### Standalone
+
+No `/question-scope` (or opt-out) — run **`skill-check-first`**, then invoke matching skills per each `SKILL.md`; compose freely per [COMPOSITION.md](../COMPOSITION.md) § Requires (hard).
+
+### With question-scope
+
+`/question-scope Lx` — scope gates and supplement table win; then invoke skills at mapped phases.
+
+### Combines with (optional)
+
+**`question-scope`** when user sends `/question-scope`; any skill ID when task matches.
+
+### Requires (hard)
+
+None for this meta skill.
+
+### Composition (quick ref)
+
+| ✅ Do | ❌ Don't |
+| ----- | -------- |
+| **`/question-scope`** waiting for L → run **question-scope** only (Idea → options → STOP) | **`brainstorming`** or **`writing-plans`** while scope STOP waits for L1–L4 |
+| After level chosen → invoke skills at mapped phase per supplement | Substitute **`skill-check-first`** for the L1–L4 picker |
+| Bounded plan → **`architect-plan`** + **`executing-plans` (B)** | **`writing-plans`** when ≤12 tasks still fit architect pre-flight |
+| Large plan / explicit A → **`writing-plans`** → **`subagent-driven-development` (A)** | Auto-select **A** because `docs/plans/…` exists |
+
+**REQUIRES:** invoke matching skills when implementation applies · **ALT (plan):** `architect-plan` + B \| `writing-plans` + A
+
+Shared ✅/❌: [invocation-anti-patterns](../references/invocation-anti-patterns.md).
+
 **With question-scope active** (rule **`question-scope`**; supplement: **`question-scope`** → `references/superpowers-supplement.md`): scope STOP gates and level budgets win over this bundle’s feature flow (rule IDs in **`@workflow`**).
 
 | Situation | What to do |
 | --------- | ---------- |
 | **`/question-scope`** + task (no `L1`…`L4` on the command) | Run **question-scope only**: Idea → suggest → four options → **STOP**. No Context/Spec/Patch/Code, no `design-approval-gate`, `writing-plans`, `isolated-workspace`, or full feature flow. |
 | **`/question-scope L1`…`L4`** or user picked L1–L4 after options | Run that level’s pipeline; apply **Superpowers supplement** per question-scope (L2 minimal; L3–L4 default unless `sp:off` / `no-sp`). |
-| `qs:off`, `no-scope`, `quick:`, `qs:meta`, or `audit:` | Question-scope off — load **`@workflow`** and use standalone feature flow if you still use Superpowers rule IDs. |
-| `level Lx` or `?` + keyword (no `/question-scope`) | Question-scope **off** — ask user to send `/question-scope` or `/question-scope Lx`. |
+| `qs:off`, `no-scope`, `quick:`, `qs:meta`, or `audit:` | Question-scope **off** — invoke bundle skills **standalone** per each `SKILL.md`; optional **`@workflow`** rule IDs. |
+| No `/question-scope`; task matches a skill (bug, plan, TDD, review, …) | **Standalone** — invoke that skill; do **not** require L1–L4 or `docs/work/` unless user asks. |
+| `level Lx` or `?` + keyword (no `/question-scope`) | Question-scope **off** — standalone skills OK; suggest `/question-scope Lx` only if user wants phased `docs/work/`. |
 
 Run **`skill-check-first`** for this bundle **after** the user has a level (or **`/question-scope Lx`** on the message) — **not** instead of the scope level picker. Invoke `question-scope` when **`/question-scope`** triggers match; do not substitute brainstorming or `writing-plans` for the L1–L4 choice step.
 

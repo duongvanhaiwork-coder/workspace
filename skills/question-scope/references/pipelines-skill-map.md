@@ -13,10 +13,10 @@
 | **Purpose** | Single **on-demand** map: at each pipeline step, **which skill runs**, **why it runs then**, **what the agent literally does**, and **what must be written on disk** before the next step. |
 | **Audience** | Agents executing `/question-scope Lx`; humans auditing flow or onboarding. |
 | **When to load** | **Not** every turn — use [pipelines-quickref.md](./pipelines-quickref.md) first. Load **sections** of this file: §2–§5 for your level only; §6.x for one skill; §9 for audits. |
-| **Not a substitute for** | [SKILL.md](../SKILL.md) (triggers, gates, opt-outs), individual skill `SKILL.md` files (full rules), or phase templates (checkboxes in `docs/work/`). |
+| **Not a substitute for** | [SKILL.md](../SKILL.md) (triggers, gates, opt-outs), individual skill `SKILL.md` files (full rules — each skill runs **standalone** and **composes** per [CONVENTIONS.md](../../CONVENTIONS.md) § Invocation modes and [COMPOSITION.md](../../COMPOSITION.md)), or phase templates (checkboxes in `docs/work/`). |
 | **Maintenance** | Update this file when pipeline steps or supplement mapping change — not on every skill wording tweak. |
 
-**Related:** [SKILL.md](../SKILL.md) · [playbooks.md](./playbooks.md) · [superpowers-supplement.md](./superpowers-supplement.md) · [README.md](../README.md) (VI presets).
+**Related:** [SKILL.md](../SKILL.md) · [playbooks.md](./playbooks.md) · [superpowers-supplement.md](./superpowers-supplement.md) · [README.md](../README.md) (human presets).
 
 ### Two layers (recap)
 
@@ -709,7 +709,7 @@ Entry flow (§0) aligns with [level-picker.md](./level-picker.md) and [gray-zone
 | Vague product idea | **§6.1** → return to `/question-scope` options |
 | Skip all scope | `quick:` or `qs:off` — normal chat + `code-standards` |
 | Skip supplement only | `/question-scope L3` + `sp:off` — phased work folder still applies |
-| Human presets (VI) | [README.md](../README.md) |
+| Human presets | [README.md](../README.md) |
 | Step checklists | [playbooks.md](./playbooks.md) |
 | Rule IDs | `@workflow` on demand |
 

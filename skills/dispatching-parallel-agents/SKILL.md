@@ -5,6 +5,39 @@ description: Use when facing 2+ independent tasks that can be worked on without 
 
 # Dispatching Parallel Agents
 
+## Invocation modes
+
+See [COMPOSITION.md](../COMPOSITION.md) § Requires (hard). Skills **compose** unless noted in **Requires (hard)** below.
+
+### Standalone
+
+2+ independent failures or tasks — dispatch in parallel; no `/question-scope` required.
+
+### With question-scope
+
+Bug **Iterate** or multi-domain failures — same pattern under scope; one agent per domain.
+
+### Combines with (optional)
+
+- `systematic-debugging` — per failure domain
+- `test-driven-development` — per fix
+
+### Requires (hard)
+
+- None
+
+**Instruction precedence:** User message → this skill → **`question-scope`** overlay when scope active ([CONVENTIONS.md](../CONVENTIONS.md) § Invocation modes).
+
+### Composition (quick ref)
+
+| ✅ Do | ❌ Don't |
+| ----- | -------- |
+| One subagent per **independent** failure domain | Parallelize when failures share root cause or state |
+| **`systematic-debugging`** inside each domain before fix | Single agent investigates unrelated domains sequentially without need |
+| **NEXT:** integrate fixes → **`verification-before-completion`** | Mark done without fresh test output after merge |
+
+Shared ✅/❌: [invocation-anti-patterns](../references/invocation-anti-patterns.md).
+
 ## Overview
 
 You delegate tasks to specialized agents with isolated context. By precisely crafting their instructions and context, you ensure they stay focused and succeed at their task. They should never inherit your session's context or history — you construct exactly what they need. This also preserves your own context for coordination work.

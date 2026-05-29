@@ -1,6 +1,9 @@
 ---
 name: brainstorming
-description: Design + approved spec before Plan/Code (L3–L4 default). Skip for L2 patch, L1 explain, bugs. After approve → architect-plan or writing-plans. No code until approved.
+description: >
+  Design + approved spec before Plan/Code. Standalone for new features or L3-L4 when
+  scope active. Skip L2 patch, L1 explain, bugs. After approve → architect-plan or
+  writing-plans. No code until approved.
 ---
 
 # Brainstorming Ideas Into Designs
@@ -17,6 +20,29 @@ Turn ideas into **approved** designs and specs through dialogue — then hand of
 4. This skill  
 
 When **`question-scope`** is waiting for **L1–L4** choice → **do not** run brainstorming (no Spec/Plan/design gate yet).
+
+## Invocation modes
+
+See [COMPOSITION.md](../COMPOSITION.md) § Requires (hard). Skills **compose** unless noted in **Requires (hard)** below.
+
+### Standalone
+
+New feature or design — run this skill; save `docs/specs/…` per repo; no `/question-scope` required.
+
+### With question-scope
+
+**L3–L4** design gate before Plan; skip L2 default; **do not** run while scope waits for L1–L4 pick.
+
+### Combines with (optional)
+
+- `architect-plan` or `writing-plans` — after approve
+- `orchestra-decision` — before, if idea still fuzzy
+
+### Requires (hard)
+
+- None for standalone; coordinated L3–L4 expects approved spec before Plan
+
+**Instruction precedence:** User message → **`question-scope`** STOP if level not chosen → this skill ([CONVENTIONS.md](../CONVENTIONS.md) § Invocation modes).
 
 ## When to use
 

@@ -71,7 +71,26 @@ Stack rules **detect** frameworks from the repo — they do not mandate NestJS, 
 | On-demand workflow graph (`workflow.mdc`) | Superpowers + team skills |
 | File-type conventions (`typescript`, `react`, …) | Stack helpers (`generate-test`, …) |
 
-**Precedence:** explicit user message → repo `AGENTS.md` → question-scope STOP gates → `code-standards.mdc` / stack rules → skill playbooks.
+**Precedence:** explicit user message → repo `AGENTS.md` → question-scope STOP gates → `code-standards.mdc` / stack rules → `@workflow` (when loaded) → skill playbooks.
+
+## Rule authoring (positive + negative)
+
+Always-on rules stay **short**. Full pipelines live in **skills** (`skills/<id>/SKILL.md`).
+
+| Layer | Put in `.mdc` rule | Put in skill (not rule) |
+| ----- | ------------------- | ------------------------ |
+| **Positive** | WHEN → THEN (trigger table, required header, `docs/work/…` when scope on) | Step playbooks, TC tables, phase templates |
+| **Negative** | False triggers, opt-outs, STOP, “do not infer L from task size”, precedence | Pressure scenarios, parsing edge cases, behavioral fixtures |
+
+**Checklist for a new or edited always-on rule:**
+
+1. One **trigger / action** table (positive).
+2. Up to **five** scoped negatives (legacy signals, meta, token conflicts, default path when no trigger).
+3. **Precedence** line if the rule can conflict with `code-standards`, scope STOP, or `@workflow`.
+4. **Pointer** to the skill ID — do not duplicate multi-step pipelines in the rule body.
+5. Bump **contract version** in rule + skill when triggers, gates, or default/precedence semantics change (`question-scope`).
+
+**Do not:** paste full L3/L4 pipelines into `.mdc`; set `workflow.mdc` to `alwaysApply: true` without team agreement; add Vietnamese prose in rule bodies (see **Language** above).
 
 ## Editing checklist
 

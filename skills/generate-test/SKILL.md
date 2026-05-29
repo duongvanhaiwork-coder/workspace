@@ -9,6 +9,42 @@ description: >
 
 Run the project's test command before claiming success — **`verification-before-completion`**.
 
+## Invocation modes
+
+See [COMPOSITION.md](../COMPOSITION.md) § Requires (hard). Skills **compose** unless noted in **Requires (hard)** below.
+
+### Standalone
+
+User asks for tests, TC table, or coverage — run this skill; output tests + TC in chat or repo paths per CONVENTIONS.
+
+### With question-scope
+
+L3–L4 **Test** gate before Code (`l3-02`, `l4-03`); L2 optional TC rows in `l2-patch`.
+
+### Combines with (optional)
+
+- `test-driven-development` — implement after RED
+- `verification-before-completion` — log RED run
+
+### Requires (hard)
+
+- None
+
+**Instruction precedence:** User message → this skill → **`question-scope`** gates only when `/question-scope Lx` is active ([CONVENTIONS.md](../CONVENTIONS.md) § Invocation modes).
+See [CONVENTIONS.md](../CONVENTIONS.md) § Invocation modes.
+
+### Composition (quick ref)
+
+| ✅ Do | ❌ Don't |
+| ----- | -------- |
+| **L3–L4:** TC table + RED tests in Test phase **before Code** | Skip Test gate and write production code first |
+| Log RED failures; hand off GREEN to **`test-driven-development`** in Code | Implement production code here to green tests |
+| **L2:** optional TC rows in `l2-patch` then TDD in Patch | Duplicate full TC table in chat when phase file has TC-xx |
+
+**REQUIRES (coordinated L3–L4):** Test design before Code when scope + supplement on · **NEXT:** `test-driven-development` in Code
+
+Shared ✅/❌: [invocation-anti-patterns](../references/invocation-anti-patterns.md).
+
 ## When to use
 
 | Situation | Run? |

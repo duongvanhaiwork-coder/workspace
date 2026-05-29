@@ -1,6 +1,9 @@
 ---
 name: using-git-worktrees
-description: Isolated branch/workspace before Code/Patch (L3–L4 default). Skip L2/L1, sp:off, or user declines. Rule isolated-workspace. NEXT executing-plans or subagent-driven-development.
+description: >
+  Isolated branch/workspace before multi-step implement. Standalone or L3-L4 when scope
+  active. Skip L2/L1, sp:off, or user declines. Rule isolated-workspace. NEXT executing-plans
+  or subagent-driven-development.
 ---
 
 # Using Git Worktrees
@@ -11,12 +14,45 @@ Portable conventions: [../CONVENTIONS.md](../CONVENTIONS.md). Platform tools: **
 
 Rule ID: **`isolated-workspace`** → this skill.
 
-## Instruction precedence
+## Invocation modes
+
+See [COMPOSITION.md](../COMPOSITION.md) § Requires (hard). Skills **compose** unless noted in **Requires (hard)** below.
+
+### Standalone
+
+User starts multi-step implementation — run this skill before code; no `/question-scope` required.
+
+### With question-scope
+
+**L3–L4** default before Code (after Plan + Test gate when required); skip when **`sp:off`**, L2, or user declines.
+
+### Combines with (optional)
+
+- `executing-plans` or `subagent-driven-development` — after isolation
+- `test-driven-development` — during Code
+
+### Requires (hard)
+
+- None
+
+**Instruction precedence:** User message → this skill → **`question-scope`** gates only when `/question-scope Lx` is active ([CONVENTIONS.md](../CONVENTIONS.md) § Invocation modes).
 
 1. System/developer constraints  
 2. User request (decline worktree = work in place)  
-3. **`question-scope`** level + supplement (`sp:off` skips mandatory worktree)  
+3. **`question-scope`** level + supplement (`sp:off` skips mandatory worktree) — **only when scope active**  
 4. This skill  
+
+See [CONVENTIONS.md](../CONVENTIONS.md) § Invocation modes.
+
+### Composition (quick ref)
+
+| ✅ Do | ❌ Don't |
+| ----- | -------- |
+| **L3–L4** before Code after Plan (+ Test gate when required) | Require worktree on **L2**, **`sp:off`**, or user decline |
+| Verify or create isolation before **`executing-plans`** or **`subagent-driven-development`** | Start multi-step Code on shared dirty `main` without asking |
+| **NEXT:** `executing-plans` (B) or `subagent-driven-development` (A) | Run during Plan-only phase |
+
+Shared ✅/❌: [invocation-anti-patterns](../references/invocation-anti-patterns.md).
 
 ## When to use
 

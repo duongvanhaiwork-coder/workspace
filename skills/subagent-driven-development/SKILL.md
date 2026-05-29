@@ -1,11 +1,38 @@
 ---
 name: subagent-driven-development
 description: >
-  Execute docs/plans/ with one subagent per task + two-stage review (A). Requires
-  writing-plans file; not for architect-plan-only phase plans. User must choose A.
+  Execute docs/plans/ with one subagent per task + two-stage review (A). Also when
+  user chooses A with a plan file — with or without question-scope. Requires
+  docs/plans/ from writing-plans (not architect-plan-only phase file). Not L3 default B.
 ---
 
 # Subagent-Driven Development
+
+## Invocation modes
+
+See [COMPOSITION.md](../COMPOSITION.md) § Requires (hard). Skills **compose** unless noted in **Requires (hard)** below.
+
+### Standalone
+
+User has `docs/plans/…` (or equivalent) and asks for subagents per task — run this skill; no `/question-scope` or `docs/work/` required.
+
+### With question-scope
+
+Execute path **(A)** under `/question-scope L3–L4` when user chose A + `docs/plans/…`; honor scope Verify/Regression/Ship after tasks complete.
+
+### Combines with (optional)
+
+- `writing-plans` — typical plan source
+- `using-git-worktrees`
+- `test-driven-development` — per task
+- `verification-before-completion`
+- `requesting-code-review` — once per branch (not per task)
+
+### Requires (hard)
+
+- Task-level `docs/plans/…` (or equivalent); not `architect-plan`-only phase file — use `executing-plans` (B) instead
+
+**Instruction precedence:** User message → this skill → **`question-scope`** gates only when `/question-scope Lx` is active ([CONVENTIONS.md](../CONVENTIONS.md) § Invocation modes).
 
 Execute plan by dispatching fresh subagent per task, with two-stage review after each: spec compliance review first, then code quality review.
 
@@ -41,7 +68,7 @@ digraph when_to_use {
 **vs. Executing Plans (B — inline, same session):**
 - **A:** fresh subagent per task + bundled spec/code-quality reviewer prompts
 - **B:** controller implements each checkpoint inline (no subagent dispatch)
-- Both can run in the **same session**; B is question-scope L3 default
+- Both can run in the **same session**; **B** is default under coordinated L3; **A** is valid standalone or coordinated when user chose A + `docs/plans/…`
 - A: continuous between tasks (no “continue?” prompts); B may checkpoint with user when blocked
 
 ## The Process

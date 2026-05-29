@@ -5,9 +5,9 @@ description: Use when the user sends /question-scope or /question-scope L1–L4 
 
 # Question Scope
 
-**Contract version:** `qs-2026-05-28.5` — keep in sync with `question-scope.mdc` when triggers/gates change.
+**Contract version:** `qs-2026-05-29.1` — keep in sync with `question-scope.mdc` when triggers/gates change.
 
-**Language:** English only in this file and under `references/`, `templates/`, `examples/`. The **only** Vietnamese doc in this skill is [README.md](README.md) (human guide).
+**Language:** English only in this skill (`SKILL.md`, [README.md](README.md), `references/`, `templates/`, `examples/`).
 
 Cursor + Kiro share this skill. **User invocation (canonical):** `/question-scope` or `/question-scope L1`…`L4` only — see [README.md](README.md). **Difference:** Cursor may use `AskQuestion` for level pick; Kiro uses a numbered list — wait for `L1`…`L4` or `/question-scope Lx`.
 
@@ -29,17 +29,49 @@ Cursor + Kiro share this skill. **User invocation (canonical):** `/question-scop
 - [Code policy & review](#code-policy-l2l4)
 - [Definition of Done](#definition-of-done)
 - [Superpowers supplement](#superpowers-supplement)
+- [Pipeline skills — standalone, coordinated, composition](#pipeline-skills--standalone-coordinated-and-composition)
 - [Related skills](#related-skills)
 - [Token depth](#token-depth)
 
 ## Instruction precedence
 
 1. System/developer constraints
-2. User request — `/question-scope`, `/question-scope Lx`, opt-out tokens; scope opt-outs beat `/question-scope Lx` when both appear (**Conflicting tokens**)
-3. This skill (pipelines, gates, work-folder layout only)
-4. Rule **`code-standards`** and stack rules (`typescript`, `react`, `python`, …) are canonical for code style, architecture, security, SOLID, size limits, and API conventions — this skill **does not redefine** those.
+2. Explicit **user message** (including opt-out tokens; scope opt-outs beat `/question-scope Lx` when both appear — **Conflicting tokens**)
+3. Repo **`AGENTS.md`** (when present)
+4. This skill (pipelines, gates, work-folder layout, STOP gates)
+5. Rule **`code-standards`** and stack rules (`typescript`, `react`, `python`, …) — canonical for code style, architecture, security, SOLID, size limits, and API conventions; this skill **does not redefine** those
+6. **`@workflow`** / Superpowers supplement — when scope is active or the user loads workflow
 
-**Suggest level:** [references/level-picker.md](references/level-picker.md) (flow + host UI).
+**Pipeline skills (composable):** Skills in [Related skills](#related-skills) run **standalone**, **with scope**, or **combined with each other** — see [CONVENTIONS.md](../CONVENTIONS.md) § Invocation modes and [COMPOSITION.md](../COMPOSITION.md). This skill **coordinates** when active; it does **not** block other skills.
+
+**Suggest level / option labels:** [references/level-picker.md](references/level-picker.md) (flow, host UI, **Option copy** for pickers).
+
+## Invocation modes
+
+See [COMPOSITION.md](../COMPOSITION.md). This skill **coordinates** when active; it does **not** block other skills from running standalone.
+
+### Standalone (other skills)
+
+Pipeline skills (`test-driven-development`, `systematic-debugging`, `refactor-code`, …) run on task fit without `/question-scope` unless the user opts in.
+
+### Coordinated
+
+User sends **`/question-scope`** or **`/question-scope Lx`** — L, STOP gates, `docs/work/…`, and supplement table apply.
+
+### Requires (hard)
+
+- None for other skills; when this skill is active, **STOP after L pick** before Spec/Plan/Code unless `/question-scope Lx` preset the level.
+
+### Composition (quick ref)
+
+| ✅ Do | ❌ Don't |
+| ----- | -------- |
+| **`test-driven-development`** standalone when behavior changes | Require `/question-scope` before every TDD patch |
+| **L2** patch: **`systematic-debugging`** for bugs; optional TC rows in `l2-patch` | **`brainstorming`** for every L2 patch |
+| **`using-git-worktrees`** on L3–L4 before Code (supplement default) | Mandate worktrees on L2, `sp:off`, or user decline |
+| Idea → four options → **STOP** until L1–L4 chosen | Run **`brainstorming`** / **`writing-plans`** while STOP waits for level |
+
+Shared ✅/❌: [invocation-anti-patterns](../references/invocation-anti-patterns.md).
 
 ## Gates at a glance
 
@@ -55,6 +87,15 @@ Cursor + Kiro share this skill. **User invocation (canonical):** `/question-scop
 ## When this skill applies
 
 Activate only when a trigger matches. Otherwise respond normally.
+
+### Default (no trigger)
+
+No `/question-scope` at **message start or end** (after trim) → **normal chat** (answer or edit as the user asked).
+
+- **Do not** infer L1–L4 from task size, file count, or “sounds like L3”.
+- **Do not** create `docs/work/…` or run phased pipelines unless the user chose scope (`/question-scope` / `/question-scope Lx`) or explicitly asked for phased docs.
+
+Rule reminder: `rules/cursor/question-scope.mdc` § Default, § Precedence.
 
 ### User invocation (canonical — tell users this only)
 
@@ -97,7 +138,7 @@ Same meaning in rule **`@workflow`** when scope is off. Rule **`question-scope`*
 | **`qs:meta`** | Message **starts with** `qs:meta` OR `(^|\s)qs:meta\b` |
 | **`audit:`** | Message **starts with** `audit:` OR `(^|\s)audit:` (colon required) |
 
-**`quick:` is not** “skip design/plan only” while scope runs — use **`sp:off`** for that. **`quick:` is not** “L2 with light `docs/work/` rollup” — use **`/question-scope L2`** + rollup note in the task (see [README.md](README.md) § Preset **Patch nhẹ**).
+**`quick:` is not** “skip design/plan only” while scope runs — use **`sp:off`** for that. **`quick:` is not** “L2 with light `docs/work/` rollup” — use **`/question-scope L2`** + rollup note in the task (see [README.md](README.md) § Preset **Light patch**).
 
 ### Parsing
 
@@ -201,7 +242,15 @@ After **Idea** + **Suggest**, present options and **STOP** — do **not** run Co
 | **Only one gray pair** fits ([gray-zones](references/gray-zones.md)) | **Exactly two** adjacent options (e.g. L2 vs L3) | Cursor: `AskQuestion` (2); Kiro: numbered list |
 | **Three or more** levels plausible, or still unclear | **Four** options (table above) | Cursor: `AskQuestion` (4); Kiro: numbered list |
 
-**Examples:** `Add GET /users/export CSV` on an **existing** users API → **L2 vs L3 only** (two options, not four). Greenfield multi-service platform → **four** options.
+### Option copy (required)
+
+Each option the user sees must include **what that L will do** (pipeline + code? + `docs/work/`), not bare `L1`…`L4`.
+
+- **Canonical strings:** [references/level-picker.md § Option copy](references/level-picker.md#option-copy-required--user-must-read-before-pick) (4-option table + gray pairs).
+- **Cursor:** `AskQuestion` — put the full `Lx — … · …` string in each option **`label`**.
+- **Kiro / fallback:** numbered list or table with the **same** labels; then **STOP**.
+
+**Examples:** `Add GET /users/export CSV` on an **existing** users API → **L2 vs L3 only** (two labeled options, not four). Greenfield multi-service platform → **four** labeled options.
 
 Accept: `L2`, `choose L3`, `/question-scope L3`, etc.
 
@@ -309,9 +358,19 @@ Do **not** duplicate SOLID/architecture here — rule **`code-standards`** and s
 
 **Summary:** L3–L4 default on; L2 minimal; L1 none. Opt out: `sp:off` / `no-sp`. Full tables, rule IDs, plan choice, prompts: **[references/superpowers-supplement.md](references/superpowers-supplement.md)**.
 
+## Pipeline skills — standalone, coordinated, and composition
+
+| | Standalone | Coordinated (`/question-scope Lx`) | Composition (same session) |
+| --- | --- | --- | --- |
+| **Who sets L / gates** | Each skill + optional **`superpowers`** | **question-scope** L + STOP + `docs/work/…` | Multiple skills when each **When to use** matches |
+| **Example** | Debug → **`systematic-debugging`** + **`test-driven-development`** | `/question-scope L2 — bug` → overlay + L2 | Explain → patch: **`explain-code`** then **`test-driven-development`** |
+| **Hard deps only** | [COMPOSITION.md](../COMPOSITION.md) § Requires (hard) | Same | e.g. **A** needs `docs/plans/…`; not whole pipeline for small tasks |
+
+Do **not** tell users bundle skills work **only** with `/question-scope`. Opt-outs: `qs:off`, `quick:`, `no-scope` → compose per **`superpowers`** + [COMPOSITION.md](../COMPOSITION.md).
+
 ## Pipeline skills (supplement — after level chosen)
 
-Do **not** run design/plan/worktree while scope **STOP** waits for L1–L4. Detail: [superpowers-supplement.md](references/superpowers-supplement.md) · [README.md](README.md) (VI chain).
+Do **not** run design/plan/worktree while scope **STOP** waits for L1–L4. Detail: [superpowers-supplement.md](references/superpowers-supplement.md) · [README.md](README.md) (human skill chain).
 
 **L2 (minimal supplement):**
 

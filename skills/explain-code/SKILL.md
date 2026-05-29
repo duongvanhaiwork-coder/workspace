@@ -10,6 +10,38 @@ description: >
 
 Before claiming tests or behavior are verified, use **`verification-before-completion`** when the user asked for proof — this skill is read-only explanation.
 
+## Invocation modes
+
+See [COMPOSITION.md](../COMPOSITION.md) § Requires (hard). Skills **compose** unless noted in **Requires (hard)** below.
+
+### Standalone
+
+User asks how code works — run this skill; default path (no scope, no repo edits).
+
+### With question-scope
+
+**L1** default; optional before Patch on L2+ when context is unclear — does not replace Spec.
+
+### Combines with (optional)
+
+- `refactor-code` or `test-driven-development` — if user moves to change after explain
+
+### Requires (hard)
+
+- None
+
+**Instruction precedence:** User message → this skill → **`question-scope`** L1/L2 context rules when scope active ([CONVENTIONS.md](../CONVENTIONS.md) § Invocation modes).
+
+### Composition (quick ref)
+
+| ✅ Do | ❌ Don't |
+| ----- | -------- |
+| Read-only walkthrough; then **`test-driven-development`** if user patches | Claim tests/behavior verified from explanation alone |
+| **L1** default; optional before unclear L2+ context | Replace Spec or Patch gates when scope active |
+| **NEXT:** `refactor-code` or `test-driven-development` when user moves to change | Mix implementation into the explain pass without announcing the next skill |
+
+Shared ✅/❌: [invocation-anti-patterns](../references/invocation-anti-patterns.md).
+
 ## When to use
 
 - User wants understanding, not a code change yet

@@ -7,6 +7,29 @@ description: >
 
 Write code review comments terse and actionable. One line per finding. Location, problem, fix. No throat-clearing.
 
+## Invocation modes
+
+See [COMPOSITION.md](../COMPOSITION.md) § Requires (hard). Skills **compose** unless noted in **Requires (hard)** below.
+
+### Standalone
+
+User asks to review a diff/PR — run this skill; no `/question-scope` required.
+
+### With question-scope
+
+**L2+** Review step in phase MD; before **`requesting-code-review`** on L4 when supplement applies.
+
+### Combines with (optional)
+
+- `requesting-code-review` — formal pre-merge after quick pass
+- `verification-before-completion` — if claiming fixes done
+
+### Requires (hard)
+
+- None
+
+**Instruction precedence:** User message → this skill → formal **`requesting-code-review`** only when user/AC/L4 supplement asks ([CONVENTIONS.md](../CONVENTIONS.md) § Invocation modes).
+
 ## Rules
 
 **Format:** `L<line>: <problem>. <fix>.` — or `<file>:L<line>: ...` when reviewing multi-file diffs.

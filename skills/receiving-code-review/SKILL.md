@@ -2,7 +2,7 @@
 name: receiving-code-review
 description: >
   Incoming PR/review feedback — verify before implementing (rule incoming-code-review).
-  Not a fixed L1–L4 phase; runs after PR open. Opposite of requesting-code-review.
+  Runs after PR open with or without question-scope. Opposite of requesting-code-review.
 ---
 
 # Code Review Reception
@@ -12,6 +12,28 @@ description: >
 Code review requires technical evaluation, not emotional performance.
 
 **Core principle:** Verify before implementing. Ask before assuming. Technical correctness over social comfort.
+
+## Invocation modes
+
+See [COMPOSITION.md](../COMPOSITION.md) § Requires (hard). Skills **compose** unless noted in **Requires (hard)** below.
+
+### Standalone
+
+PR or review comments on your branch — run this skill; no `/question-scope` required.
+
+### With question-scope
+
+Same process; log rounds in `docs/work/…` **PR feedback** / Iterate when scope active (common L3–L4 Ship).
+
+### Combines with (optional)
+
+- `verification-before-completion` — after each fix
+
+### Requires (hard)
+
+- Verify each fix before claiming addressed
+
+**Instruction precedence:** User message → this skill → phase MD logging when coordinated scope is active ([CONVENTIONS.md](../CONVENTIONS.md) § Invocation modes).
 
 ## With question-scope (incoming ≠ outgoing review)
 

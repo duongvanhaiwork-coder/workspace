@@ -90,6 +90,9 @@ require_pattern "#7 two-option in SKILL" "$SKILL" "two-option"
 require_pattern "#7 STOP after options" "$SKILL" "STOP"
 require_pattern "#7 no heavier default gray" "$GRAY" "heavier"
 require_pattern "#7 AskQuestion gray" "$GRAY" "AskQuestion"
+require_pattern "#7 option copy in SKILL" "$SKILL" "Option copy (required)"
+require_pattern "#7 option copy canonical" "$LEVEL_PICKER" "Option copy (required"
+require_pattern "#7 AskQuestion label" "$LEVEL_PICKER" "AskQuestion"
 
 # Scenario 8 — opt-out
 require_pattern "#8 Opt-out wins" "$SKILL" "Opt-out wins"

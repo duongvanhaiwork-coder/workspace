@@ -10,11 +10,31 @@ Canonical rules for **all** skills under `skills/<skill-id>/` in this repo (Supe
 | -------- | -------- |
 | `skills/**/SKILL.md` | **English only** (body, headings, YAML `description`) |
 | `skills/**/README.md` | **English** (default) |
-| `skills/question-scope/README.md` | **Vietnamese** (team exception — human prompt cheat sheet) |
 | `prompts/`, `references/`, `templates/`, `examples/` under skills | **English** |
-| Optional Vietnamese; human workflow: `AGENTS.md`, rule `@workflow` (on demand) |
+| Optional localized human workflow outside `skills/` | e.g. `docs/WORKFLOW-QUICKSTART.md`, `AGENTS.md`, rule `@workflow` (on demand) |
 
-Do not add Vietnamese (or other languages) to `SKILL.md` or supporting skill docs except **`skills/question-scope/README.md`** (that path only — not `question-scope/examples/`, `references/`, or `templates/`). User messages in chat may be any language; skill contracts stay English for agents.
+All prose under `skills/` is **English** for agents and humans. User messages in chat may be any language; skill contracts and skill docs stay English.
+
+## Invocation modes (standalone, coordinated, composition)
+
+Every skill under `skills/<skill-id>/` is:
+
+1. **Standalone** — invokable when its `SKILL.md` matches, **without** `/question-scope`
+2. **Coordinated** — same skill at the mapped phase when `/question-scope Lx` is active
+3. **Composable** — may run **together with other skills** in one session when each skill’s **When to use** matches
+
+**Mandatory combinations only:** [COMPOSITION.md](./COMPOSITION.md) § Requires (hard). Do **not** require the whole pipeline for a small task.
+
+| Mode | Trigger | Agent behavior |
+| ---- | ------- | -------------- |
+| **Standalone** | Task matches this skill; no scope (or `qs:off`, `quick:`, …) | Follow **this** skill’s playbook. **`superpowers`** (`skill-check-first`) may add other skills — each must match its own **When to use**. |
+| **Coordinated** | `/question-scope` or `/question-scope Lx` | Scope **L**, gates, and `docs/work/…` first; invoke this skill at the mapped phase ([pipelines-quickref](./question-scope/references/pipelines-quickref.md)). |
+| **Composition** | Multiple skills fit (e.g. debug + TDD + verify) | Invoke in sensible order; respect **Requires (hard)** in [COMPOSITION.md](./COMPOSITION.md) and each skill’s § **Invocation modes**. |
+| **User override** | Explicit instruction | User message wins for that turn. |
+
+**Each `SKILL.md`** must include § **Invocation modes** (standalone, coordinated, optional **Combines with**, **Requires (hard)** if any).
+
+**YAML `description`:** Prefer “Also on user request” / composable wording — not “only under question-scope Lx” unless **Requires (hard)** applies.
 
 ## Referencing Cursor rules (from skills)
 
@@ -119,7 +139,7 @@ When a skill applies, announce once: `Using <skill-id> to <purpose>.` (Use the s
 
 When changing any skill:
 
-- [ ] Body and `description` in English (except `question-scope/README.md`)
+- [ ] Body and `description` in English
 - [ ] Layout matches [STRUCTURE.md](./STRUCTURE.md) (supporting `.md` in `prompts/`, `references/`, or `templates/`)
 - [ ] Cross-skill: `` `skill-id` `` or `**REQUIRES:**` / `**NEXT:**`; not `../other/SKILL.md`, `skills/<id>/`, `@skills/…`, or `superpowers:…`
 - [ ] Paths use `docs/specs/` and `docs/plans/` defaults (or doc-root override pattern)

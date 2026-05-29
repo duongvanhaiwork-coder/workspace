@@ -1,6 +1,8 @@
 ---
 name: systematic-debugging
-description: Use when encountering any bug, test failure, or unexpected behavior, before proposing fixes
+description: >
+  Root cause before fixes for any bug, test failure, or unexpected behavior. Standalone
+  or question-scope L2+ bug overlay. Do not patch until investigation completes.
 ---
 
 # Systematic Debugging
@@ -20,6 +22,30 @@ NO FIXES WITHOUT ROOT CAUSE INVESTIGATION FIRST
 ```
 
 If you haven't completed Phase 1, you cannot propose fixes.
+
+## Invocation modes
+
+See [COMPOSITION.md](../COMPOSITION.md) § Requires (hard). Skills **compose** unless noted in **Requires (hard)** below.
+
+### Standalone
+
+Bug, failing test, or unexpected behavior — run this skill immediately; root cause in chat or a note file; no `/question-scope` required.
+
+### With question-scope
+
+`/question-scope L2+` bug overlay — root cause in Spec or `STATUS.md` **before** Patch; same four-phase process.
+
+### Combines with (optional)
+
+- `test-driven-development` — when fix changes behavior
+- `verification-before-completion` — after fix
+
+### Requires (hard)
+
+- Root cause documented before code fix (this skill’s Iron Law)
+
+**Instruction precedence:** User message → this skill → **`question-scope`** gates only when `/question-scope Lx` is active ([CONVENTIONS.md](../CONVENTIONS.md) § Invocation modes).
+See [CONVENTIONS.md](../CONVENTIONS.md) § Invocation modes.
 
 ## When to Use
 

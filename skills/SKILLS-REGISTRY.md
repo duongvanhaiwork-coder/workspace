@@ -8,6 +8,8 @@ Canonical map for skill IDs, handoffs, and dependency strength. Use this when fo
 **In skill bodies:** use skill ID + `**NEXT:**` / `**REQUIRES:**` only — see [CONVENTIONS.md](CONVENTIONS.md).
 **Legacy plugin name** (Claude Code marketplace only): `superpowers:<skill-id>` — do not use in portable skill text.
 
+**Common composition ✅/❌:** [references/invocation-anti-patterns.md](references/invocation-anti-patterns.md) — linked from per-skill § **Composition (quick ref)**; do not copy the full table into each `SKILL.md`.
+
 ## Dependency strength
 
 | Label | Meaning |
@@ -43,7 +45,7 @@ Team skills live under `skills/<id>/`. They complement the Superpowers table abo
 
 | ID | Role | Typical use |
 | ---- | ------ | ----------- |
-| `question-scope` | Workflow | L1–L4 levels, phased `docs/work/`, triggers, opt-outs; human prompts in [question-scope/README.md](question-scope/README.md) (VI) |
+| `question-scope` | Workflow | L1–L4 levels, phased `docs/work/`, triggers, opt-outs; human prompts in [question-scope/README.md](question-scope/README.md) |
 | `architect-plan` | Plan | Bounded implementation plan in work phase files (default L3–L4 Plan; pair with execute **B**) |
 | `orchestra-decision` | Process | Ambiguous problem — Q1–Q4 matrix before scope or design |
 | `explain-code` | AI Core | How does this work? / call flow (MCP or editor fallback) |

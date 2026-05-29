@@ -2,12 +2,46 @@
 name: analyze-impact
 description: >
   Blast radius before shared-symbol or cross-service changes (MCP analyze_impact or
-  search fallback). L4 discover/plan; L3 optional one-service bounded. Does not run tests.
+  search fallback). Also on user request for refactors/renames. L4 discover when scope
+  active; L3 optional one-service. Does not run tests.
 ---
 
 **Announce when applying:** `Using analyze-impact for <symbol>.`
 
 If MCP is down, follow **Search-only fallback** and state results are bounded — not graph-complete.
+
+## Invocation modes
+
+See [COMPOSITION.md](../COMPOSITION.md) § Requires (hard). Skills **compose** unless noted in **Requires (hard)** below.
+
+### Standalone
+
+User asks what breaks if they change X, or before a refactor — run this skill; output in chat or a note; no `/question-scope` required.
+
+### With question-scope
+
+**L4** discover when radius unclear; **L3** optional (one service); record in phase MD — feeds Regression scope, does **not** replace running tests.
+
+### Combines with (optional)
+
+- `refactor-code` — before cross-module rename
+- `architect-plan` / L4 discover — feed Regression scope
+
+### Requires (hard)
+
+- None
+
+**Instruction precedence:** User message → this skill → **`question-scope`** Regression step only when scope active ([CONVENTIONS.md](../CONVENTIONS.md) § Invocation modes).
+
+### Composition (quick ref)
+
+| ✅ Do | ❌ Don't |
+| ----- | -------- |
+| List blast radius (files, services, symbols) before large touch | Claim tests pass or replace **Regression** with this skill |
+| Feed Regression scope in phase MD when scope on | Run as substitute for **`verification-before-completion`** |
+| **NEXT:** `refactor-code` or plan with impacted scope noted | Skip when renaming shared symbols “because it’s small” |
+
+**NEXT:** `refactor-code` / Regression scope · Shared ✅/❌: [invocation-anti-patterns](../references/invocation-anti-patterns.md)
 
 ## With question-scope (impact ≠ Regression)
 

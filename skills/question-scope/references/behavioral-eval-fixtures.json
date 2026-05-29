@@ -208,7 +208,7 @@
           "user": "/question-scope\n\nExplain how auth works but also fix the 401 on /api/me",
           "expect": [
             "Idea + Suggest present",
-            "Exactly two options only: L1 (answer only) vs L2 (patch) — not four options, not auto-picked L2",
+            "Exactly two labeled options only: L1 (explain, no repo edits) vs L2 (Spec→Patch→Verify) — each with what-that-L-does note; not four options, not auto-picked L2",
             "STOP — no Spec/Patch/Code before user picks"
           ]
         }

@@ -9,6 +9,26 @@ description: >
 
 Write commit messages terse and exact. Conventional Commits format. No fluff. Why over what.
 
+## Invocation modes
+
+See [COMPOSITION.md](../COMPOSITION.md).
+
+### Standalone
+
+Short commit on user request — no `/question-scope` required.
+
+### With question-scope
+
+Not a pipeline phase; anytime.
+
+### Combines with (optional)
+
+- **`finishing-a-development-branch`**
+
+### Requires (hard)
+
+- None
+
 ## Rules
 
 **Subject line:**

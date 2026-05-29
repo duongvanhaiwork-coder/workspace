@@ -37,6 +37,30 @@ BEFORE claiming any status or expressing satisfaction:
 Skip any step = lying, not verifying
 ```
 
+## Invocation modes
+
+See [COMPOSITION.md](../COMPOSITION.md) § Requires (hard). Skills **compose** unless noted in **Requires (hard)** below.
+
+### Standalone
+
+Before “done”, “fixed”, or “tests pass” in any task — run fresh commands and paste evidence; applies with or without scope.
+
+### With question-scope
+
+Required at L2 Verify, L3–L4 Verify + Regression, Ship, and after bug fixes; log in phase MD when scope active.
+
+### Combines with (optional)
+
+- `Any skill that claims done — invoke before success claims`
+- `finishing-a-development-branch` — Step 1
+
+### Requires (hard)
+
+- None
+
+**Instruction precedence:** User message → this skill → **`question-scope`** gates only when `/question-scope Lx` is active ([CONVENTIONS.md](../CONVENTIONS.md) § Invocation modes).
+See [CONVENTIONS.md](../CONVENTIONS.md) § Invocation modes.
+
 ## Terminology (question-scope)
 
 | Term | Meaning |

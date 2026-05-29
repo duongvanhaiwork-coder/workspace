@@ -5,6 +5,28 @@ description: Use when creating new skills, editing existing skills, or verifying
 
 # Writing Skills
 
+## Invocation modes
+
+See [COMPOSITION.md](../COMPOSITION.md).
+
+### Standalone
+
+Authoring/verifying skills — independent of `/question-scope`.
+
+### With question-scope
+
+Not an application pipeline step.
+
+### Combines with (optional)
+
+- **`test-driven-development`** — RED/GREEN discipline for skill pressure tests
+
+### Requires (hard)
+
+- None
+
+When editing skills, preserve § **Invocation modes** per [CONVENTIONS.md](../CONVENTIONS.md).
+
 ## Overview
 
 **Writing skills IS Test-Driven Development applied to process documentation.**

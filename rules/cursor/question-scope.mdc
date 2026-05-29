@@ -8,13 +8,28 @@ alwaysApply: true
 
 # Question Scope
 
-**Contract:** `qs-2026-05-28.5` (full contract: skill **`question-scope`** → `SKILL.md`).
+**Contract:** `qs-2026-05-29.1` (full contract: skill **`question-scope`** → `SKILL.md`).
 
 **Command placement:** `/question-scope` or `/question-scope L2` must be at the **start or end** of the message (after trim) — **not** mid-sentence (e.g. use `fix auth /question-scope L2`, not `Please /question-scope fix auth`).
 
 **Triggers are ONLY `/question-scope` and `/question-scope L1`…`L4` (space before `L`).** Legacy signals: **`## Triggers (skill runs)`**, **`level L1`…`L4` as triggers**, **`?` + keyword / tight match**, command **mid-sentence** — ignore; follow **this file** and skill **`question-scope`** → `SKILL.md`.
 
 When the user message matches a trigger below, follow the **question-scope** skill (invoke-skill). **Pipelines, gates, tokens, meta:** skill `SKILL.md` — this file is a short reminder only.
+
+## Default (no trigger)
+
+No `/question-scope` at **message start or end** (after trim) → **normal chat** (answer or edit as the user asked).
+
+- **Do not** infer L1–L4 from task size, file count, or “sounds like L3”.
+- **Do not** create `docs/work/…` or run phased pipelines unless the user chose scope (`/question-scope` / `/question-scope Lx`) or explicitly asked for phased docs.
+
+## Precedence
+
+1. Explicit **user message** (including opt-out tokens)
+2. Repo **`AGENTS.md`** (when present)
+3. **This rule** + skill **`question-scope`** (STOP gates, level, `docs/work/…`)
+4. **`code-standards.mdc`** and stack rules by file type
+5. **`@workflow`** / Superpowers supplement — only when scope is active or user loads workflow
 
 ## User entry (canonical — suggest only this)
 
@@ -37,7 +52,7 @@ When the user message matches a trigger below, follow the **question-scope** ski
 
 ## No L on `/question-scope`
 
-Four options → **STOP** until pick. **Gray zone:** two options (L1↔L2, L2↔L3, L3↔L4) — still STOP. Skip when message has **`/question-scope L2`** (etc.).
+Four options → **STOP** until pick. Each option **must** include what that L does (pipeline note in `AskQuestion` label / numbered list) — skill `references/level-picker.md` § Option copy. **Gray zone:** two labeled options — still STOP. Skip when message has **`/question-scope L2`** (etc.).
 
 ## After level is chosen
 

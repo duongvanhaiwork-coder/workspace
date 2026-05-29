@@ -12,7 +12,7 @@ Reference table for triggers, gates, and gray-zone logic. Contract: [SKILL.md](.
 | 4 | `/question-scope L2` then work needs new module + worker | **Escalate** L2→L3; stop patch; re-present options |
 | 5 | `/question-scope L3` + `sp:off` | Scope L3 + phased work; **no** worktree/writing-plans supplement |
 | 6 | `/question-scope L2` sticky; next turn continues patch | Sticky L2; no re-ask level every turn |
-| 7 | `/question-scope` + ambiguous explain vs fix | **Exactly two** options: **L1 vs L2**; STOP; no four-option picker; no auto-pick L2 |
+| 7 | `/question-scope` + ambiguous explain vs fix | **Exactly two labeled** options: **L1 vs L2** (each with what-that-L-does note); STOP; no four-option picker; no auto-pick L2 |
 | 8 | `/question-scope L2 — fix X. quick:` or `qs:off /question-scope L3` | **No** scope activation; opt-out wins |
 | 9 | `?explain` or `fix something?` (no `/question-scope`) | **No** scope activation — use `/question-scope` |
 | 10 | `level L2 — fix X` (no `/question-scope`) | **No** scope — use `/question-scope L2` |

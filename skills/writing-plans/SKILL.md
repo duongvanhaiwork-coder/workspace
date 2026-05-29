@@ -1,9 +1,35 @@
 ---
 name: writing-plans
-description: Zero-context implementation plans in docs/plans/ for large handoff or subagents (A). Prefer architect-plan for bounded L3 in docs/work phase files (B default).
+description: >
+  Zero-context plans in docs/plans/ for handoff or subagents (A). Standalone or L3-L4 when
+  scope active. Prefer architect-plan for bounded work in phase files (B default).
 ---
 
 # Writing Plans
+
+## Invocation modes
+
+See [COMPOSITION.md](../COMPOSITION.md) § Requires (hard). Skills **compose** unless noted in **Requires (hard)** below.
+
+### Standalone
+
+User wants a detailed `docs/plans/…` or zero-context handoff — run this skill when pre-flight criteria match; no `/question-scope` required.
+
+### With question-scope
+
+L3–L4 when plan is too large for **`architect-plan`** in phase file, user chose execute **(A)**, or L4 dual plan.
+
+### Combines with (optional)
+
+- `executing-plans` (B) or `subagent-driven-development` (A) — after plan
+- `brainstorming` — when spec missing
+
+### Requires (hard)
+
+- Approved spec or explicit AC before large `docs/plans/…`
+
+**Instruction precedence:** User message → this skill → **`question-scope`** gates only when `/question-scope Lx` is active ([CONVENTIONS.md](../CONVENTIONS.md) § Invocation modes).
+See [CONVENTIONS.md](../CONVENTIONS.md) § Invocation modes.
 
 ## When to use (and when to stop)
 

@@ -1,10 +1,10 @@
 # Skills (canonical)
 
-**Language:** All `SKILL.md` files and supporting docs under `skills/` are **English**, except **`question-scope/README.md` only** (Vietnamese human guide; that skill’s `examples/`, `references/`, `templates/` stay English). See [CONVENTIONS.md](CONVENTIONS.md) § Language.
+**Language:** All files under `skills/` are **English** (`SKILL.md`, `README.md`, `references/`, `templates/`, `examples/`). See [CONVENTIONS.md](CONVENTIONS.md) § Language.
 
 **Directory layout (all skills):** [STRUCTURE.md](STRUCTURE.md) — `SKILL.md`, `prompts/`, `references/`, `templates/`, …
 
-**Portable conventions:** [CONVENTIONS.md](CONVENTIONS.md) — skill IDs, handoffs, paths, canonical tools. **Handoff graph:** [SKILLS-REGISTRY.md](SKILLS-REGISTRY.md).
+**Portable conventions:** [CONVENTIONS.md](CONVENTIONS.md) — skill IDs, handoffs, paths, canonical tools. **Composition (standalone + combine):** [COMPOSITION.md](COMPOSITION.md). **Handoff graph:** [SKILLS-REGISTRY.md](SKILLS-REGISTRY.md).
 
 **Agent policy:** [../AGENTS.md](../AGENTS.md) · **Workflow rules:** load `@workflow` on demand · **Always-on:** `question-scope`, `code-standards` (+ stack rules by file type)
 
@@ -69,7 +69,7 @@ Skills are **not executed automatically** by the IDE; clusters below are **recom
 | Skill                   | Meaning |
 | ----------------------- | ------- |
 | **architect-plan**      | Implementation plan before heavy coding |
-| **question-scope**      | L1–L4 work levels + phase templates (Cursor + Kiro); entry **`/question-scope`** or **`/question-scope Lx`**; human guide: [question-scope/README.md](question-scope/README.md) (VI); opt-out: `qs:off` / `no-scope` / `quick:` |
+| **question-scope**      | L1–L4 work levels + phase templates (Cursor + Kiro); entry **`/question-scope`** or **`/question-scope Lx`**; human guide: [question-scope/README.md](question-scope/README.md); opt-out: `qs:off` / `no-scope` / `quick:` |
 | **orchestra-decision**  | Decide design/process when inputs are still open |
 | **caveman-review**      | Terse line-oriented review |
 | **commit-message**      | Company commit + LINKID |

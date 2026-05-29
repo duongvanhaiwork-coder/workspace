@@ -10,6 +10,43 @@ description: >
 
 For shared symbols, run **`analyze-impact`** first (or search fallback). After edits, run tests; before claiming pass, use **`verification-before-completion`**.
 
+## Invocation modes
+
+See [COMPOSITION.md](../COMPOSITION.md) § Requires (hard). Skills **compose** unless noted in **Requires (hard)** below.
+
+### Standalone
+
+User asks to refactor/clean up/rename — run this skill; no `/question-scope` required.
+
+### With question-scope
+
+Fits **L2** patch or **L3** code tasks; honor Spec/plan and TDD gates when scope active — no behavior change unless requested.
+
+### Combines with (optional)
+
+- `analyze-impact` — shared symbols
+- `verification-before-completion` — after edits
+
+### Requires (hard)
+
+- None for trivial local edits
+- **`analyze-impact`** (or documented search fallback) when the change touches a **shared symbol** across modules or services
+
+**Instruction precedence:** User message → this skill → **`question-scope`** Patch/Code gates when scope active ([CONVENTIONS.md](../CONVENTIONS.md) § Invocation modes).
+
+### Composition (quick ref)
+
+| ✅ Do | ❌ Don't |
+| ----- | -------- |
+| Smallest diff; preserve outward behavior | Behavior change unless the user explicitly asked |
+| **`analyze-impact`** before rename/extract across modules | Skip impact on shared symbols because “it’s a small refactor” |
+| **`verification-before-completion`** before claiming tests pass | “Should pass” / linter-only when compile or tests matter |
+| One concern per change set | Mix refactor with unrelated features in the same commit |
+
+**REQUIRES:** `analyze-impact` when shared symbols · **NEXT:** `verification-before-completion` after edits
+
+Shared ✅/❌: [invocation-anti-patterns](../references/invocation-anti-patterns.md).
+
 ## When to use
 
 - User wants structure improved without changing outward behavior

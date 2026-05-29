@@ -13,6 +13,8 @@
 
 **After level chosen:** emit `Level: Lx | Pipeline: …` → run chain below → invoke each skill’s own `SKILL.md` when that step starts.
 
+**Standalone / composition:** Skills below run without `/question-scope` when their `SKILL.md` matches, and combine per [COMPOSITION.md](../../COMPOSITION.md). Coordinated: [SKILL.md § Pipeline skills](../SKILL.md#pipeline-skills--standalone-coordinated-and-composition).
+
 ---
 
 ## Skill chains (by level)
@@ -112,6 +114,6 @@ l4-01: Context + Validate + [analyze-impact]
 
 ---
 
-## Human (VI)
+## Human guide
 
-Short skill table: [README.md § Tóm tắt skill](../README.md#tóm-tắt-skill-trong-pipeline-tiếng-việt). Tokens: prefer this quickref + target skill `SKILL.md`.
+Short skill table: [README.md § Pipeline skill summary](../README.md#pipeline-skill-summary). Tokens: prefer this quickref + target skill `SKILL.md`.

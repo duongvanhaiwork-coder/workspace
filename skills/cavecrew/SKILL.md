@@ -11,6 +11,37 @@ description: >
 
 Cavecrew = **three roles** with **compressed** tool output (caveman-style), so results injected into the main thread cost fewer tokens than long prose. Same jobs as generic “explore / edit / review” flows; names like `cavecrew-investigator` are **one possible preset mapping** in Cursor, not a universal product ID.
 
+## Invocation modes
+
+See [COMPOSITION.md](../COMPOSITION.md).
+
+### Standalone
+
+Delegate locate/build/review subagents on user request — no `/question-scope` required.
+
+### With question-scope
+
+Not a numbered pipeline step; may parallel **`subagent-driven-development` (A)** patterns.
+
+### Combines with (optional)
+
+- **`subagent-driven-development`** — subagents per task
+- **`explain-code`** / **`refactor-code`** — locate role first
+
+### Requires (hard)
+
+- None
+
+### Composition (quick ref)
+
+| ✅ Do | ❌ Don't |
+| ----- | -------- |
+| **Locate** before **Build** when scope is unclear | **Build** without locate when call sites unknown |
+| Terse role output; main thread coordinates | Replace **`subagent-driven-development` (A)** full plan execution without user asking |
+| **NEXT:** **`verification-before-completion`** after **Review** findings are fixed | **Review** only for essays — use verbose reviewer when long rationale needed |
+
+**ALT:** `subagent-driven-development` (A) for whole `docs/plans/…` · Shared ✅/❌: [invocation-anti-patterns](../references/invocation-anti-patterns.md)
+
 ## Roles vs generic tools
 
 | Role | Job | Typical Cursor preset name (if configured) |

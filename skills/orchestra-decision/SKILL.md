@@ -15,9 +15,42 @@ Always apply instructions in this order:
 
 If higher-level instructions conflict with this skill, follow higher-level instructions and adapt the workflow.
 
+## Invocation modes
+
+See [COMPOSITION.md](../COMPOSITION.md) § Requires (hard). Skills **compose** unless noted in **Requires (hard)** below.
+
+### Standalone
+
+Ambiguous product/process/API/prompt question — run this skill; no `/question-scope` required.
+
+### With question-scope
+
+May run **before** L pick or early define when idea is vague; then return to scope picker or L pipeline — **not** a substitute for Spec, **`brainstorming`**, or **`architect-plan`**.
+
+### Combines with (optional)
+
+- `brainstorming` — after direction chosen
+- `question-scope` — return to L pick if scope on
+
+### Requires (hard)
+
+- None
+
+**Instruction precedence:** User message → this skill → **`question-scope`** STOP (no Spec/Plan until L chosen) when scope is waiting for level ([CONVENTIONS.md](../CONVENTIONS.md) § Invocation modes).
+
 **vs `brainstorming`:** **`orchestra-decision`** picks direction fast (Q1–Q4, 2–5 options, one decision) when the problem is still fuzzy. **`brainstorming`** produces an approved **design spec** section-by-section — use after scope/level is clear or when building a new feature needs full design gate.
 
 **After `question-scope` level is chosen:** **NEXT:** return to the active L pipeline (Spec/Plan) — or **`brainstorming`** when L3–L4 needs an approved design spec. Do **not** use orchestra output as a substitute for spec, plan files, or **`architect-plan`** / **`writing-plans`**.
+
+### Composition (quick ref)
+
+| ✅ Do | ❌ Don't |
+| ----- | -------- |
+| Fast Q1–Q4 direction when the idea is still fuzzy | Replace **`brainstorming`** approved spec on L3–L4 |
+| Return to scope picker when **`/question-scope`** is active and level unset | Run Spec/Plan while scope **STOP** waits for L1–L4 |
+| **NEXT:** **`brainstorming`** after direction when full design gate applies | Treat orchestra output as **`architect-plan`** or **`writing-plans`** |
+
+**NEXT:** `brainstorming` (L3–L4 spec) or active L pipeline · Shared ✅/❌: [invocation-anti-patterns](../references/invocation-anti-patterns.md)
 
 ## Quick start
 

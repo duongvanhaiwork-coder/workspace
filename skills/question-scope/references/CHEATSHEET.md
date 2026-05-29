@@ -1,12 +1,34 @@
 # Question Scope — one-page cheat sheet (English)
 
-Full contract: [SKILL.md](../SKILL.md). Vietnamese guide: [README.md](../README.md) (§ skill summary). **Agent default:** [pipelines-quickref.md](./pipelines-quickref.md). Full tables: [pipelines-skill-map.md](./pipelines-skill-map.md) (one § at a time).
+Full contract: [SKILL.md](../SKILL.md). User guide: [README.md](../README.md) (§ **Common workflow preset Lx only**). **Agent default:** [pipelines-quickref.md](./pipelines-quickref.md). Full tables: [pipelines-skill-map.md](./pipelines-skill-map.md) (one § at a time).
+
+## Power user — preset `/question-scope Lx` only
+
+Canonical path when you **already know L** (skips 4-option picker; pipeline + gates still apply).
+
+```text
+/question-scope L2 — <task> (@files)
+
+/question-scope L3 — <task>
+AC: …
+docs/work/YYYY-MM-DD-<slug>/
+```
+
+| Rule | Detail |
+| ---- | ------ |
+| Placement | **Start or end** of message — not mid-sentence |
+| Format | Space before `L`: `/question-scope L2` — not `/question-scopeL2` |
+| Legacy | `level L2 — …`, `?fix …` — **do not** activate scope |
+| New work item | Send `/question-scope Ly` again in same chat |
+| Unsure L2 vs L3 once | `/question-scope` + task → agent asks **two** options (gray zone) |
+
+**Agent off-track?** No `Level: Lx` header · no `docs/work/` (L2–L4) · L3 code before `generate-test` / RED · “done” without test command output → cite gate; see [pipelines-quickref.md](./pipelines-quickref.md).
 
 ## Activate scope (only these)
 
 | You want | Paste |
 | -------- | ----- |
-| Unsure of level | `/question-scope` + task → pick **L1–L4** (agent **STOP**s) |
+| Unsure of level | `/question-scope` + task → pick **L1–L4** (each option shows **what that L does**; agent **STOP**s) |
 | Known level | `/question-scope L2 — <task>` (L1/L3/L4) |
 | Resume work | `@docs/work/.../STATUS.md` + `/question-scope L3 — continue` |
 
@@ -34,7 +56,7 @@ Full contract: [SKILL.md](../SKILL.md). Vietnamese guide: [README.md](../README.
 | **L3** | Module, API, worker (bounded) | Yes + Regression + Ship |
 | **L4** | Multi-service, large migration | Yes + 15-step flow |
 
-**Gray zone:** agent asks **2 options** only (e.g. L2 vs L3 for export on existing API) — you must pick before work starts.
+**Gray zone:** agent asks **2 labeled options** only (e.g. L2 vs L3 for export on existing API) — each with a short “what happens” note — you must pick before work starts.
 
 ## Superpowers supplement (second layer)
 

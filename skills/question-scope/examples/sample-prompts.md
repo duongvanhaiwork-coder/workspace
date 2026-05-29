@@ -19,7 +19,7 @@ Copy-paste into chat. Replace `<description>`, `@path`, date/slug. Agent contrac
 
 ## Presets
 
-Full table + anti-patterns (Vietnamese): [README.md § Preset & anti-pattern](../README.md#preset--anti-pattern).
+Full table + anti-patterns: [README.md § Presets & anti-patterns](../README.md#presets-and-anti-patterns).
 
 | Preset | When | Paste |
 | ------ | ---- | ----- |

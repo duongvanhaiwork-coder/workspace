@@ -2,7 +2,9 @@
 
 Every skill under `skills/<skill-id>/` uses the **same folder pattern**. The agent contract lives in **`SKILL.md`** (required). Other `.md` files must not sit loose at the skill root except `SKILL.md` and (optionally) `README.md`.
 
-Portable rules: [CONVENTIONS.md](./CONVENTIONS.md). Catalog: [README.md](./README.md).
+Portable rules: [CONVENTIONS.md](./CONVENTIONS.md). Composition (standalone + combine): [COMPOSITION.md](./COMPOSITION.md). Catalog: [README.md](./README.md).
+
+**Catalog-wide references** (not a skill ID): [references/invocation-anti-patterns.md](./references/invocation-anti-patterns.md) — shared ✅/❌ for composition; per-skill § **Composition (quick ref)** links here.
 
 ---
 
@@ -57,7 +59,7 @@ skills/<skill-id>/
 | skill-id | README | prompts | references | templates | examples | scripts |
 | -------- | ------ | ------- | ---------- | --------- | -------- | ------- |
 | superpowers | — | — | ✓ | — | — | — |
-| question-scope | ✓ (VI) | — | ✓ | ✓ phases | ✓ sample-prompts | — |
+| question-scope | ✓ | — | ✓ | ✓ phases | ✓ sample-prompts | — |
 | brainstorming | — | ✓ | ✓ | — | — | ✓ |
 | writing-plans | — | ✓ | — | — | — | — |
 | subagent-driven-development | — | ✓ | — | — | — | — |

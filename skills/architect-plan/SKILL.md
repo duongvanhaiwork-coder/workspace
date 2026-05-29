@@ -1,6 +1,8 @@
 ---
 name: architect-plan
-description: Bounded implementation plans in docs/work phase files (default L3 Plan). Escalate to writing-plans for large handoff or subagents. Pair with executing-plans (B).
+description: >
+  Bounded implementation plans in phase files or chat. Standalone or L3 Plan when scope
+  active. Escalate to writing-plans for large handoff or subagents. Pair with executing-plans (B).
 ---
 
 # Architect Plan
@@ -8,6 +10,43 @@ description: Bounded implementation plans in docs/work phase files (default L3 P
 **Announce when applying:** `Using architect-plan for <feature/slug>.`
 
 **Stop when:** Plan has scope, dependencies (if any), DoD per slice/task, test traceability (L3+), and open uncertainties — then hand off per [Handoff](#handoff).
+
+## Invocation modes
+
+See [COMPOSITION.md](../COMPOSITION.md) § Requires (hard). Skills **compose** unless noted in **Requires (hard)** below.
+
+### Standalone
+
+User wants a bounded plan for a feature — write tasks in chat, `docs/plans/…`, or a work folder the user names; no `/question-scope` required.
+
+### With question-scope
+
+L3–L4 Plan phase — checkbox tasks in `l3-01-define.md` (or L4 define); escalate to **`writing-plans`** when pre-flight fails.
+
+### Combines with (optional)
+
+- `brainstorming` — when spec not approved
+- `executing-plans` (B) — after plan
+- `writing-plans` — when pre-flight escalates
+
+### Requires (hard)
+
+- Spec / AC before planning (existing spec, brainstorming, or user AC)
+
+**Instruction precedence:** User message → this skill → **`question-scope`** gates only when `/question-scope Lx` is active ([CONVENTIONS.md](../CONVENTIONS.md) § Invocation modes).
+See [CONVENTIONS.md](../CONVENTIONS.md) § Invocation modes.
+
+### Composition (quick ref)
+
+| ✅ Do | ❌ Don't |
+| ----- | -------- |
+| Bounded plan in `docs/work/…` with `### Tasks` → **`executing-plans` (B)** | **`subagent-driven-development` (A)** without `docs/plans/…` from **`writing-plans`** and explicit user/plan choice |
+| Stay in phase file when pre-flight ≤12 tasks / ≤8 files | **`writing-plans`** when the plan still fits architect-plan pre-flight |
+| Escalate to **`writing-plans`** when over pre-flight limits | Duplicate full RED/GREEN in the phase file when they live in `docs/plans/…` |
+
+**REQUIRES:** spec / AC · **NEXT:** `executing-plans` (B) default · **ALT:** `writing-plans` → `subagent-driven-development` (A)
+
+Shared ✅/❌: [invocation-anti-patterns](../references/invocation-anti-patterns.md).
 
 ## Prerequisites (before planning)
 

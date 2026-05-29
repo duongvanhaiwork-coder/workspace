@@ -11,6 +11,26 @@ description: >
 
 > Output MUST include **Title** and **Description** per `templates/TEMPLATE.md` in this skill.
 
+## Invocation modes
+
+See [COMPOSITION.md](../COMPOSITION.md) § Requires (hard).
+
+### Standalone
+
+Invoke when the user wants a commit/PR message — no `/question-scope` required.
+
+### With question-scope
+
+Not a pipeline phase; may run after **`finishing-a-development-branch`** on L3–L4 Ship, or anytime.
+
+### Combines with (optional)
+
+- **`finishing-a-development-branch`** — when user chooses commit/PR
+
+### Requires (hard)
+
+- None
+
 ## When to use
 
 - User asks for LINKID / team / company commit message format

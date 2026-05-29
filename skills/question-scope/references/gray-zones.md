@@ -16,7 +16,7 @@ Load when **two levels both fit** and the user has not sent **`/question-scope L
 | No acceptance criteria for implementation | Measurable AC, repro steps, or “make it work” |
 | `@` files optional (0–2) for illustration | Symptom + likely paths; will need Spec/Patch |
 
-If **both** fit (e.g. “explain then fix”), use **two-option** AskQuestion: **L1** (answer only now) vs **L2** (patch) — not four options. **STOP** until pick. Do not start Patch on L1.
+If **both** fit (e.g. “explain then fix”), use **two-option** AskQuestion with **labeled** choices (what each L does — [level-picker.md § Option copy](./level-picker.md#option-copy-required--user-must-read-before-pick)): **L1** vs **L2** — not four options. **STOP** until pick. Do not start Patch on L1.
 
 ## L2 vs L3 (e.g. “add one endpoint”)
 
@@ -32,7 +32,7 @@ Answer for the **current** work item. If **any** is **yes** → prefer **L3** (o
 | 4 | **Multiple** endpoints, public contract doc, or API versioning? |
 | 5 | Need full **Regression + Ship** / rollout notes (not scoped Verify only)? |
 
-Human copy (Vietnamese): [README.md § Checklist L2 ↔ L3](../README.md#checklist-l2--l3-5-câu).
+Human copy: [README.md § Checklist L2 ↔ L3](../README.md#checklist-l2-vs-l3-five-questions).
 
 | Prefer **L2** when (most true) | Prefer **L3** when (any true) |
 | ------------------------------ | ----------------------------- |

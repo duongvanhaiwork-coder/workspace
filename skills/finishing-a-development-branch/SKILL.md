@@ -13,6 +13,30 @@ Guide completion of development work by presenting clear options and handling ch
 
 **Announce at start:** "I'm using the finishing-a-development-branch skill to complete this work."
 
+## Invocation modes
+
+See [COMPOSITION.md](../COMPOSITION.md) § Requires (hard). Skills **compose** unless noted in **Requires (hard)** below.
+
+### Standalone
+
+Implementation done, tests green — present merge / PR / keep / discard; fresh verify per this skill.
+
+### With question-scope
+
+L3–L4 **Ship** after phase rollout/rollback in `l3-03` / `l4-05`; rule **`finish-branch-options`**.
+
+### Combines with (optional)
+
+- `verification-before-completion` — fresh run first
+- `receiving-code-review` — after PR open
+
+### Requires (hard)
+
+- Fresh `verification-before-completion` before presenting git options
+
+**Instruction precedence:** User message → this skill → **`question-scope`** gates only when `/question-scope Lx` is active ([CONVENTIONS.md](../CONVENTIONS.md) § Invocation modes).
+See [CONVENTIONS.md](../CONVENTIONS.md) § Invocation modes.
+
 ## With question-scope (L3–L4)
 
 Rule ID: **`finish-branch-options`**.

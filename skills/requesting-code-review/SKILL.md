@@ -1,8 +1,9 @@
 ---
 name: requesting-code-review
 description: >
-  Formal pre-merge review via subagent + code-reviewer prompt (L4 supplement default).
-  Whole-branch or feature slice — not duplicate per-task reviewers in subagent-driven-development (A).
+  Formal pre-merge review via subagent + code-reviewer prompt. Also when user asks
+  for formal review before merge/PR. L4 supplement default when scope active; L3 if AC asks.
+  Not duplicate per-task reviewers in subagent-driven-development (A).
 ---
 
 # Requesting Code Review
@@ -10,6 +11,29 @@ description: >
 Dispatch a code reviewer subagent to catch issues before they cascade. The reviewer gets precisely crafted context for evaluation — never your session's history. This keeps the reviewer focused on the work product, not your thought process, and preserves your own context for continued work.
 
 **Core principle:** Review early, review often.
+
+## Invocation modes
+
+See [COMPOSITION.md](../COMPOSITION.md) § Requires (hard). Skills **compose** unless noted in **Requires (hard)** below.
+
+### Standalone
+
+User asks for formal review before merge, or after a feature slice — run this skill; no `/question-scope` required.
+
+### With question-scope
+
+**L4** supplement default after `caveman-review` + prove green; **L3** only if AC/user asks; log in phase MD before Ship.
+
+### Combines with (optional)
+
+- `caveman-review` — quick pass before formal review
+- `verification-before-completion` — tests green first
+
+### Requires (hard)
+
+- None
+
+**Instruction precedence:** User message → this skill → **`question-scope`** Ship/Review order only when scope active ([CONVENTIONS.md](../CONVENTIONS.md) § Invocation modes).
 
 ## With question-scope (vs `caveman-review`)
 

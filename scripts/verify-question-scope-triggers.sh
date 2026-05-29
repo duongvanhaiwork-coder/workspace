@@ -7,7 +7,7 @@ set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 SKILL="$ROOT/skills/question-scope/SKILL.md"
 RULE="$ROOT/rules/cursor/question-scope.mdc"
-README_VI="$ROOT/skills/question-scope/README.md"
+README_HUMAN="$ROOT/skills/question-scope/README.md"
 SCENARIOS="$ROOT/skills/question-scope/references/pressure-scenarios.md"
 CURSOR_RULE="${CURSOR_RULES:-$HOME/.cursor/rules}/question-scope.mdc"
 
@@ -274,29 +274,29 @@ run_message_fixtures() {
   assert_eq "#24 audit:" "inactive" "$(qs_classify 'audit: đánh giá skills/question-scope')"
 }
 
-check_readme_vi() {
-  echo "== README.md (VI human guide) =="
+check_readme_human() {
+  echo "== README.md (human guide) =="
   local phrases=(
-    'Không còn hỗ trợ'
-    'Patch nhẹ'
-    'đầu'
-    'cuối** tin nhắn'
+    'No longer supported'
+    'Light patch'
+    'start or end'
     'qs:meta'
     'Rollup MD OK'
+    'Common workflow preset Lx only'
   )
   for p in "${phrases[@]}"; do
     tests=$((tests + 1))
-    if grep -qF "$p" "$README_VI" 2>/dev/null; then
-      pass "README VI contains: $p"
+    if grep -qF "$p" "$README_HUMAN" 2>/dev/null; then
+      pass "README contains: $p"
     else
       fail "README.md missing phrase: $p"
     fi
   done
   tests=$((tests + 1))
-  if grep -q 'quick:` nhưng muốn L2' "$README_VI" 2>/dev/null; then
-    pass "README anti-pattern: quick vs Patch nhẹ"
+  if grep -q 'quick:` but want L2' "$README_HUMAN" 2>/dev/null; then
+    pass "README anti-pattern: quick vs Light patch"
   else
-    fail "README missing anti-pattern quick vs Patch nhẹ"
+    fail "README missing anti-pattern quick vs Light patch"
   fi
 }
 
@@ -383,7 +383,7 @@ check_repo_docs() {
   fi
 
   tests=$((tests + 1))
-  if grep -q 'quick:' "$SKILL" && grep -q 'Patch nhẹ' "$SKILL" && grep -q 'rollup' "$SKILL"; then
+  if grep -q 'quick:' "$SKILL" && grep -q 'Light patch' "$SKILL" && grep -q 'rollup' "$SKILL"; then
     pass "SKILL clarifies quick: vs L2 rollup"
   else
     fail "SKILL missing quick: vs L2 rollup clarification"
@@ -436,7 +436,7 @@ check_cursor_rule_link() {
 
 run_message_fixtures
 check_repo_docs
-check_readme_vi
+check_readme_human
 check_cursor_rule_link
 
 echo ""

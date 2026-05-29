@@ -1,13 +1,52 @@
 ---
 name: executing-plans
 description: >
-  Use when you have a written implementation plan to execute with inline checkpoints
-  (same or new session). Default execute path (B) under question-scope L3–L4 unless
-  user chooses subagent-driven-development (A). Pair with architect-plan phase files
-  or docs/plans from writing-plans.
+  Execute a written plan with inline checkpoints (same or new session). Standalone or
+  default execute (B) under question-scope L3–L4 unless user chooses subagent-driven-development (A).
+  Plan from architect-plan phase file or docs/plans from writing-plans.
 ---
 
 # Executing Plans
+
+## Invocation modes
+
+See [COMPOSITION.md](../COMPOSITION.md) § Requires (hard). Skills **compose** unless noted in **Requires (hard)** below.
+
+### Standalone
+
+User provides or points to a plan (`docs/plans/…`, phase file, or checklist in chat) — execute with inline checkpoints; no `/question-scope` required.
+
+### With question-scope
+
+Default **execute (B)** for L3–L4 when scope active; plan from **`architect-plan`** phase or **`writing-plans`**; honor `docs/work/…` and Verify/Regression gates.
+
+### Combines with (optional)
+
+- `architect-plan` or `writing-plans` — plan source
+- `using-git-worktrees` — before implement (optional)
+- `test-driven-development` — per task when behavior changes
+- `verification-before-completion` — per task and before done
+- `finishing-a-development-branch` — after all tasks
+
+### Requires (hard)
+
+- Written plan with executable tasks (chat, `docs/plans/…`, or phase `### Tasks`)
+
+**Instruction precedence:** User message → this skill → **`question-scope`** gates only when `/question-scope Lx` is active ([CONVENTIONS.md](../CONVENTIONS.md) § Invocation modes).
+See [CONVENTIONS.md](../CONVENTIONS.md) § Invocation modes.
+
+### Composition (quick ref)
+
+| ✅ Do | ❌ Don't |
+| ----- | -------- |
+| **`architect-plan`** phase `### Tasks` + inline checkpoints (**B**, default L3) | **`subagent-driven-development` (A)** on architect-plan-only phase file (no `docs/plans/…`) |
+| Execute `docs/plans/…` with **B** when user or plan header chose B | Treat `docs/plans/…` alone as auto-selecting **A** |
+| **`verification-before-completion`** per task and before done | Claim done / phase complete without fresh command output |
+| One checkpoint = one task slice + TDD inside the slice | Invent micro-steps in a phase file to mimic **`writing-plans`** |
+
+**REQUIRES:** written plan with executable tasks · **NEXT:** `verification-before-completion` → `finishing-a-development-branch` · **ALT:** `subagent-driven-development` (A) when `docs/plans/…` exists and user/plan explicitly chose A
+
+Shared ✅/❌: [invocation-anti-patterns](../references/invocation-anti-patterns.md).
 
 ## Overview
 

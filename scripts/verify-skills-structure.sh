@@ -29,6 +29,8 @@ skill_count=0
 while IFS= read -r -d '' skill_dir; do
   skill_id="$(basename "$skill_dir")"
   [[ "$skill_id" == .* ]] && continue
+  # Catalog-wide docs (not skill IDs) — see skills/references/
+  [[ "$skill_id" == "references" ]] && continue
   skill_count=$((skill_count + 1))
 
   tests=$((tests + 1))

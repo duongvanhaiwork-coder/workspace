@@ -1,6 +1,8 @@
 ---
 name: test-driven-development
-description: RED→GREEN→REFACTOR during Patch/Code when behavior changes (L2+). L3 after generate-test/TC table; bugs after failing repro. Skip pure rename/config-only.
+description: >
+  RED→GREEN→REFACTOR when behavior changes. Also on user request or bug repro — with or
+  without question-scope. L3 coordinated path after generate-test/TC table. Skip rename/config-only.
 ---
 
 # Test-Driven Development (TDD)
@@ -19,12 +21,37 @@ Write the test first. Watch it fail. Write minimal code to pass.
 
 **Violating the letter of the rules is violating the spirit of the rules.**
 
+## Invocation modes
+
+See [COMPOSITION.md](../COMPOSITION.md) § Requires (hard). Skills **compose** unless noted in **Requires (hard)** below.
+
+### Standalone
+
+User asks to fix/add behavior, write tests first, or repro a bug — run this skill; no `/question-scope` or `docs/work/` required unless user wants them.
+
+### With question-scope
+
+`/question-scope Lx` — L2 Patch / L3–L4 Code per supplement; gates (Spec, `generate-test` before Code on L3–L4) from **`question-scope`** apply first.
+
+### Combines with (optional)
+
+- `systematic-debugging` — repro after root cause
+- `verification-before-completion` — before claiming green
+- `generate-test` — test design before implement (L3+ coordinated)
+
+### Requires (hard)
+
+- None
+
+**Instruction precedence:** User message → this skill → **`question-scope`** Spec/Test gates when scope active ([CONVENTIONS.md](../CONVENTIONS.md) § Invocation modes).
+
 ## When to use
 
 Rule ID: **`tdd-during-implementation`** (normal change) or **`tdd-failing-repro`** (bug overlay).
 
 | Situation | Use TDD? |
 | --------- | -------- |
+| **Standalone** — behavior/contract change or bug repro (any entry path) | **Yes** when table below applies |
 | **Patch / Code** changes **observable behavior** or **contract** | **Yes** — RED → GREEN → REFACTOR |
 | **Bug fix** (after root cause in Spec) | **Yes** — failing **repro** test first (`tdd-failing-repro`) |
 | **Refactor** with **same** behavior (tests stay green) | **No new failing test** — keep suite green; small steps |
