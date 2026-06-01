@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
-# Canonical: rules/cursor/<name>.mdc → rules/kiro/<name>.md (1:1 stems) → symlink ~/.cursor/rules + ~/.kiro/steering
+# Canonical: rules/cursor/<name>.mdc → rules/kiro/<name>.md (1:1 stems) → copy to ~/.cursor/rules + ~/.kiro/steering
+# Removes destination dirs and recreates them each run.
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
@@ -129,27 +130,22 @@ print(f"Generated {len(mdc_files)} Kiro steering file(s) in {kiro_src}")
 print(f"Updated {cursor_src / 'README.md'} and {kiro_src / 'README.md'}")
 PY
 
-link_dir() {
+copy_dir() {
   local target="$1"
   local source="$2"
   if [[ ! -d "$source" ]]; then
     echo "Error: missing source $source"
     exit 1
   fi
-  if [[ -e "$target" && ! -L "$target" ]]; then
-    local bak="${target}.bak.$(date +%Y%m%d%H%M%S)"
-    mv "$target" "$bak"
-    echo "  backed up: $bak"
-  fi
   mkdir -p "$(dirname "$target")"
   rm -rf "$target"
-  ln -sfn "$source" "$target"
-  echo "  $target → $source"
+  cp -R "$source" "$target"
+  echo "  $source → $target"
 }
 
 echo "== Rules → home IDE dirs =="
-link_dir "$CURSOR_DEST" "$CURSOR_SRC"
-link_dir "$KIRO_DEST" "$KIRO_SRC"
+copy_dir "$CURSOR_DEST" "$CURSOR_SRC"
+copy_dir "$KIRO_DEST" "$KIRO_SRC"
 
 cursor_count=$(find "$CURSOR_SRC" -mindepth 1 -maxdepth 1 -name '*.mdc' 2>/dev/null | wc -l | tr -d ' ')
 kiro_count=$(find "$KIRO_SRC" -mindepth 1 -maxdepth 1 -name '*.md' ! -name 'README.md' 2>/dev/null | wc -l | tr -d ' ')
@@ -157,8 +153,8 @@ if [[ "$cursor_count" != "$kiro_count" ]]; then
   echo "Warning: cursor .mdc count ($cursor_count) != kiro steering count ($kiro_count)"
   exit 1
 fi
-echo "Linked $cursor_count .mdc → $CURSOR_DEST"
-echo "Linked $kiro_count steering files → $KIRO_DEST (1:1 stems)"
+echo "Copied $cursor_count .mdc → $CURSOR_DEST"
+echo "Copied $kiro_count steering files → $KIRO_DEST (1:1 stems)"
 
 QS_INSTALLED="$CURSOR_DEST/question-scope.mdc"
 if [[ -f "$QS_INSTALLED" ]]; then

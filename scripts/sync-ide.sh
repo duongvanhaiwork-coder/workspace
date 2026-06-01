@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 # Sync rules + skills: canonical repo dirs → ~/.cursor and ~/.kiro only.
+# Removes destination dirs and recreates (copies) them each run.
 # Does not create Workspace/.cursor or Workspace/.kiro symlinks.
 set -euo pipefail
 
