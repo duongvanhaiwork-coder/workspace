@@ -16,7 +16,7 @@ def search_code(query: str, project: str = "__default__", top_k: int = 10) -> di
 
 @mcp.tool()
 def get_context(
-    query: str, project: str = "__default__", top_k: int = 10, max_tokens: int = 4000
+    query: str, project: str = "__default__", top_k: int = 10, max_tokens: int = 12000
 ) -> dict:
     """Retrieve code context within a token budget."""
     return TOOLS["get_context"](
@@ -25,21 +25,21 @@ def get_context(
 
 
 @mcp.tool()
-def analyze_impact(node: str, depth: int = 2) -> dict:
+def analyze_impact(node: str, project: str = "__default__", depth: int = 2) -> dict:
     """Analyze blast radius of a graph node (file or symbol)."""
-    return TOOLS["analyze_impact"]({"node": node, "depth": depth})
+    return TOOLS["analyze_impact"]({"node": node, "project": project, "depth": depth})
 
 
 @mcp.tool()
-def find_references(symbol: str) -> dict:
+def find_references(symbol: str, project: str = "__default__") -> dict:
     """Find all graph nodes referencing a symbol."""
-    return TOOLS["find_references"]({"symbol": symbol})
+    return TOOLS["find_references"]({"symbol": symbol, "project": project})
 
 
 @mcp.tool()
-def explain_symbol(symbol: str) -> dict:
+def explain_symbol(symbol: str, project: str = "__default__") -> dict:
     """Summarize a symbol's presence in the codebase graph."""
-    return TOOLS["explain_symbol"]({"symbol": symbol})
+    return TOOLS["explain_symbol"]({"symbol": symbol, "project": project})
 
 
 if __name__ == "__main__":

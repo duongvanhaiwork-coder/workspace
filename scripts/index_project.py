@@ -21,7 +21,7 @@ def index_project(project_name: str, full: bool = False) -> None:
     all_states = scanner.scan(root)
 
     file_state_store = get_file_state_store()
-    changed, deleted = file_state_store.diff(all_states)
+    changed, deleted = file_state_store.diff(all_states, project=project_name)
 
     if not full and not changed and not deleted:
         print(f"project={project_name} — no changes detected, skipping.")
@@ -75,8 +75,8 @@ def index_project(project_name: str, full: bool = False) -> None:
         all_imports.extend(imports)
         all_routes.extend(routes)
 
-    get_graph_store().save(GraphBuilder().build(all_symbols, all_imports, all_routes))
-    file_state_store.save(all_states)
+    get_graph_store().save(GraphBuilder().build(all_symbols, all_imports, all_routes), project=project_name)
+    file_state_store.save(all_states, project=project_name)
 
     mode = "full" if full else "incremental"
     print(

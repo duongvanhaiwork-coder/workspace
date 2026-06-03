@@ -1,10 +1,28 @@
+# --- Python ---
 .venv/
 __pycache__/
 *.pyc
+*.pyo
+*.egg-info/
+
+# --- Environment ---
 .env
+
+# --- Data (indexed artifacts) ---
 data/lancedb/*
-data
+data/file_state/*
+data/graph/*
 !data/**/.gitkeep
+
+# --- Testing ---
+.pytest_cache/
+
+# --- OS ---
 .DS_Store
-ai_core.egg-info
-.pytest_cache
+Thumbs.db
+
+# --- IDE ---
+.idea/
+.vscode/
+*.swp
+*.swo

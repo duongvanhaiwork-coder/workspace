@@ -1,5 +1,6 @@
 """Watch a project directory and incrementally re-index changed files."""
 from pathlib import Path
+import sys
 import time
 
 from intelligence_engine.project_loader.loader import ProjectLoader
@@ -13,7 +14,14 @@ from intelligence_engine.chunking.chunker import Chunker
 from intelligence_engine.embedding.embedder import Embedder
 from intelligence_engine.storage import get_vector_store, get_file_state_store
 
-project = ProjectLoader().load_all()[0]
+project_name = sys.argv[1] if len(sys.argv) > 1 else None
+loader = ProjectLoader()
+if project_name:
+    project = loader.get(project_name)
+else:
+    project = loader.load_all()[0]
+    project_name = project.name
+
 root = project.resolved_path(Path.cwd())
 scanner = Scanner(project.exclude)
 parser_factory = ParserFactory()
@@ -35,13 +43,13 @@ def on_change(path: Path) -> None:
         return
 
     # Remove old chunks for this file, then insert new ones
-    store.delete_by_file(rel, project=project.name)
+    store.delete_by_file(rel, project=project_name)
 
     file_symbols = sym_extractor.extract(parsed)
     chunks = chunker.chunk(parsed, file_symbols)
     if chunks:
         store.upsert_chunks(
-            chunks, embedder.embed_many([c.content for c in chunks]), project=project.name
+            chunks, embedder.embed_many([c.content for c in chunks]), project=project_name
         )
     print(f"re-indexed: {rel} ({len(chunks)} chunks)")
 
@@ -53,13 +61,13 @@ def on_delete(path: Path) -> None:
         rel = path.relative_to(root).as_posix()
     except ValueError:
         return
-    removed = store.delete_by_file(rel, project=project.name)
+    removed = store.delete_by_file(rel, project=project_name)
     print(f"deleted: {rel} (removed {removed} chunks)")
 
 
 watcher = Watcher(root, on_change, on_delete)
 watcher.start()
-print(f"watching {root} (project={project.name})")
+print(f"watching {root} (project={project_name})")
 try:
     while True:
         time.sleep(1)
@@ -67,5 +75,5 @@ except KeyboardInterrupt:
     watcher.stop()
     # Save final file state
     states = scanner.scan(root)
-    get_file_state_store().save(states)
+    get_file_state_store().save(states, project=project_name)
     print("stopped, file state saved.")

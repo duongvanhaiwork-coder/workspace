@@ -97,7 +97,7 @@ python scripts/index_project.py business-lounge-api
 
 ### Cách 2: Watcher (tự động incremental)
 
-Watcher theo dõi file thay đổi và cập nhật index tự động:
+Watcher theo dõi file thay đổi và cập nhật **vector index** tự động (chunks + embeddings). **Lưu ý:** watcher không rebuild dependency graph — chạy `index_project.py` khi cần graph mới (ví dụ: thêm/xóa import, đổi dependency structure).
 
 ```bash
 source .venv/bin/activate
@@ -112,13 +112,13 @@ nohup python scripts/watch_project.py business-lounge-api &
 
 ### Khi nào cần re-index?
 
-| Thay đổi                           | Cần re-index?               |
-| ---------------------------------- | --------------------------- |
-| Sửa nội dung file                  | Có (watcher xử lý tự động)  |
-| Thêm/xóa file                      | Có                          |
-| Thêm project mới vào projects.json | Có — chạy index project mới |
-| Chỉ sửa config/env                 | Không                       |
-| Rename/move file                   | Có                          |
+| Thay đổi                           | Cần re-index?                                         |
+| ---------------------------------- | ----------------------------------------------------- |
+| Sửa nội dung file                  | Có (watcher xử lý vector tự động, graph cần re-index) |
+| Thêm/xóa file                      | Có                                                    |
+| Thêm project mới vào projects.json | Có — chạy index project mới                           |
+| Chỉ sửa config/env                 | Không                                                 |
+| Rename/move file                   | Có                                                    |
 
 ## Cấu hình MCP trong IDE
 

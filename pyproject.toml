@@ -20,6 +20,7 @@ dependencies = [
 
 [project.optional-dependencies]
 dev = ["pytest>=8.0.0", "ruff>=0.6.0"]
+reranker = ["sentence-transformers>=3.0.0"]
 
 [tool.setuptools.packages.find]
 include = ["intelligence_engine*", "mcp_server*"]

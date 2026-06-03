@@ -12,9 +12,9 @@ def get_vector_store() -> LanceDBStore:
 
 @lru_cache
 def get_graph_store() -> GraphStore:
-    return GraphStore(get_settings().graph_dir / "code_graph.json")
+    return GraphStore(get_settings().graph_dir)
 
 
 @lru_cache
 def get_file_state_store() -> FileStateStore:
-    return FileStateStore(get_settings().file_state_dir / "state.json")
+    return FileStateStore(get_settings().file_state_dir)

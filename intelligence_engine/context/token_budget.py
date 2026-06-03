@@ -1,5 +1,5 @@
 class TokenBudget:
-    def __init__(self, max_tokens: int = 4000) -> None:
+    def __init__(self, max_tokens: int = 12000) -> None:
         self.max_tokens = max_tokens
 
     def estimate(self, text: str) -> int:

@@ -1,13 +1,17 @@
-import json
 import tempfile
 from pathlib import Path
 from intelligence_engine.storage.file_state_store import FileStateStore
 from intelligence_engine.scanner.file_state import FileState
 
 
+def _make_store() -> FileStateStore:
+    """Create a FileStateStore with a temp directory."""
+    tmpdir = tempfile.mkdtemp()
+    return FileStateStore(tmpdir)
+
+
 def test_diff_new_files():
-    with tempfile.NamedTemporaryFile(suffix=".json", delete=False) as f:
-        store = FileStateStore(f.name)
+    store = _make_store()
 
     # No prior state — everything is new
     current = [
@@ -20,8 +24,7 @@ def test_diff_new_files():
 
 
 def test_diff_unchanged():
-    with tempfile.NamedTemporaryFile(suffix=".json", delete=False) as f:
-        store = FileStateStore(f.name)
+    store = _make_store()
 
     states = [
         FileState("a.py", "aaa", 100),
@@ -36,8 +39,7 @@ def test_diff_unchanged():
 
 
 def test_diff_modified():
-    with tempfile.NamedTemporaryFile(suffix=".json", delete=False) as f:
-        store = FileStateStore(f.name)
+    store = _make_store()
 
     store.save([
         FileState("a.py", "aaa", 100),
@@ -56,8 +58,7 @@ def test_diff_modified():
 
 
 def test_diff_deleted():
-    with tempfile.NamedTemporaryFile(suffix=".json", delete=False) as f:
-        store = FileStateStore(f.name)
+    store = _make_store()
 
     store.save([
         FileState("a.py", "aaa", 100),
@@ -72,8 +73,7 @@ def test_diff_deleted():
 
 
 def test_diff_mixed():
-    with tempfile.NamedTemporaryFile(suffix=".json", delete=False) as f:
-        store = FileStateStore(f.name)
+    store = _make_store()
 
     store.save([
         FileState("a.py", "aaa", 100),
