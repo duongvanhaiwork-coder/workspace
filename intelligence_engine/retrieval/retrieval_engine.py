@@ -88,7 +88,7 @@ class RetrievalEngine:
 
             snippet = ""
             line = 0
-            for i, text_line in enumerate(content.splitlines(), start=row.get("start_line", 1)):
+            for i, text_line in enumerate(content.splitlines(), start=row.get("line_start", 1)):
                 if symbol in text_line:
                     snippet = text_line.strip()
                     line = i

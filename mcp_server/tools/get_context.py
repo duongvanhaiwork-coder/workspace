@@ -3,17 +3,17 @@
 Delegates to Orchestrator which handles:
 Intent Analyzer → Retrieval Planner → Search/Graph → Context Builder.
 
-Output adapts to query intent but always includes:
+Output follows strict schema (section 12):
 {
+    "meta": { "intent", "confidence", "token_budget": { "max", "used" } },
     "summary": "...",
-    "chunks": [...],
-    "missing_context": [],
-    "confidence": 0.82
+    "results": { ... },
+    "missing_context": []
 }
-Plus intent-specific fields (entrypoints, dependency_paths, etc).
 """
 
 from intelligence_engine.context.orchestrator import Orchestrator
+from mcp_server.tools.output_schema import wrap_output
 
 
 def get_context(args: dict) -> dict:
@@ -23,4 +23,26 @@ def get_context(args: dict) -> dict:
     top_k = int(args.get("top_k", 10))
 
     orchestrator = Orchestrator(project=project, max_tokens=max_tokens, top_k=top_k * 2)
-    return orchestrator.run(query)
+    raw = orchestrator.run(query)
+
+    # Extract fields for strict schema
+    intent = raw.pop("intent", "search")
+    confidence = raw.pop("confidence", 0.0)
+    summary = raw.pop("summary", "")
+    missing_context = raw.pop("missing_context", [])
+    raw.pop("prompt_guidance", None)
+    raw.pop("query", None)
+
+    # Calculate used tokens from chunks
+    chunks = raw.get("chunks", [])
+    used_tokens = sum(max(1, len(c.get("content", "")) // 4) for c in chunks)
+
+    return wrap_output(
+        summary=summary,
+        results=raw,
+        missing_context=missing_context,
+        intent=intent,
+        confidence=confidence,
+        max_tokens=max_tokens,
+        used_tokens=used_tokens,
+    )

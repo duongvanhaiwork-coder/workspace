@@ -12,6 +12,9 @@ __pycache__/
 data/lancedb/*
 data/file_state/*
 data/graph/*
+data/symbol_index/*
+data/relationship_index/*
+data/retrieval_cache/*
 !data/**/.gitkeep
 
 # --- Testing ---

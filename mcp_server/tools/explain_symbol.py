@@ -81,8 +81,8 @@ def _get_important_chunks(symbol: str, rows: list[dict]) -> list[dict]:
         if symbol in content or symbol in row_symbol or row_symbol == symbol:
             chunks.append({
                 "file": row.get("file_path", ""),
-                "line_start": row.get("start_line", 0),
-                "line_end": row.get("end_line", 0),
+                "line_start": row.get("line_start", 0),
+                "line_end": row.get("line_end", 0),
                 "content": content[:500],
             })
     return chunks[:5]
@@ -96,8 +96,8 @@ def _find_definition(symbol: str, rows: list[dict]) -> dict:
             return {
                 "kind": row.get("kind", "unknown"),
                 "file": row.get("file_path", ""),
-                "line_start": row.get("start_line", 0),
-                "line_end": row.get("end_line", 0),
+                "line_start": row.get("line_start", 0),
+                "line_end": row.get("line_end", 0),
             }
     return {}
 

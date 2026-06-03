@@ -19,15 +19,32 @@ class Reranker(Protocol):
 
 
 class SimpleReranker:
-    """Keyword-overlap reranker — no model, instant, good baseline."""
+    """Keyword-overlap reranker with opinionated domain priority (section 10).
+
+    Priority boost: entity, dto, service, repository
+    Lower priority: helpers, utils, logger, constants
+    """
+
+    # Opinionated retrieval rules (section 10)
+    _PRIORITY_PATTERNS = ("entity", "dto", "service", "repository", "repo")
+    _NOISE_PATTERNS = ("helper", "util", "logger", "constant", "config", "common")
 
     def rerank(self, query: str, rows: list[dict], top_k: int | None = None) -> list[dict]:
         terms = set(query.lower().split())
 
         def boost(row: dict) -> float:
             content = row.get("content", "").lower()
+            file_path = row.get("file_path", "").lower()
             overlap = sum(1 for t in terms if t in content)
-            return row.get("score", 0) + overlap * 0.05
+            base = row.get("score", 0) + overlap * 0.05
+
+            # Opinionated domain priority
+            if any(p in file_path for p in self._PRIORITY_PATTERNS):
+                base += 0.08
+            elif any(p in file_path for p in self._NOISE_PATTERNS):
+                base -= 0.05
+
+            return base
 
         ranked = sorted(rows, key=boost, reverse=True)
         if top_k:

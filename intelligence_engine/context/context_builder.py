@@ -34,11 +34,11 @@ class ContextBuilder:
         if not relevant:
             relevant = rows[:MAX_CHUNKS]  # fallback: take top N even if low score
 
-        # Deduplicate by file+start_line
+        # Deduplicate by file+line_start
         seen: set[str] = set()
         unique: list[dict] = []
         for row in relevant:
-            key = f"{row.get('file_path', '')}:{row.get('start_line', 0)}"
+            key = f"{row.get('file_path', '')}:{row.get('line_start', 0)}"
             if key not in seen:
                 seen.add(key)
                 unique.append(row)
@@ -72,8 +72,8 @@ class ContextBuilder:
                 "file": f,
                 "symbol": symbol if _valid_symbol(symbol) else "",
                 "kind": row.get("kind", "unknown"),
-                "line_start": row.get("start_line", 0),
-                "line_end": row.get("end_line", 0),
+                "line_start": row.get("line_start", 0),
+                "line_end": row.get("line_end", 0),
                 "reason": _chunk_reason(target, row),
                 "content": content,
             })
@@ -95,8 +95,8 @@ class ContextBuilder:
                 "file": f,
                 "symbol": symbol if _valid_symbol(symbol) else "",
                 "kind": row.get("kind", ""),
-                "line_start": row.get("start_line", 0),
-                "line_end": row.get("end_line", 0),
+                "line_start": row.get("line_start", 0),
+                "line_end": row.get("line_end", 0),
             })
             if len(entries) >= MAX_ENTRYPOINTS:
                 break

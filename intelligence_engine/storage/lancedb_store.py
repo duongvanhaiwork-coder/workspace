@@ -49,7 +49,9 @@ class LanceDBStore:
         for chunk, vector in zip(chunks, embeddings):
             row = asdict(chunk)
             row["vector"] = vector
-            rows[row["id"]] = row
+            # Use chunk_id as the row key
+            row_id = row.get("chunk_id", row.get("id", ""))
+            rows[row_id] = row
         self._persist(project)
 
     def delete_by_file(self, file_path: str, project: str = "__default__") -> int:

@@ -42,5 +42,11 @@ def explain_symbol(symbol: str, project: str = "__default__") -> dict:
     return TOOLS["explain_symbol"]({"symbol": symbol, "project": project})
 
 
+@mcp.tool()
+def reindex_project(project: str = "__default__") -> dict:
+    """Trigger re-indexing for a project (clears caches)."""
+    return TOOLS["reindex_project"]({"project": project})
+
+
 if __name__ == "__main__":
     mcp.run()

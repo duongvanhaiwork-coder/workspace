@@ -19,6 +19,9 @@ class Settings(BaseSettings):
     graph_max_nodes: int = 50
     graph_include_tests: bool = False
 
+    # Retrieval cache
+    retrieval_cache_ttl_minutes: int = 30
+
     @property
     def root_dir(self) -> Path:
         return Path.cwd()
@@ -34,6 +37,18 @@ class Settings(BaseSettings):
     @property
     def file_state_dir(self) -> Path:
         return Path(self.data_dir) / "file_state"
+
+    @property
+    def symbol_index_dir(self) -> Path:
+        return Path(self.data_dir) / "symbol_index"
+
+    @property
+    def relationship_index_dir(self) -> Path:
+        return Path(self.data_dir) / "relationship_index"
+
+    @property
+    def retrieval_cache_dir(self) -> Path:
+        return Path(self.data_dir) / "retrieval_cache"
 
 
 @lru_cache

@@ -250,14 +250,14 @@ class Orchestrator:
             if symbol not in content:
                 continue
             file_path = row.get("file_path", "")
-            key = f"{file_path}:{row.get('start_line', 0)}"
+            key = f"{file_path}:{row.get('line_start', 0)}"
             if key in seen:
                 continue
             seen.add(key)
 
             snippet = ""
             line = 0
-            for i, text_line in enumerate(content.splitlines(), start=row.get("start_line", 1)):
+            for i, text_line in enumerate(content.splitlines(), start=row.get("line_start", 1)):
                 if symbol in text_line:
                     snippet = text_line.strip()
                     line = i
@@ -308,8 +308,8 @@ class Orchestrator:
                 "file": row.get("file_path", ""),
                 "symbol": symbol if self._valid_symbol(symbol) else "",
                 "kind": row.get("kind", "unknown"),
-                "line_start": row.get("start_line", 0),
-                "line_end": row.get("end_line", 0),
+                "line_start": row.get("line_start", 0),
+                "line_end": row.get("line_end", 0),
                 "reason": self._chunk_reason(target, row),
                 "content": content,
             })
@@ -330,8 +330,8 @@ class Orchestrator:
                 "file": f,
                 "symbol": symbol if self._valid_symbol(symbol) else "",
                 "kind": row.get("kind", ""),
-                "line_start": row.get("start_line", 0),
-                "line_end": row.get("end_line", 0),
+                "line_start": row.get("line_start", 0),
+                "line_end": row.get("line_end", 0),
             })
         return entries[:5]
 

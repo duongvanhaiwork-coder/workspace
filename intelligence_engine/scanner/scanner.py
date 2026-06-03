@@ -1,5 +1,5 @@
 from pathlib import Path
-from .file_state import FileState, hash_file
+from .file_state import FileState, hash_file, detect_language
 
 DEFAULT_EXTENSIONS = {".py", ".js", ".jsx", ".ts", ".tsx", ".cs"}
 
@@ -18,5 +18,11 @@ class Scanner:
         for path in root.rglob("*"):
             if path.is_file() and not self.should_skip(path):
                 rel = path.relative_to(root).as_posix()
-                states.append(FileState(path=rel, sha256=hash_file(path), size=path.stat().st_size))
+                states.append(FileState(
+                    file_path=rel,
+                    content_hash=hash_file(path),
+                    size_bytes=path.stat().st_size,
+                    language=detect_language(path),
+                    absolute_path=str(path),
+                ))
         return states

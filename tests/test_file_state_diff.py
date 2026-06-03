@@ -15,8 +15,8 @@ def test_diff_new_files():
 
     # No prior state — everything is new
     current = [
-        FileState("a.py", "aaa", 100),
-        FileState("b.py", "bbb", 200),
+        FileState(file_path="a.py", content_hash="aaa", size_bytes=100),
+        FileState(file_path="b.py", content_hash="bbb", size_bytes=200),
     ]
     changed, deleted = store.diff(current)
     assert len(changed) == 2
@@ -27,8 +27,8 @@ def test_diff_unchanged():
     store = _make_store()
 
     states = [
-        FileState("a.py", "aaa", 100),
-        FileState("b.py", "bbb", 200),
+        FileState(file_path="a.py", content_hash="aaa", size_bytes=100),
+        FileState(file_path="b.py", content_hash="bbb", size_bytes=200),
     ]
     store.save(states)
 
@@ -42,18 +42,18 @@ def test_diff_modified():
     store = _make_store()
 
     store.save([
-        FileState("a.py", "aaa", 100),
-        FileState("b.py", "bbb", 200),
+        FileState(file_path="a.py", content_hash="aaa", size_bytes=100),
+        FileState(file_path="b.py", content_hash="bbb", size_bytes=200),
     ])
 
     # b.py changed hash
     current = [
-        FileState("a.py", "aaa", 100),
-        FileState("b.py", "ccc", 210),
+        FileState(file_path="a.py", content_hash="aaa", size_bytes=100),
+        FileState(file_path="b.py", content_hash="ccc", size_bytes=210),
     ]
     changed, deleted = store.diff(current)
     assert len(changed) == 1
-    assert changed[0].path == "b.py"
+    assert changed[0].file_path == "b.py"
     assert deleted == []
 
 
@@ -61,12 +61,12 @@ def test_diff_deleted():
     store = _make_store()
 
     store.save([
-        FileState("a.py", "aaa", 100),
-        FileState("b.py", "bbb", 200),
+        FileState(file_path="a.py", content_hash="aaa", size_bytes=100),
+        FileState(file_path="b.py", content_hash="bbb", size_bytes=200),
     ])
 
     # b.py removed from scan
-    current = [FileState("a.py", "aaa", 100)]
+    current = [FileState(file_path="a.py", content_hash="aaa", size_bytes=100)]
     changed, deleted = store.diff(current)
     assert changed == []
     assert deleted == ["b.py"]
@@ -76,17 +76,17 @@ def test_diff_mixed():
     store = _make_store()
 
     store.save([
-        FileState("a.py", "aaa", 100),
-        FileState("b.py", "bbb", 200),
+        FileState(file_path="a.py", content_hash="aaa", size_bytes=100),
+        FileState(file_path="b.py", content_hash="bbb", size_bytes=200),
     ])
 
     # a.py changed, b.py deleted, c.py new
     current = [
-        FileState("a.py", "xxx", 110),
-        FileState("c.py", "ccc", 50),
+        FileState(file_path="a.py", content_hash="xxx", size_bytes=110),
+        FileState(file_path="c.py", content_hash="ccc", size_bytes=50),
     ]
     changed, deleted = store.diff(current)
-    changed_paths = [s.path for s in changed]
+    changed_paths = [s.file_path for s in changed]
     assert "a.py" in changed_paths
     assert "c.py" in changed_paths
     assert deleted == ["b.py"]
