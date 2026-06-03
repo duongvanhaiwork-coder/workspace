@@ -1,6 +1,13 @@
 # Commit description template (required sections)
 
-Output as **one continuous block** (all sections in order). When presenting to the user, wrap the filled description in **one** fenced code block (e.g. ` ```text `) so the UI shows a **Copy** button — do not split into multiple fences by section. All sections required; use YES/NO where noted.
+**Output format — two separate copyable parts:**
+
+1. **Title** — on its own line, wrapped in **inline code** (backticks) so the user can copy it separately.
+2. **Description** — all sections below in **one** fenced code block (` ```text `) so the UI shows a **Copy** button. Do not split description into multiple fences.
+
+**Do NOT** put Title inside the fenced block. Title and Description must be visually and structurally separate for easy copy-paste into commit title / PR body fields.
+
+All sections required; use YES/NO where noted.
 
 ## Structure
 

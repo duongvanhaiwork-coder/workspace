@@ -1,107 +1,253 @@
-# AI Core — Skills & rules
+# AI Core
 
-Canonical **agent skills** (`skills/`) and **IDE rules** (`rules/cursor/`) for Cursor and Kiro. Use them in any repo via global symlink sync.
+Python MCP Server + Codebase Intelligence Engine for Cursor / Kiro.
 
-**Agent policy:** [AGENTS.md](AGENTS.md) · **Workflow (Vietnamese):** [docs/WORKFLOW-QUICKSTART.md](docs/WORKFLOW-QUICKSTART.md) · **Rules quickstart (English):** [rules/QUICKSTART.md](rules/QUICKSTART.md)
+## Architecture
 
-## Bắt đầu nhanh
-
-```bash
-cd /path/to/Workspace
-./scripts/sync-ide.sh    # symlink skills + rules → ~/.cursor/, ~/.kiro/
+```text
+Cursor / Kiro
+   │
+   │ MCP stdio
+   ▼
+Python MCP Server + Codebase Intelligence Engine
+   ├── MCP Layer          → mcp_server/server.py (FastMCP stdio)
+   ├── Project Loader     → intelligence_engine/project_loader/
+   ├── Scanner / Watcher  → intelligence_engine/scanner/
+   ├── Tree-sitter Parser → intelligence_engine/parser/
+   ├── Symbol Extractor   → intelligence_engine/symbols/
+   ├── Chunker            → intelligence_engine/chunking/
+   ├── Embedder           → intelligence_engine/embedding/
+   ├── LanceDB            → intelligence_engine/storage/ + data/lancedb/
+   ├── NetworkX Graph     → intelligence_engine/graph/ + data/graph/
+   ├── Retrieval Engine   → intelligence_engine/retrieval/
+   ├── Context Builder    → intelligence_engine/context/
+   └── MCP Tools          → mcp_server/tools/
+       ├── search_code
+       ├── get_context
+       ├── analyze_impact
+       ├── find_references
+       └── explain_symbol
 ```
 
-Reload cửa sổ Cursor hoặc mở chat mới sau khi sửa rule always-on.
+## Yêu cầu
 
-## Thành phần
+- Python >= 3.11
+- macOS / Linux
 
-| Thành phần | Vai trò |
-| ---------- | ------- |
-| `skills/` | Agent playbooks (`SKILL.md` per skill) — nguồn chính |
-| `rules/cursor/` | Cursor rules `.mdc` — nguồn chính (sửa tại đây) |
-| `rules/kiro/` | Kiro steering — **tự sinh** từ `rules/cursor/` (không sửa tay) |
-| `scripts/` | Sync IDE + verify contract (không cài vào `~/.cursor/`) |
-| `AGENTS.md` | Chính sách agent workspace |
-| `docs/` | Hướng dẫn người (VD: WORKFLOW-QUICKSTART) |
+## Cài đặt
 
-**Always-on rules (mọi session):** `code-standards`, `mcp-intelligence`, `question-scope`. Stack rules (`typescript`, `react`, …) theo loại file. Workflow graph: `@workflow` (on demand).
+```bash
+cd /Users/chanh/workspace
 
-**MCP intelligence:** Khi AI Core MCP (`ai-core`) kết nối, dùng `get_context` / `search_code` / `analyze_impact` trước grep; khi không có MCP → editor fallback (`rules/cursor/mcp-intelligence.mdc`). Opt-out: `mcp:off`, `no-mcp`.
+# Tạo virtual environment
+python -m venv .venv
+source .venv/bin/activate
 
-## Lệnh chạy (nguồn duy nhất)
+# Copy file env
+cp .env.example .env
 
-**Chính sách:** Mọi lệnh `./scripts/…` cho repo này **chỉ ghi ở README này**. `skills/` và `rules/` mô tả hành vi agent — **không** lặp lệnh; chỉ trỏ về mục này khi cần vận hành repo.
+# Cài package (editable mode)
+pip install -e .[dev]
+```
 
-Chạy từ thư mục gốc `Workspace/`:
+## Index project
 
-| Lệnh | Làm gì |
-| ---- | ------ |
-| `./scripts/sync-ide.sh` | Sinh `rules/kiro/` + symlink `~/.cursor/rules`, `~/.kiro/steering`, skills |
-| `./scripts/link-global-ide.sh` | Alias của `sync-ide.sh` (tùy chọn `IDE_GLOBAL_ROOT=…`) |
-| `./scripts/sync-ide-skills.sh` | Chỉ symlink skills |
-| `./scripts/sync-ide-rules.sh` | Chỉ sinh kiro + symlink rules |
-| `./scripts/verify.sh` | Kiểm tra skills, rules, question-scope contract |
+Index là bước bắt buộc — parse code, tạo embeddings, build dependency graph, lưu vào `data/`.
 
-### `./scripts/verify.sh`
+### Index một project
 
-Gọi lần lượt:
+```bash
+source .venv/bin/activate
+python scripts/index_project.py <project-name>
+```
 
-| Script | Kiểm tra |
-| ------ | -------- |
-| `scripts/verify-skills-structure.sh` | Cấu trúc `skills/`, YAML `SKILL.md` |
-| `scripts/verify-skills-audit.sh` | Invocation modes, links, anti-patterns |
-| `scripts/verify-question-scope-triggers.sh` | Parser fixtures, rule ↔ SKILL mirror |
-| `scripts/verify-question-scope-behavior.sh` | Behavioral anchors trong SKILL + templates |
-| `scripts/hint-question-scope-behavioral-eval.sh` | Gợi ý spot-check (không fail) |
+### Index tất cả projects
 
-**Khi chạy:** Trước merge/PR sửa `skills/` hoặc `rules/`; sau đổi question-scope triggers/tokens/parsing.
+```bash
+source .venv/bin/activate
+python scripts/index_project.py business-lounge-api
+python scripts/index_project.py business-lounge-job
+python scripts/index_project.py business-lounge-portal
+python scripts/index_project.py operator-api
+python scripts/index_project.py vpid-mobile-api
+```
 
-### Script tùy chọn (question-scope)
+### Danh sách projects (projects.json)
 
-| Script | Khi dùng |
-| ------ | -------- |
-| `./scripts/check-question-scope-session.sh` | Sau sync — so `~/.cursor/rules/question-scope.mdc` vs repo |
-| `./scripts/run-question-scope-behavioral-eval.sh` | In checklist spot-check LLM (không bắt buộc merge) |
+| Project                | Path                                         | Language   |
+| ---------------------- | -------------------------------------------- | ---------- |
+| business-lounge-api    | /Users/chanh/Projects/business-lounge-api    | TypeScript |
+| business-lounge-job    | /Users/chanh/Projects/business-lounge-job    | TypeScript |
+| business-lounge-portal | /Users/chanh/Projects/business-lounge-portal | JavaScript |
+| operator-api           | /Users/chanh/Projects/operator-api           | TypeScript |
+| vpid-mobile-api        | /Users/chanh/Projects/vpid-mobile-api        | C#         |
 
-## Đồng bộ skills & rules vào IDE
+## Đồng bộ (Re-index)
 
-**Nguồn chính:** `skills/` và `rules/cursor/*.mdc`. Cursor/Kiro đọc bản cài qua symlink dưới home — **không** tự cập nhật khi chỉ sửa file trong repo.
+Khi code trong project thay đổi (thêm file, sửa logic, refactor), cần re-index để MCP có data mới.
 
-| Thay đổi | Cần `./scripts/sync-ide.sh`? |
-| -------- | ------------------------------ |
-| Sửa `skills/**` | Có |
-| Sửa `rules/cursor/*.mdc` | Có — sinh lại `rules/kiro/` + symlink |
-| Chỉ sửa `docs/`, `AGENTS.md` | Không (trừ khi đổi contract cần `verify`) |
+### Cách 1: Re-index thủ công
 
-**Sau khi sync:**
+Chạy lại lệnh index cho project đã thay đổi:
 
-1. **Reload cửa sổ Cursor** hoặc **chat mới** — rule cache trong chat cũ có thể lỗi thời.
-2. Chỉ **rules + skills** vào `~/.cursor/` — **không** có `scripts/`; chạy `verify` trong repo gốc.
-3. Symlink **chỉ** home: `~/.cursor/rules` → `rules/cursor/`, `~/.kiro/steering` → `rules/kiro/`, skills → `skills/`. **Không** symlink vào `Workspace/.cursor/` hay `Workspace/.kiro/`.
+```bash
+source .venv/bin/activate
+python scripts/index_project.py business-lounge-api
+```
 
-Chi tiết từng script: mục [Lệnh chạy](#lệnh-chạy-nguồn-duy-nhất) và `scripts/sync-ide.sh`.
+### Cách 2: Watcher (tự động incremental)
 
-## Scripts (`scripts/`)
+Watcher theo dõi file thay đổi và cập nhật index tự động:
 
-| File | Làm gì |
-| ---- | ------ |
-| `sync-ide.sh` | Entry: sync skills + rules |
-| `sync-ide-skills.sh` | Symlink `~/.cursor/skills`, `~/.kiro/skills` |
-| `sync-ide-rules.sh` | `cursor/*.mdc` → `kiro/*.md` + symlink steering |
-| `link-global-ide.sh` | Alias `sync-ide.sh` |
-| `verify.sh` | Entry: toàn bộ verify contract |
-| `verify-*.sh` | Từng bước verify (gọi từ `verify.sh`) |
-| `check-question-scope-session.sh` | So rule đã sync vs repo |
-| `run-question-scope-behavioral-eval.sh` | Checklist spot-check thủ công |
-| `lib/question-scope-contract.sh` | Shared helpers cho verify |
+```bash
+source .venv/bin/activate
+python scripts/watch_project.py business-lounge-api
+```
 
-## Docs
+Watcher chạy liên tục — mở terminal riêng hoặc dùng background process:
 
-| File | Nội dung |
-| ---- | -------- |
-| [docs/WORKFLOW-QUICKSTART.md](docs/WORKFLOW-QUICKSTART.md) | Question-scope + Superpowers (tiếng Việt) |
-| [rules/QUICKSTART.md](rules/QUICKSTART.md) | Cùng workflow (English) |
-| [rules/CONVENTIONS.md](rules/CONVENTIONS.md) | Rule authoring, polarity |
-| [skills/CONVENTIONS.md](skills/CONVENTIONS.md) | Skill authoring, composition |
-| [skills/STRUCTURE.md](skills/STRUCTURE.md) | Layout thư mục skill |
-| [STRUCTOR.md](STRUCTOR.md) | Cây repo tóm tắt |
+```bash
+nohup python scripts/watch_project.py business-lounge-api &
+```
+
+### Khi nào cần re-index?
+
+| Thay đổi                           | Cần re-index?               |
+| ---------------------------------- | --------------------------- |
+| Sửa nội dung file                  | Có (watcher xử lý tự động)  |
+| Thêm/xóa file                      | Có                          |
+| Thêm project mới vào projects.json | Có — chạy index project mới |
+| Chỉ sửa config/env                 | Không                       |
+| Rename/move file                   | Có                          |
+
+## Cấu hình MCP trong IDE
+
+MCP chạy qua **stdio** — IDE tự spawn process Python, không cần bật server thủ công.
+
+### Kiro
+
+File: `~/.kiro/settings/mcp.json` hoặc `<workspace>/.kiro/settings/mcp.json`
+
+```json
+{
+  "mcpServers": {
+    "ai-core": {
+      "command": "/Users/chanh/workspace/.venv/bin/python",
+      "args": ["-m", "mcp_server.server"],
+      "cwd": "/Users/chanh/workspace",
+      "env": {
+        "AI_CORE_PROJECTS_FILE": "projects.json",
+        "AI_CORE_DATA_DIR": "data",
+        "AI_CORE_EMBEDDING_DIM": "384"
+      },
+      "disabled": false,
+      "autoApprove": [
+        "search_code",
+        "get_context",
+        "analyze_impact",
+        "find_references",
+        "explain_symbol"
+      ]
+    }
+  }
+}
+```
+
+### Cursor
+
+File: `.cursor/mcp.json` trong workspace
+
+```json
+{
+  "mcpServers": {
+    "ai-core": {
+      "command": "/Users/chanh/workspace/.venv/bin/python",
+      "args": ["-m", "mcp_server.server"],
+      "cwd": "/Users/chanh/workspace",
+      "env": {
+        "AI_CORE_PROJECTS_FILE": "projects.json",
+        "AI_CORE_DATA_DIR": "data",
+        "AI_CORE_EMBEDDING_DIM": "384"
+      }
+    }
+  }
+}
+```
+
+## Cách hoạt động (end-to-end)
+
+```text
+1. IDE mở → đọc mcp.json
+2. Agent cần tìm code → IDE spawn: python -m mcp_server.server
+3. Agent gọi tool qua stdin (JSON-RPC):
+   search_code(query="AuthGuard", project="business-lounge-api")
+4. MCP server → retrieval engine → semantic search LanceDB + graph traversal
+5. Trả context qua stdout → Agent dùng để trả lời / edit code
+6. Process sống suốt IDE session, tự tắt khi đóng IDE
+```
+
+## MCP Tools
+
+| Tool              | Mục đích                                           |
+| ----------------- | -------------------------------------------------- |
+| `search_code`     | Tìm code theo semantic similarity + keyword        |
+| `get_context`     | Lấy context trong budget token (dùng cho prompt)   |
+| `analyze_impact`  | Phân tích blast radius trước khi sửa shared symbol |
+| `find_references` | Tìm tất cả nơi reference đến symbol                |
+| `explain_symbol`  | Tóm tắt symbol trong dependency graph              |
+
+## API server (optional, cho debug/test)
+
+```bash
+source .venv/bin/activate
+uvicorn intelligence_engine.api.main:app --reload --port 8000
+```
+
+Hoặc dùng Docker:
+
+```bash
+docker compose up
+```
+
+## Cấu trúc thư mục
+
+```text
+workspace/
+├── mcp_server/           # MCP stdio server + tool registry
+│   ├── server.py         # FastMCP entrypoint
+│   ├── registry.py       # Tool → function mapping
+│   └── tools/            # Từng tool một file
+├── intelligence_engine/  # Core engine
+│   ├── api/              # HTTP API (optional)
+│   ├── chunking/         # Code chunker
+│   ├── config/           # Engine config
+│   ├── context/          # Context builder
+│   ├── embedding/        # Vector embedder
+│   ├── graph/            # NetworkX graph builder
+│   ├── parser/           # Tree-sitter parser
+│   ├── project_loader/   # Load projects.json
+│   ├── retrieval/        # Retrieval engine (search + graph)
+│   ├── scanner/          # File scanner
+│   ├── storage/          # LanceDB storage
+│   └── symbols/          # Symbol extractor
+├── scripts/              # CLI scripts
+│   ├── index_project.py  # Index một project
+│   └── watch_project.py  # Watcher incremental
+├── data/                 # Indexed data (gitignored)
+│   ├── lancedb/          # Vector embeddings
+│   ├── graph/            # Dependency graphs
+│   └── file_state/       # File state tracking
+├── projects.json         # Danh sách projects
+├── .env                  # Environment variables
+└── pyproject.toml        # Python package config
+```
+
+## Troubleshooting
+
+| Vấn đề                                                       | Giải pháp                                                          |
+| ------------------------------------------------------------ | ------------------------------------------------------------------ |
+| `ModuleNotFoundError: No module named 'intelligence_engine'` | Chưa install: `pip install -e .`                                   |
+| MCP không kết nối trong IDE                                  | Kiểm tra path python trong mcp.json trỏ đúng `.venv/bin/python`    |
+| Search trả rỗng                                              | Project chưa index hoặc sai tên project                            |
+| Index chậm với project lớn                                   | Bình thường — lần đầu parse toàn bộ, lần sau incremental nhanh hơn |
+| Watcher không detect thay đổi                                | Kiểm tra exclude patterns trong projects.json                      |

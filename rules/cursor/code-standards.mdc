@@ -24,6 +24,8 @@ Not to be confused with **data access scope** (Security below).
 
 - **Do not** expand work beyond what the user requested (no drive-by refactors, unrelated files, or “while we’re here” features).
 - **Do not** refactor unrelated large files only to meet size limits or style nits.
+- **Do not** reformat the entire file — only format code within the lines being changed; leave surrounding code as-is.
+- **⚠️ CRITICAL: Do not** reformat or re-style existing code under any circumstances. Agent **CHỈ ĐƯỢC PHÉP sửa logic/code**, **TUYỆT ĐỐI KHÔNG ĐƯỢC format lại code** (indentation, spacing, line breaks, trailing commas, quote style, bracket placement, import ordering, etc.) của bất kỳ phần code nào không trực tiếp liên quan đến thay đổi logic. Vi phạm rule này coi như lỗi nghiêm trọng.
 - Prefer the **smallest correct change** that meets acceptance criteria.
 - In touched files, **match existing** naming, layout, and patterns before introducing new abstractions.
 

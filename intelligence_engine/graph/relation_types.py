@@ -1,0 +1,5 @@
+IMPORTS = "imports"
+DEFINES = "defines"
+REFERENCES = "references"
+CALLS = "calls"
+ROUTE = "route"
