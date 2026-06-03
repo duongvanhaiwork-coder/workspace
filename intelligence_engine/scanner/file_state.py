@@ -1,4 +1,5 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
+from datetime import datetime, timezone
 from pathlib import Path
 import hashlib
 
@@ -13,6 +14,11 @@ class FileState:
     last_modified_at: str = ""
     last_indexed_at: str = ""
     status: str = "pending"  # pending | indexed | error
+
+    def mark_indexed(self) -> "FileState":
+        """Return a new FileState with status=indexed and current timestamp."""
+        now = datetime.now(timezone.utc).isoformat(timespec="seconds")
+        return replace(self, status="indexed", last_indexed_at=now)
 
 
 def hash_file(path: Path) -> str:

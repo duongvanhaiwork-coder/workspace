@@ -90,7 +90,10 @@ def index_project(project_name: str, req: IndexRequest | None = None):
 
     graph = GraphBuilder().build(all_symbols, all_imports, all_routes)
     get_graph_store().save(graph, project=project_name)
-    file_state_store.save(all_states, project=project_name)
+
+    # Mark all states as indexed before saving
+    indexed_states = [s.mark_indexed() for s in all_states]
+    file_state_store.save(indexed_states, project=project_name)
 
     mode = "full" if full else "incremental"
     return IndexResponse(

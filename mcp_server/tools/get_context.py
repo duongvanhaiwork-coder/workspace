@@ -30,8 +30,19 @@ def get_context(args: dict) -> dict:
     confidence = raw.pop("confidence", 0.0)
     summary = raw.pop("summary", "")
     missing_context = raw.pop("missing_context", [])
-    raw.pop("prompt_guidance", None)
-    raw.pop("query", None)
+    prompt_guidance = raw.pop("prompt_guidance", None)
+    target = raw.pop("query", query)
+
+    # Inject Layer 1 — Intent Context
+    raw["intent_context"] = {
+        "intent": intent,
+        "query": query,
+        "target": raw.pop("_target", target),
+    }
+
+    # Inject prompt_guidance for LLM
+    if prompt_guidance:
+        raw["prompt_guidance"] = prompt_guidance
 
     # Calculate used tokens from chunks
     chunks = raw.get("chunks", [])

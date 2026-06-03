@@ -11,7 +11,11 @@ class Chunker:
             chunks = []
             for s in symbols:
                 content = "\n".join(lines[max(s.line_start - 1, 0):s.line_end])
-                chunks.append(self._make(parsed, content, s.line_start, s.line_end, s.name))
+                symbol_name = s.qualified_name or s.name
+                chunks.append(self._make(
+                    parsed, content, s.line_start, s.line_end,
+                    symbol_name, s.kind,
+                ))
             return chunks
         return self._by_window(parsed, lines)
 
@@ -19,12 +23,18 @@ class Chunker:
         chunks = []
         for start in range(0, len(lines), size):
             end = min(start + size, len(lines))
-            chunks.append(self._make(parsed, "\n".join(lines[start:end]), start + 1, end, None))
+            chunks.append(self._make(
+                parsed, "\n".join(lines[start:end]), start + 1, end, None, "",
+            ))
         return chunks
 
     def _make(
-        self, parsed: ParsedFile, content: str, start: int, end: int, symbol: str | None,
+        self, parsed: ParsedFile, content: str, start: int, end: int,
+        symbol: str | None, kind: str = "",
     ) -> CodeChunk:
         raw = f"{parsed.path}:{start}:{end}:{symbol or ''}:{content[:64]}"
         cid = hashlib.sha1(raw.encode()).hexdigest()
-        return CodeChunk(cid, parsed.path, parsed.language, content, start, end, symbol)
+        return CodeChunk(
+            cid, parsed.path, parsed.language, content,
+            start, end, symbol, kind,
+        )

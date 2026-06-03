@@ -59,6 +59,7 @@ class Orchestrator:
         output: dict = {
             "query": query,
             "intent": plan.intent.value,
+            "_target": target,
         }
 
         # --- Search Layer ---
@@ -157,20 +158,57 @@ class Orchestrator:
             f"Refactor '{target}': {len(refs)} reference(s) "
             f"in {len(affected_files)} file(s). Risk: {risk}."
         )
-        affected_symbols = [
-            {"name": r["symbol"], "kind": r.get("kind", ""), "file": r["file"]}
-            for r in refs if r.get("symbol")
-        ]
-        return {
-            "summary": summary,
+
+        # Layer 3 — Symbol Context
+        symbols = []
+        for r in refs:
+            if r.get("symbol"):
+                symbols.append({
+                    "name": target,
+                    "qualified_name": r.get("symbol", target),
+                    "kind": r.get("kind", "unknown"),
+                    "file": r["file"],
+                    "line_start": r.get("line", 0),
+                    "line_end": r.get("line", 0),
+                    "reason": r.get("snippet", "")[:80] or "Contains reference",
+                })
+
+        # Layer 4 — Code Context (chunks with target)
+        budget = TokenBudget(self.max_tokens)
+        chunks = self._build_chunks(
+            [r for r in rows if target in r.get("content", "")],
+            budget, target,
+        )
+
+        # Layer 5 — Dependency Context (from/to/relation/reason)
+        dependency_paths = []
+        for p in paths:
+            dependency_paths.append({
+                "from": p.get("source", ""),
+                "to": p.get("target", ""),
+                "relation": p.get("relation", "unknown"),
+                "reason": self._dep_path_reason(
+                    p.get("relation", ""), target,
+                ),
+            })
+
+        # Layer 6 — Impact Context
+        impact = {
+            "risk_level": risk,
             "affected_files": [
-                {"file": f, "reason": "Contains reference"}
+                {"file": f, "reason": self._file_reason(f, target)}
                 for f in affected_files
             ],
-            "affected_symbols": affected_symbols,
-            "dependency_paths": paths,
-            "risk_level": risk,
             "suggested_actions": self._refactor_actions(target, affected_files),
+        }
+
+        return {
+            "_target": target,
+            "summary": summary,
+            "symbols": symbols,
+            "chunks": chunks,
+            "dependency_paths": dependency_paths,
+            "impact": impact,
             "confidence": self._score_confidence(refs, rows),
             "missing_context": self._refactor_missing(refs, paths),
         }
@@ -551,6 +589,40 @@ class Orchestrator:
         if not actions:
             actions.append(f"Update all {len(files)} file(s) containing '{target}'")
         return actions
+
+    def _dep_path_reason(self, relation: str, target: str) -> str:
+        """Generate a human-readable reason for a dependency path."""
+        reasons = {
+            "calls": f"Calls affected symbol '{target}'",
+            "reads": f"Reads '{target}' value",
+            "writes": f"Writes to '{target}'",
+            "imports": f"Imports module containing '{target}'",
+            "defines": f"Defines '{target}'",
+            "extends": f"Extends class containing '{target}'",
+            "implements": f"Implements interface with '{target}'",
+            "uses_dto": f"Uses DTO containing '{target}'",
+            "uses_model": f"Uses model containing '{target}'",
+        }
+        return reasons.get(relation, f"Related to '{target}'")
+
+    def _file_reason(self, file_path: str, target: str) -> str:
+        """Generate reason for why a file is affected."""
+        lower = file_path.lower()
+        if "entity" in lower or "model" in lower:
+            return "Database/entity field definition"
+        if "dto" in lower:
+            return "API request/response contract"
+        if "service" in lower:
+            return "Business logic"
+        if "controller" in lower:
+            return "API endpoint handler"
+        if "test" in lower or "spec" in lower:
+            return "Tests likely assert on this field"
+        if "migration" in lower:
+            return "Database migration"
+        if "repository" in lower or "repo" in lower:
+            return "Data access layer"
+        return f"Contains '{target}' reference"
 
     def _suggest_edge_cases(self, target: str, chunks: list[dict]) -> list[str]:
         """Suggest test edge cases based on code patterns."""
