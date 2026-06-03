@@ -9,6 +9,12 @@ alwaysApply: true
 
 **Server:** AI Core MCP (`ai-core`). Tools: `get_context`, `search_code`, `analyze_impact`.
 
+## Project ID resolution (NEVER use `__default__`)
+
+- **`project`** param = last segment of workspace path (split by `/`, take last). Example: `/Users/chanh/Projects/foo-bar` → `"foo-bar"`.
+- **Never** omit `project` or use `__default__` — always derive from the active workspace folder.
+- If multiple workspace folders are open, use the folder relevant to the current task.
+
 ## When → then (positive — workflow)
 
 | Situation | Do |
