@@ -1,6 +1,6 @@
 # AI Core
 
-Python MCP Server + Codebase Intelligence Engine for Cursor / Kiro.
+Python MCP Server + Codebase Intelligence Engine cho Cursor / Kiro.
 
 ## Architecture
 
@@ -48,23 +48,38 @@ cp .env.example .env
 
 # Cài package (editable mode)
 pip install -e .[dev]
+
+# (Optional) Cài reranker cho retrieval chất lượng hơn
+pip install -e .[reranker]
 ```
+
+## Environment Variables
+
+Xem `.env.example` để biết đầy đủ. Tất cả biến dùng prefix `AI_CORE_`.
+
+| Biến                          | Mô tả                                  | Mặc định                               |
+| ----------------------------- | -------------------------------------- | -------------------------------------- |
+| `AI_CORE_PROJECTS_FILE`       | File danh sách project                 | `projects.json`                        |
+| `AI_CORE_DATA_DIR`            | Thư mục lưu indexed data               | `data`                                 |
+| `AI_CORE_EMBEDDING_DIM`       | Chiều vector embedding                 | `384`                                  |
+| `AI_CORE_USE_CROSS_ENCODER`   | Bật cross-encoder reranker             | `false`                                |
+| `AI_CORE_RERANKER_MODEL`      | Model reranker (sentence-transformers) | `cross-encoder/ms-marco-MiniLM-L-6-v2` |
+| `AI_CORE_RERANKER_TOP_K`      | Số kết quả sau rerank                  | `10`                                   |
+| `AI_CORE_GRAPH_MAX_DEPTH`     | Độ sâu traversal graph                 | `2`                                    |
+| `AI_CORE_GRAPH_MAX_NODES`     | Số node tối đa trả về                  | `50`                                   |
+| `AI_CORE_GRAPH_INCLUDE_TESTS` | Bao gồm test files trong impact        | `false`                                |
 
 ## Index project
 
 Index là bước bắt buộc — parse code, tạo embeddings, build dependency graph, lưu vào `data/`.
 
-### Index một project
-
 ```bash
 source .venv/bin/activate
+
+# Index một project
 python scripts/index_project.py <project-name>
-```
 
-### Index tất cả projects
-
-```bash
-source .venv/bin/activate
+# Index tất cả
 python scripts/index_project.py business-lounge-api
 python scripts/index_project.py business-lounge-job
 python scripts/index_project.py business-lounge-portal
@@ -74,55 +89,46 @@ python scripts/index_project.py vpid-mobile-api
 
 ### Danh sách projects (projects.json)
 
-| Project                | Path                                         | Language   |
-| ---------------------- | -------------------------------------------- | ---------- |
-| business-lounge-api    | /Users/chanh/Projects/business-lounge-api    | TypeScript |
-| business-lounge-job    | /Users/chanh/Projects/business-lounge-job    | TypeScript |
-| business-lounge-portal | /Users/chanh/Projects/business-lounge-portal | JavaScript |
-| operator-api           | /Users/chanh/Projects/operator-api           | TypeScript |
-| vpid-mobile-api        | /Users/chanh/Projects/vpid-mobile-api        | C#         |
+| Project                | Path                                         | Languages              |
+| ---------------------- | -------------------------------------------- | ---------------------- |
+| business-lounge-api    | /Users/chanh/Projects/business-lounge-api    | TypeScript, JavaScript |
+| business-lounge-job    | /Users/chanh/Projects/business-lounge-job    | TypeScript, JavaScript |
+| business-lounge-portal | /Users/chanh/Projects/business-lounge-portal | JavaScript             |
+| operator-api           | /Users/chanh/Projects/operator-api           | TypeScript, JavaScript |
+| vpid-mobile-api        | /Users/chanh/Projects/vpid-mobile-api        | C#                     |
 
 ## Đồng bộ (Re-index)
 
-Khi code trong project thay đổi (thêm file, sửa logic, refactor), cần re-index để MCP có data mới.
+Khi code trong project thay đổi, cần re-index để MCP có data mới.
 
-### Cách 1: Re-index thủ công
-
-Chạy lại lệnh index cho project đã thay đổi:
+### Re-index thủ công
 
 ```bash
-source .venv/bin/activate
 python scripts/index_project.py business-lounge-api
 ```
 
-### Cách 2: Watcher (tự động incremental)
+### Watcher (incremental tự động)
 
-Watcher theo dõi file thay đổi và cập nhật **vector index** tự động (chunks + embeddings). **Lưu ý:** watcher không rebuild dependency graph — chạy `index_project.py` khi cần graph mới (ví dụ: thêm/xóa import, đổi dependency structure).
+Watcher theo dõi file thay đổi và cập nhật **vector index** tự động (chunks + embeddings).
+
+> **Lưu ý:** Watcher không rebuild dependency graph — chạy `index_project.py` khi cần graph mới (thêm/xóa import, đổi dependency structure).
 
 ```bash
-source .venv/bin/activate
 python scripts/watch_project.py business-lounge-api
-```
-
-Watcher chạy liên tục — mở terminal riêng hoặc dùng background process:
-
-```bash
-nohup python scripts/watch_project.py business-lounge-api &
 ```
 
 ### Khi nào cần re-index?
 
-| Thay đổi                           | Cần re-index?                                         |
-| ---------------------------------- | ----------------------------------------------------- |
-| Sửa nội dung file                  | Có (watcher xử lý vector tự động, graph cần re-index) |
-| Thêm/xóa file                      | Có                                                    |
-| Thêm project mới vào projects.json | Có — chạy index project mới                           |
-| Chỉ sửa config/env                 | Không                                                 |
-| Rename/move file                   | Có                                                    |
+| Thay đổi                           | Cần re-index?                                      |
+| ---------------------------------- | -------------------------------------------------- |
+| Sửa nội dung file                  | Có (watcher xử lý vector, graph cần full re-index) |
+| Thêm/xóa/rename file               | Có                                                 |
+| Thêm project mới vào projects.json | Có — chạy index project mới                        |
+| Chỉ sửa config/env                 | Không                                              |
 
 ## Cấu hình MCP trong IDE
 
-MCP chạy qua **stdio** — IDE tự spawn process Python, không cần bật server thủ công.
+MCP chạy qua **stdio** — IDE tự spawn process, không cần bật server thủ công.
 
 ### Kiro
 
@@ -137,8 +143,7 @@ File: `~/.kiro/settings/mcp.json` hoặc `<workspace>/.kiro/settings/mcp.json`
       "cwd": "/Users/chanh/workspace",
       "env": {
         "AI_CORE_PROJECTS_FILE": "projects.json",
-        "AI_CORE_DATA_DIR": "data",
-        "AI_CORE_EMBEDDING_DIM": "384"
+        "AI_CORE_DATA_DIR": "data"
       },
       "disabled": false,
       "autoApprove": [
@@ -166,13 +171,22 @@ File: `.cursor/mcp.json` trong workspace
       "cwd": "/Users/chanh/workspace",
       "env": {
         "AI_CORE_PROJECTS_FILE": "projects.json",
-        "AI_CORE_DATA_DIR": "data",
-        "AI_CORE_EMBEDDING_DIM": "384"
+        "AI_CORE_DATA_DIR": "data"
       }
     }
   }
 }
 ```
+
+## MCP Tools
+
+| Tool              | Mục đích                                           |
+| ----------------- | -------------------------------------------------- |
+| `search_code`     | Tìm code theo semantic similarity + keyword        |
+| `get_context`     | Lấy context trong budget token (dùng cho prompt)   |
+| `analyze_impact`  | Phân tích blast radius trước khi sửa shared symbol |
+| `find_references` | Tìm tất cả nơi reference đến symbol                |
+| `explain_symbol`  | Tóm tắt symbol trong dependency graph              |
 
 ## Cách hoạt động (end-to-end)
 
@@ -186,61 +200,30 @@ File: `.cursor/mcp.json` trong workspace
 6. Process sống suốt IDE session, tự tắt khi đóng IDE
 ```
 
-## MCP Tools
+## API server (optional)
 
-| Tool              | Mục đích                                           |
-| ----------------- | -------------------------------------------------- |
-| `search_code`     | Tìm code theo semantic similarity + keyword        |
-| `get_context`     | Lấy context trong budget token (dùng cho prompt)   |
-| `analyze_impact`  | Phân tích blast radius trước khi sửa shared symbol |
-| `find_references` | Tìm tất cả nơi reference đến symbol                |
-| `explain_symbol`  | Tóm tắt symbol trong dependency graph              |
-
-## API server (optional, cho debug/test)
+Dùng cho debug/test ngoài IDE:
 
 ```bash
 source .venv/bin/activate
 uvicorn intelligence_engine.api.main:app --reload --port 8000
 ```
 
-Hoặc dùng Docker:
+Hoặc qua Docker:
 
 ```bash
 docker compose up
 ```
 
-## Cấu trúc thư mục
+## IDE sync (skills + rules)
 
-```text
-workspace/
-├── mcp_server/           # MCP stdio server + tool registry
-│   ├── server.py         # FastMCP entrypoint
-│   ├── registry.py       # Tool → function mapping
-│   └── tools/            # Từng tool một file
-├── intelligence_engine/  # Core engine
-│   ├── api/              # HTTP API (optional)
-│   ├── chunking/         # Code chunker
-│   ├── config/           # Engine config
-│   ├── context/          # Context builder
-│   ├── embedding/        # Vector embedder
-│   ├── graph/            # NetworkX graph builder
-│   ├── parser/           # Tree-sitter parser
-│   ├── project_loader/   # Load projects.json
-│   ├── retrieval/        # Retrieval engine (search + graph)
-│   ├── scanner/          # File scanner
-│   ├── storage/          # LanceDB storage
-│   └── symbols/          # Symbol extractor
-├── scripts/              # CLI scripts
-│   ├── index_project.py  # Index một project
-│   └── watch_project.py  # Watcher incremental
-├── data/                 # Indexed data (gitignored)
-│   ├── lancedb/          # Vector embeddings
-│   ├── graph/            # Dependency graphs
-│   └── file_state/       # File state tracking
-├── projects.json         # Danh sách projects
-├── .env                  # Environment variables
-└── pyproject.toml        # Python package config
+Sau khi chạy sync script, IDE rules và skills sẽ symlink vào repo này:
+
+```bash
+./scripts/sync-ide.sh
 ```
+
+Kết quả: `~/.cursor/rules` → `rules/cursor/`, `~/.kiro/steering` → `rules/kiro/`, tương tự cho skills.
 
 ## Troubleshooting
 
