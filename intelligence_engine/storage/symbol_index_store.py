@@ -53,11 +53,19 @@ class SymbolIndexStore:
     def _get_entries(self, project: str) -> dict[str, dict[str, Any]]:
         return self._index.setdefault(project, {})
 
+    def _make_symbol_id(self, entry: dict[str, Any], project: str) -> str:
+        """Generate a unique symbol_id from file_path + qualified_name + line_start."""
+        if entry.get("symbol_id"):
+            return entry["symbol_id"]
+        qname = entry.get("qualified_name", entry["name"])
+        file_path = entry.get("file_path", "")
+        line_start = entry.get("line_start", 0)
+        return f"{project}:{file_path}:{qname}:{line_start}"
+
     def upsert(self, entry: dict[str, Any], project: str = "__default__") -> None:
         """Upsert a single symbol entry."""
         entries = self._get_entries(project)
-        qname = entry.get('qualified_name', entry['name'])
-        symbol_id = entry.get("symbol_id", f"{project}:{qname}")
+        symbol_id = self._make_symbol_id(entry, project)
         entry["symbol_id"] = symbol_id
         entry["project"] = project
         entries[symbol_id] = entry
@@ -67,8 +75,7 @@ class SymbolIndexStore:
         """Upsert multiple entries at once."""
         store = self._get_entries(project)
         for entry in entries:
-            qname = entry.get('qualified_name', entry['name'])
-            symbol_id = entry.get("symbol_id", f"{project}:{qname}")
+            symbol_id = self._make_symbol_id(entry, project)
             entry["symbol_id"] = symbol_id
             entry["project"] = project
             store[symbol_id] = entry

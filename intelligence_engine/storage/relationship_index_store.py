@@ -21,6 +21,7 @@ class RelationshipIndexStore:
     {
         "symbol": "OrderService.createOrder",
         "file_path": "src/services/order.service.ts",
+        "line_start": 42,
         "reads": ["CreateOrderDto.TotalAmount", ...],
         "writes": ["OrderEntity.TotalAmount", ...],
         "calls": ["OrderRepository.create", ...],
@@ -33,8 +34,16 @@ class RelationshipIndexStore:
     def __init__(self, base_dir: str | Path = "data/relationship_index") -> None:
         self.base_dir = Path(base_dir)
         self.base_dir.mkdir(parents=True, exist_ok=True)
-        self._index: dict[str, dict[str, dict[str, Any]]] = {}  # project -> {symbol -> entry}
+        self._index: dict[str, dict[str, dict[str, Any]]] = {}  # project -> {key -> entry}
         self._load_from_disk()
+
+    @staticmethod
+    def _entry_key(entry: dict[str, Any]) -> str:
+        """Generate unique key from symbol + file_path + line_start."""
+        symbol = entry.get("symbol", "")
+        file_path = entry.get("file_path", "")
+        line_start = entry.get("line_start", 0)
+        return f"{file_path}:{symbol}:{line_start}"
 
     def _project_path(self, project: str) -> Path:
         safe_name = project.replace("/", "_").replace("\\", "_")
@@ -56,15 +65,23 @@ class RelationshipIndexStore:
         )
 
     def get(self, symbol: str, project: str = "__default__") -> dict[str, Any] | None:
-        """Get relationship entry for a symbol."""
-        return self._index.get(project, {}).get(symbol)
+        """Get relationship entry for a symbol (searches by qualified symbol name)."""
+        entries = self._index.get(project, {})
+        # Direct key match first
+        if symbol in entries:
+            return entries[symbol]
+        # Search by symbol field
+        for entry in entries.values():
+            if entry.get("symbol") == symbol:
+                return entry
+        return None
 
     def upsert(self, entry: dict[str, Any], project: str = "__default__") -> None:
         """Upsert a single relationship entry."""
         if project not in self._index:
             self._index[project] = {}
-        symbol = entry["symbol"]
-        self._index[project][symbol] = entry
+        key = self._entry_key(entry)
+        self._index[project][key] = entry
         self._persist(project)
 
     def upsert_batch(self, entries: list[dict[str, Any]], project: str = "__default__") -> None:
@@ -72,8 +89,8 @@ class RelationshipIndexStore:
         if project not in self._index:
             self._index[project] = {}
         for entry in entries:
-            symbol = entry["symbol"]
-            self._index[project][symbol] = entry
+            key = self._entry_key(entry)
+            self._index[project][key] = entry
         self._persist(project)
 
     def delete_by_file(self, file_path: str, project: str = "__default__") -> int:
@@ -81,11 +98,11 @@ class RelationshipIndexStore:
         if project not in self._index:
             return 0
         to_remove = [
-            sym for sym, entry in self._index[project].items()
+            key for key, entry in self._index[project].items()
             if entry.get("file_path") == file_path
         ]
-        for sym in to_remove:
-            del self._index[project][sym]
+        for key in to_remove:
+            del self._index[project][key]
         if to_remove:
             self._persist(project)
         return len(to_remove)

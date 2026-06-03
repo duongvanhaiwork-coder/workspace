@@ -8,6 +8,7 @@ from intelligence_engine.parser.factory import ParserFactory
 from intelligence_engine.symbols.extractor import SymbolExtractor
 from intelligence_engine.symbols.imports import ImportExtractor
 from intelligence_engine.symbols.routes import RouteExtractor
+from intelligence_engine.symbols.calls import CallExtractor
 from intelligence_engine.chunking.chunker import Chunker
 from intelligence_engine.embedding.embedder import Embedder
 from intelligence_engine.graph.graph_builder import GraphBuilder
@@ -39,12 +40,13 @@ def index_project(project_name: str, full: bool = False) -> None:
     sym_extractor = SymbolExtractor()
     imp_extractor = ImportExtractor()
     route_extractor = RouteExtractor()
+    call_extractor = CallExtractor()
     chunker = Chunker()
     embedder = Embedder()
     store = get_vector_store()
 
     # Parse all files once, cache results for both chunking and graph building
-    parsed_cache: dict[str, tuple] = {}  # rel_path -> (symbols, imports, routes, chunks)
+    parsed_cache: dict[str, tuple] = {}  # rel_path -> (symbols, imports, routes, calls, chunks)
 
     for state in all_states:
         path = root / state.file_path
@@ -52,13 +54,14 @@ def index_project(project_name: str, full: bool = False) -> None:
         file_symbols = sym_extractor.extract(parsed)
         file_imports = imp_extractor.extract(parsed)
         file_routes = route_extractor.extract(parsed)
+        file_calls = call_extractor.extract(parsed, file_symbols)
         file_chunks = chunker.chunk(parsed, file_symbols)
-        parsed_cache[state.file_path] = (file_symbols, file_imports, file_routes, file_chunks)
+        parsed_cache[state.file_path] = (file_symbols, file_imports, file_routes, file_calls, file_chunks)
 
     # Upsert only changed file chunks
     chunks_to_upsert = []
     for state in states_to_process:
-        _, _, _, file_chunks = parsed_cache[state.file_path]
+        _, _, _, _, file_chunks = parsed_cache[state.file_path]
         chunks_to_upsert.extend(file_chunks)
 
     if chunks_to_upsert:
@@ -76,12 +79,14 @@ def index_project(project_name: str, full: bool = False) -> None:
     all_symbols = []
     all_imports = []
     all_routes = []
-    for symbols, imports, routes, _ in parsed_cache.values():
+    all_calls = []
+    for symbols, imports, routes, calls, _ in parsed_cache.values():
         all_symbols.extend(symbols)
         all_imports.extend(imports)
         all_routes.extend(routes)
+        all_calls.extend(calls)
 
-    graph = GraphBuilder().build(all_symbols, all_imports, all_routes)
+    graph = GraphBuilder().build(all_symbols, all_imports, all_routes, all_calls)
     get_graph_store().save(graph, project=project_name)
 
     # Populate symbol index
@@ -96,6 +101,7 @@ def index_project(project_name: str, full: bool = False) -> None:
             "line_start": sym.line_start,
             "line_end": sym.line_end,
             "signature": sym.signature,
+            "symbol_id": f"{project_name}:{sym.file_path}:{sym.qualified_name or sym.name}:{sym.line_start}",
         })
     sym_store.clear(project=project_name)
     if sym_entries:
@@ -117,7 +123,8 @@ def index_project(project_name: str, full: bool = False) -> None:
         f"indexed project={project_name} mode={mode} "
         f"processed_files={len(states_to_process)} total_files={len(all_states)} "
         f"chunks={len(chunks_to_upsert)} deleted_files={len(deleted)} "
-        f"symbols={len(all_symbols)} imports={len(all_imports)} routes={len(all_routes)}"
+        f"symbols={len(all_symbols)} imports={len(all_imports)} "
+        f"routes={len(all_routes)} calls={len(all_calls)}"
     )
 
 
@@ -125,25 +132,21 @@ def _build_relationship_index(rel_store, all_symbols, all_imports, graph, projec
     """Build relationship index from graph edges per symbol."""
     from intelligence_engine.graph import relation_types as R
 
-    # Build a map: symbol_name -> file_path
-    sym_file_map: dict[str, str] = {}
-    for sym in all_symbols:
-        key = sym.qualified_name or sym.name
-        sym_file_map[key] = sym.file_path
-
     # Traverse graph to build per-symbol relationships
+    # Key by node ID to avoid collision
     entries: dict[str, dict] = {}
 
     for node, data in graph.nodes(data=True):
         if data.get("type") != "symbol":
             continue
-        name = data.get("name", "")
-        if not name:
+        qname = data.get("qualified_name", data.get("name", ""))
+        if not qname:
             continue
 
-        entry = entries.setdefault(name, {
-            "symbol": name,
-            "file_path": data.get("path", sym_file_map.get(name, "")),
+        entry = entries.setdefault(node, {
+            "symbol": qname,
+            "file_path": data.get("path", ""),
+            "line_start": data.get("line_start", 0),
             "reads": [],
             "writes": [],
             "calls": [],
@@ -157,32 +160,32 @@ def _build_relationship_index(rel_store, all_symbols, all_imports, graph, projec
             succ_data = graph.nodes[succ]
             edge = graph.edges[node, succ]
             relation = edge.get("relation", "")
-            target_name = succ_data.get("name", "")
-            if not target_name:
+            target_qname = succ_data.get("qualified_name", succ_data.get("name", ""))
+            if not target_qname:
                 continue
 
             if relation == R.CALLS:
-                entry["calls"].append(target_name)
+                entry["calls"].append(target_qname)
             elif relation == R.READS:
-                entry["reads"].append(target_name)
+                entry["reads"].append(target_qname)
             elif relation == R.WRITES:
-                entry["writes"].append(target_name)
+                entry["writes"].append(target_qname)
             elif relation == R.USES_DTO:
-                entry["uses_dto"].append(target_name)
+                entry["uses_dto"].append(target_qname)
             elif relation == R.USES_MODEL:
-                entry["uses_model"].append(target_name)
+                entry["uses_model"].append(target_qname)
 
         # Incoming edges (what calls this symbol)
         for pred in graph.predecessors(node):
             pred_data = graph.nodes[pred]
             edge = graph.edges[pred, node]
             relation = edge.get("relation", "")
-            source_name = pred_data.get("name", "")
-            if not source_name or pred_data.get("type") != "symbol":
+            source_qname = pred_data.get("qualified_name", pred_data.get("name", ""))
+            if not source_qname or pred_data.get("type") != "symbol":
                 continue
 
             if relation == R.CALLS:
-                entry["called_by"].append(source_name)
+                entry["called_by"].append(source_qname)
 
     if entries:
         rel_store.upsert_batch(list(entries.values()), project=project)
