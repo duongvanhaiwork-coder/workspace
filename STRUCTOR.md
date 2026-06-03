@@ -26,25 +26,30 @@ Cursor / Kiro
      ▼
 Python MCP Server (mcp_server/)
      │
-     ├── MCP Tools
-     └── MCP Resources
+     ├── MCP Tools (search_code, get_context, analyze_impact, find_references, explain_symbol, reindex_project)
      │
      ▼
 Codebase Intelligence Engine (intelligence_engine/)
      │
      ├── Intent Analyzer       (context/intent.py)
      ├── Retrieval Planner     (context/planner.py)
+     ├── Orchestrator          (context/orchestrator.py)
      ├── Context Builder       (context/context_builder.py)
      │
      ├── Tree-sitter           (parser/)
      ├── Symbol Extractor      (symbols/)
      ├── Chunker               (chunking/)
      ├── Embedder              (embedding/)
-     ├── LanceDB               (storage/lancedb_store.py)
-     ├── Symbol Index          (storage/symbol_index_store.py)
-     ├── Relationship Index    (storage/relationship_index_store.py)
-     ├── NetworkX Graph        (storage/graph_store.py)
-     └── Retrieval Cache       (storage/retrieval_cache_store.py)
+     ├── Hybrid Search         (retrieval/hybrid_search.py)
+     ├── Reranker              (retrieval/reranker.py)
+     ├── Retrieval Engine      (retrieval/retrieval_engine.py)
+     │
+     ├── LanceDB Store         (storage/lancedb_store.py)        → data/lancedb/
+     ├── Symbol Index Store    (storage/symbol_index_store.py)   → data/symbol_index/
+     ├── Relationship Index    (storage/relationship_index_store.py) → data/relationship_index/
+     ├── Graph Store           (storage/graph_store.py)          → data/graph/
+     ├── File State Store      (storage/file_state_store.py)     → data/file_state/
+     └── Retrieval Cache       (storage/retrieval_cache_store.py) → data/retrieval_cache/
 ```
 
 ## Core Responsibilities
@@ -52,19 +57,19 @@ Codebase Intelligence Engine (intelligence_engine/)
 | Layer                   | Responsible for                                                                  |
 | ----------------------- | -------------------------------------------------------------------------------- |
 | **Cursor / Kiro**       | reasoning, code generation, debugging, refactoring, test generation              |
-| **MCP Server**          | exposing tools, exposing resources, communication bridge                         |
+| **MCP Server**          | exposing tools, communication bridge (stdio JSON-RPC)                            |
 | **Intelligence Engine** | Find the smallest possible context that still allows the LLM to answer correctly |
 
 ## Database / Storage Design
 
 | Store                  | File                                  | Purpose                                                                           |
 | ---------------------- | ------------------------------------- | --------------------------------------------------------------------------------- |
-| **file_state**         | `storage/file_state_store.py`         | Track indexing state per file (incremental indexing, change detection)            |
-| **symbol_index**       | `storage/symbol_index_store.py`       | Symbol metadata for fast lookup (find_symbol, explain_symbol, jump to definition) |
-| **code_chunks**        | `storage/lancedb_store.py`            | Semantic retrieval via vector search (search_code, get_context)                   |
-| **graph_edges**        | `storage/graph_store.py`              | Dependency graph relationships via NetworkX (analyze_impact, find_references)     |
-| **relationship_index** | `storage/relationship_index_store.py` | Fast relationship lookup without full graph traversal (refactor, impact)          |
-| **retrieval_cache**    | `storage/retrieval_cache_store.py`    | Avoid repeated retrieval work (TTL-based cache)                                   |
+| **file_state**         | `storage/file_state_store.py`         | Track indexing state per file (hash, mtime, status, last_indexed_at)              |
+| **symbol_index**       | `storage/symbol_index_store.py`       | Symbol metadata for fast lookup (name, qualified_name, kind, signature)           |
+| **code_chunks**        | `storage/lancedb_store.py`            | Semantic retrieval via vector search (content + embedding)                        |
+| **graph_edges**        | `storage/graph_store.py`              | Dependency graph relationships via NetworkX (defines, imports, calls, reads)      |
+| **relationship_index** | `storage/relationship_index_store.py` | Pre-computed per-symbol relationships (calls, called_by, reads, writes, uses_dto) |
+| **retrieval_cache**    | `storage/retrieval_cache_store.py`    | TTL-based cache for repeated retrieval queries                                    |
 
 ## MCP Tools
 
@@ -75,7 +80,55 @@ Codebase Intelligence Engine (intelligence_engine/)
 | `find_references` | Find all references to a symbol               |
 | `analyze_impact`  | Blast radius analysis for a symbol/file       |
 | `explain_symbol`  | Summarize a symbol's presence in the codebase |
-| `reindex_project` | Trigger re-indexing for a project             |
+| `reindex_project` | Clear caches and trigger re-index             |
+
+## Output Schema — 6 Context Layers
+
+`get_context` output theo architecture spec:
+
+```json
+{
+  "meta": {
+    "intent": "refactor",
+    "confidence": 0.86,
+    "token_budget": { "max": 12000, "used": 6800 }
+  },
+  "summary": "Layer 2 — natural language summary",
+  "results": {
+    "intent_context": { ... },       // Layer 1 — intent + query + target
+    "symbols": [{ ... }],            // Layer 3 — relevant symbols + reasons
+    "chunks": [{ ... }],             // Layer 4 — actual code (most tokens)
+    "dependency_paths": [{ ... }],   // Layer 5 — call chain / deps
+    "impact": { ... },               // Layer 6 — affected files + risk + actions
+    "prompt_guidance": "..."         // LLM-specific instructions
+  },
+  "missing_context": ["..."]
+}
+```
+
+| Layer | Field                 | Content                                         |
+| ----- | --------------------- | ----------------------------------------------- |
+| 1     | `intent_context`      | intent + query + target symbol                  |
+| 2     | `summary` (top-level) | Natural language summary of findings            |
+| 3     | `symbols`             | Relevant symbols with qualified_name + reason   |
+| 4     | `chunks`              | Actual code chunks (function/method bodies)     |
+| 5     | `dependency_paths`    | from → to + relation + reason                   |
+| 6     | `impact`              | Affected files + risk level + suggested actions |
+
+## Indexing Pipeline
+
+```text
+Scanner (detect files, hash, mtime)
+  → Tree-sitter Parser (AST)
+  → Symbol Extractor → symbol_index (name, qualified_name, kind, signature)
+  → Import Extractor → graph_edges (imports relation)
+  → Route Extractor → graph_edges (route relation)
+  → Chunker → code_chunks (symbol, kind, content)
+  → Embedder → code_chunks (vector embedding)
+  → Graph Builder → graph_edges (defines, imports, route)
+  → Relationship Index Builder → relationship_index (calls, called_by, reads, writes)
+  → File State → file_state (status=indexed, last_indexed_at=now)
+```
 
 ## Cây thư mục
 
@@ -99,7 +152,8 @@ workspace/
 │       ├── analyze_impact.py
 │       ├── find_references.py
 │       ├── explain_symbol.py
-│       └── reindex_project.py
+│       ├── reindex_project.py
+│       └── output_schema.py  # Strict output wrapper (6 layers)
 │
 ├── intelligence_engine/    # Codebase Intelligence Engine
 │   ├── config/             # Settings (pydantic-settings, đọc .env)
@@ -108,55 +162,61 @@ workspace/
 │   │   ├── loader.py
 │   │   └── project_config.py
 │   ├── scanner/            # File scan + watcher + file state model
-│   │   ├── scanner.py
-│   │   ├── file_state.py   # FileState dataclass + hash_file + detect_language
-│   │   └── watcher.py
+│   │   ├── scanner.py      # Scan files, populate last_modified_at
+│   │   ├── file_state.py   # FileState dataclass + mark_indexed()
+│   │   └── watcher.py      # Watchdog incremental watcher
 │   ├── parser/             # Tree-sitter language parsers
 │   │   ├── base.py
 │   │   ├── factory.py
-│   │   └── languages/      # Per-language parser implementations
+│   │   └── languages/      # python, typescript, javascript, csharp
 │   ├── symbols/            # Symbol & import extraction
-│   │   ├── extractor.py
+│   │   ├── extractor.py    # Tree-sitter + regex fallback
 │   │   ├── models.py       # Symbol + ImportRef dataclasses
-│   │   ├── imports.py
-│   │   ├── references.py
-│   │   └── routes.py
+│   │   ├── imports.py      # Import pattern matching
+│   │   ├── references.py   # Text-based reference scanning
+│   │   └── routes.py       # HTTP route extraction
 │   ├── chunking/           # Code chunking strategies
-│   │   ├── chunker.py
-│   │   └── models.py       # CodeChunk dataclass (with metadata)
-│   ├── embedding/          # Vector embedding (sentence-transformers)
-│   │   ├── embedder.py
-│   │   └── providers.py
+│   │   ├── chunker.py      # Symbol-based + window fallback
+│   │   └── models.py       # CodeChunk dataclass (symbol, kind, metadata)
+│   ├── embedding/          # Vector embedding
+│   │   ├── embedder.py     # Facade
+│   │   └── providers.py    # HashEmbeddingProvider (local, deterministic)
 │   ├── storage/            # All persistence layers
+│   │   ├── __init__.py     # Singleton factories (get_*_store)
 │   │   ├── lancedb_store.py          # code_chunks (vector search)
-│   │   ├── graph_store.py            # graph_edges (NetworkX)
+│   │   ├── graph_store.py            # graph_edges (NetworkX JSON)
 │   │   ├── file_state_store.py       # file_state (incremental)
 │   │   ├── symbol_index_store.py     # symbol_index (metadata lookup)
 │   │   ├── relationship_index_store.py # relationship_index (fast lookup)
 │   │   └── retrieval_cache_store.py  # retrieval_cache (TTL cache)
 │   ├── graph/              # NetworkX code graph + analysis
-│   │   ├── graph_builder.py
-│   │   ├── impact_analyzer.py
-│   │   ├── pruning.py
-│   │   ├── reference_finder.py
-│   │   └── relation_types.py  # All relation constants
+│   │   ├── graph_builder.py     # Build graph from symbols + imports + routes
+│   │   ├── impact_analyzer.py   # Reverse traversal for blast radius
+│   │   ├── pruning.py           # Noise filtering + priority ranking
+│   │   ├── reference_finder.py  # Find nodes by symbol name
+│   │   └── relation_types.py    # All relation constants
 │   ├── retrieval/          # Hybrid search + reranker
-│   │   ├── hybrid_search.py
-│   │   ├── reranker.py
-│   │   └── retrieval_engine.py
+│   │   ├── hybrid_search.py     # Vector + keyword blend
+│   │   ├── reranker.py          # Simple + CrossEncoder (fallback-safe)
+│   │   └── retrieval_engine.py  # Unified facade for search + graph
 │   ├── context/            # Token-budgeted context builder + orchestrator
-│   │   ├── intent.py           # Intent Analyzer (section 6)
-│   │   ├── planner.py          # Retrieval Planner (section 7)
-│   │   ├── context_builder.py  # Context Builder (section 8)
-│   │   ├── orchestrator.py     # Full pipeline orchestrator
-│   │   ├── token_budget.py     # Token budget management
-│   │   └── prompt_templates.py # Prompt templates for LLM
+│   │   ├── intent.py           # Intent Analyzer (keyword → QueryIntent)
+│   │   ├── planner.py          # Retrieval Planner (intent → needs)
+│   │   ├── orchestrator.py     # Full pipeline: plan → search → assemble layers
+│   │   ├── context_builder.py  # Filter, rank, trim to token budget
+│   │   ├── token_budget.py     # Token estimation (~4 chars/token)
+│   │   └── prompt_templates.py # Intent-specific LLM guidance
 │   └── api/                # FastAPI HTTP interface (optional, debug)
 │       ├── main.py
 │       └── routes/
+│           ├── health.py
+│           ├── index.py    # POST /index/{project} — trigger indexing
+│           ├── search.py   # POST /search — vector search
+│           ├── context.py  # POST /context — context builder
+│           └── graph.py    # GET /graph/references, /graph/impact
 │
 ├── scripts/                # CLI utilities
-│   ├── index_project.py    # Index một project (full)
+│   ├── index_project.py    # Index project (incremental or --full)
 │   ├── watch_project.py    # Watcher incremental (vector only)
 │   ├── inspect_graph.py    # Debug graph data
 │   ├── sync-ide.sh         # Sync rules + skills vào IDE
@@ -166,15 +226,28 @@ workspace/
 │   ├── verify.sh           # Run all verification checks
 │   └── verify-*.sh         # Individual verification scripts
 │
-├── tests/                  # pytest test suite
+├── tests/                  # pytest test suite (57 tests)
+│   ├── test_chunker.py
+│   ├── test_context_builder.py
+│   ├── test_file_state_diff.py
+│   ├── test_graph_builder.py
+│   ├── test_graph_pruning.py
+│   ├── test_impact_analyzer.py
+│   ├── test_lancedb_store.py
+│   ├── test_project_loader.py
+│   ├── test_prompt_templates.py
+│   ├── test_reranker.py
+│   ├── test_retrieval_engine.py
+│   ├── test_scanner.py
+│   └── test_symbol_extractor.py
 │
 ├── data/                   # Runtime indexed data (gitignored)
-│   ├── lancedb/            # code_chunks — vector embeddings
-│   ├── graph/              # graph_edges — dependency graphs (NetworkX)
-│   ├── file_state/         # file_state — file state tracking
-│   ├── symbol_index/       # symbol_index — symbol metadata
-│   ├── relationship_index/ # relationship_index — fast relationship lookup
-│   └── retrieval_cache/    # retrieval_cache — cached retrieval results
+│   ├── lancedb/            # code_chunks — vector embeddings per project
+│   ├── graph/              # graph_edges — NetworkX JSON per project
+│   ├── file_state/         # file_state — tracking per project
+│   ├── symbol_index/       # symbol_index — metadata per project
+│   ├── relationship_index/ # relationship_index — fast lookup per project
+│   └── retrieval_cache/    # retrieval_cache — TTL cache
 │
 ├── docs/                   # Documentation
 │   ├── architecture.md
@@ -185,47 +258,31 @@ workspace/
 │   └── setup.md
 │
 ├── skills/                 # Canonical agent skills
-│   ├── STRUCTURE.md        # Skills folder layout
-│   ├── CONVENTIONS.md      # Skill authoring conventions
-│   ├── SKILLS-REGISTRY.md  # Registry of all skills
-│   ├── COMPOSITION.md      # How skills compose together
-│   ├── references/         # Shared references across skills
-│   └── <skill-name>/      # Individual skill folders
+│   ├── STRUCTURE.md
+│   ├── CONVENTIONS.md
+│   ├── SKILLS-REGISTRY.md
+│   ├── COMPOSITION.md
+│   ├── references/
+│   └── <skill-name>/
 │
 ├── rules/                  # Agent rules
 │   ├── cursor/             # Cursor .mdc — canonical, sửa tại đây
 │   ├── kiro/               # Kiro steering — tự sinh, không sửa tay
-│   ├── CONVENTIONS.md      # Rule authoring conventions
-│   ├── QUICKSTART.md       # Quick reference for rules
-│   └── RECOVERY.md         # Recovery procedures
+│   ├── CONVENTIONS.md
+│   ├── QUICKSTART.md
+│   └── RECOVERY.md
 │
 └── rules.zip / skills.zip  # Optional bundles cho distribution
 ```
 
-## Indexing Pipeline (section 5)
-
-```text
-Repo Files → Scanner → Tree-sitter Parser → Symbol Extractor → Chunker → Embedder → LanceDB + Graph + Indexes
-```
-
-## Context Layers (section 8)
-
-| Layer | Name               | Content                                         |
-| ----- | ------------------ | ----------------------------------------------- |
-| 1     | Intent Context     | intent + query + target                         |
-| 2     | Summary Context    | Natural language summary of findings            |
-| 3     | Symbol Context     | Relevant symbols with reasons                   |
-| 4     | Code Context       | Actual code chunks (most expensive)             |
-| 5     | Dependency Context | Call chain / dependency paths                   |
-| 6     | Impact Context     | Affected files + risk level + suggested actions |
-
 ## Token Optimization Strategy (section 9)
 
 - **Chunking:** Send functions/methods/classes, not entire files
-- **Reranker:** 20 candidates → 5 best chunks
+- **Reranker:** 20 candidates → top_k best chunks (default 10)
 - **Graph Pruning:** Remove utility noise, unrelated imports, deep chains
 - **Ranking:** definition > direct references > caller/callee > DTO/entity > tests > utilities
 - **Summaries:** Prefer summary string over full code when possible
+- **Token Budget:** Hard limit per request (default 12000 tokens)
 
 ## Opinionated Retrieval Rules (section 10)
 
@@ -235,6 +292,18 @@ Lower priority: helpers, utils, logger, constants.
 ## Relation Types (section 4.4)
 
 imports, exports, defines, calls, reads, writes, extends, implements, uses_model, uses_dto, route_to_handler
+
+## Intent Classification
+
+| Intent     | Trigger keywords                            | Output layers    |
+| ---------- | ------------------------------------------- | ---------------- |
+| `search`   | where, find, references, ở đâu, dùng ở      | 1, 2, 3          |
+| `explain`  | how does, explain, flow, giải thích         | 1, 2, 4, 5       |
+| `refactor` | rename, refactor, extract, đổi tên          | 1, 2, 3, 4, 5, 6 |
+| `impact`   | impact, blast radius, ảnh hưởng, affected   | 1, 2, 5, 6       |
+| `debug`    | why, debug, null, error, bug, tại sao       | 1, 2, 4, 5       |
+| `test`     | test, spec, generate test, viết test        | 1, 2, 4          |
+| `generate` | add field, create, generate, implement, tạo | 1, 2, 3, 4       |
 
 ## IDE sync
 
@@ -251,4 +320,5 @@ Sau `./scripts/sync-ide.sh`:
 - **Rules:** Sửa tại `rules/cursor/*.mdc` → `rules/kiro/` tự sinh. Không sửa kiro trực tiếp.
 - **Skills:** Sửa tại `skills/<name>/`. Xem `skills/STRUCTURE.md` cho layout.
 - **Docs:** Mỗi doc một concern. Thêm link vào bảng tham chiếu ở trên khi tạo doc mới.
-- **Data:** Folder `data/` gitignored — mỗi máy tự index.
+- **Data:** Folder `data/` gitignored — mỗi máy tự index. All stores scoped per project.
+- **Testing:** `python -m pytest tests/` — 57 tests, all passing.
