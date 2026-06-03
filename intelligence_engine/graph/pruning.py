@@ -63,7 +63,9 @@ class PruningConfig:
     noise_patterns: list[re.Pattern] = field(default_factory=lambda: list(NOISE_PATH_PATTERNS))
 
     # Priority patterns (paths to always keep)
-    priority_patterns: list[re.Pattern] = field(default_factory=lambda: list(PRIORITY_PATH_PATTERNS))
+    priority_patterns: list[re.Pattern] = field(
+        default_factory=lambda: list(PRIORITY_PATH_PATTERNS),
+    )
 
     # Whether to include test files in impact results
     include_tests: bool = False

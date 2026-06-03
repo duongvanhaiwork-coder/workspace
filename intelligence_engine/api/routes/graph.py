@@ -7,12 +7,12 @@ router = APIRouter()
 
 
 @router.get("/references/{symbol}")
-def find_references(symbol: str):
-    graph = get_graph_store().load()
+def find_references(symbol: str, project: str = "__default__"):
+    graph = get_graph_store().load(project=project)
     return {"items": GraphReferenceFinder().find_references(graph, symbol)}
 
 
 @router.get("/impact")
-def analyze_impact(node: str, depth: int = 2):
-    graph = get_graph_store().load()
+def analyze_impact(node: str, project: str = "__default__", depth: int = 2):
+    graph = get_graph_store().load(project=project)
     return {"items": ImpactAnalyzer().analyze(graph, node, depth)}

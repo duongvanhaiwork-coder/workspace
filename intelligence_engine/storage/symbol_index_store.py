@@ -56,7 +56,8 @@ class SymbolIndexStore:
     def upsert(self, entry: dict[str, Any], project: str = "__default__") -> None:
         """Upsert a single symbol entry."""
         entries = self._get_entries(project)
-        symbol_id = entry.get("symbol_id", f"{project}:{entry.get('qualified_name', entry['name'])}")
+        qname = entry.get('qualified_name', entry['name'])
+        symbol_id = entry.get("symbol_id", f"{project}:{qname}")
         entry["symbol_id"] = symbol_id
         entry["project"] = project
         entries[symbol_id] = entry
@@ -66,7 +67,8 @@ class SymbolIndexStore:
         """Upsert multiple entries at once."""
         store = self._get_entries(project)
         for entry in entries:
-            symbol_id = entry.get("symbol_id", f"{project}:{entry.get('qualified_name', entry['name'])}")
+            qname = entry.get('qualified_name', entry['name'])
+            symbol_id = entry.get("symbol_id", f"{project}:{qname}")
             entry["symbol_id"] = symbol_id
             entry["project"] = project
             store[symbol_id] = entry
@@ -77,7 +79,9 @@ class SymbolIndexStore:
         entries = self._get_entries(project)
         return [e for e in entries.values() if e.get("name") == name]
 
-    def find_by_qualified_name(self, qualified_name: str, project: str = "__default__") -> dict[str, Any] | None:
+    def find_by_qualified_name(
+        self, qualified_name: str, project: str = "__default__",
+    ) -> dict[str, Any] | None:
         """Find symbol by qualified_name (e.g. OrderService.createOrder)."""
         entries = self._get_entries(project)
         for e in entries.values():

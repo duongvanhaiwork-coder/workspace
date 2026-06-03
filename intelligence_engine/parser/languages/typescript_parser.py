@@ -12,7 +12,9 @@ except Exception:
 class TypeScriptParser(BaseParser):
     language = "typescript"
 
-    def parse(self, path: Path, source: str | None = None, rel_path: str | None = None) -> ParsedFile:
+    def parse(
+        self, path: Path, source: str | None = None, rel_path: str | None = None,
+    ) -> ParsedFile:
         text = source if source is not None else path.read_text(encoding="utf-8", errors="ignore")
         stored_path = rel_path if rel_path is not None else str(path)
         tree = None

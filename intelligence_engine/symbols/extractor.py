@@ -39,14 +39,14 @@ class SymbolExtractor:
                     node.name, "class", parsed.path,
                     node.lineno, getattr(node, "end_lineno", node.lineno), node.name,
                 ))
-        return sorted(out, key=lambda s: (s.start_line, s.name))
+        return sorted(out, key=lambda s: (s.line_start, s.name))
 
     def _tree_sitter(self, parsed: ParsedFile) -> list[Symbol]:
         """Extract symbols using tree-sitter AST."""
         out: list[Symbol] = []
         root = parsed.tree.root_node()
         self._walk_ts_node(root, parsed.source, parsed, out)
-        return sorted(out, key=lambda s: (s.start_line, s.name))
+        return sorted(out, key=lambda s: (s.line_start, s.name))
 
     def _walk_ts_node(self, node, source: str, parsed: ParsedFile, out: list[Symbol]) -> None:
         node_kind = node.kind()

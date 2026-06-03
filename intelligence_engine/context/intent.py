@@ -23,19 +23,33 @@ class QueryIntent(Enum):
 # Pattern → intent, ordered by specificity (first match wins)
 _RULES: list[tuple[re.Pattern, QueryIntent]] = [
     # Refactor
-    (re.compile(r"\b(rename|đổi tên|refactor|extract|move method|split)\b", re.I), QueryIntent.REFACTOR),
+    (re.compile(
+        r"\b(rename|đổi tên|refactor|extract|move method|split)\b", re.I,
+    ), QueryIntent.REFACTOR),
     # Impact
-    (re.compile(r"\b(impact|blast radius|ảnh hưởng|affected|breaking change)\b", re.I), QueryIntent.IMPACT),
+    (re.compile(
+        r"\b(impact|blast radius|ảnh hưởng|affected|breaking change)\b", re.I,
+    ), QueryIntent.IMPACT),
     # Debug
-    (re.compile(r"\b(why|tại sao|debug|always 0|null|undefined|error|bug|fail|wrong)\b", re.I), QueryIntent.DEBUG),
+    (re.compile(
+        r"\b(why|tại sao|debug|always 0|null|undefined|error|bug|fail|wrong)\b", re.I,
+    ), QueryIntent.DEBUG),
     # Test
-    (re.compile(r"\b(tests?|specs?|unit tests?|generate tests?|viết test)\b", re.I), QueryIntent.TEST),
+    (re.compile(
+        r"\b(tests?|specs?|unit tests?|generate tests?|viết test)\b", re.I,
+    ), QueryIntent.TEST),
     # Generate
-    (re.compile(r"\b(thêm field|add field|create|generate|implement|tạo)\b", re.I), QueryIntent.GENERATE),
+    (re.compile(
+        r"\b(thêm field|add field|create|generate|implement|tạo)\b", re.I,
+    ), QueryIntent.GENERATE),
     # Explain
-    (re.compile(r"\b(how does|giải thích|explain|flow|luồng|what does|describe)\b", re.I), QueryIntent.EXPLAIN),
+    (re.compile(
+        r"\b(how does|giải thích|explain|flow|luồng|what does|describe)\b", re.I,
+    ), QueryIntent.EXPLAIN),
     # Search (most generic — "where", "find", "dùng ở đâu")
-    (re.compile(r"\b(where|ở đâu|find|tìm|dùng ở|used in|references)\b", re.I), QueryIntent.SEARCH),
+    (re.compile(
+        r"\b(where|ở đâu|find|tìm|dùng ở|used in|references)\b", re.I,
+    ), QueryIntent.SEARCH),
 ]
 
 

@@ -27,7 +27,8 @@ class FileStateStore:
         for k, v in data.items():
             # Remove project field (stored for reference but not part of FileState)
             v_copy = {key: val for key, val in v.items() if key != "project"}
-            # Handle both old format (path/sha256/size) and new format (file_path/content_hash/size_bytes)
+            # Handle both old format (path/sha256/size)
+            # and new format (file_path/content_hash/size_bytes)
             if "file_path" in v_copy:
                 result[k] = FileState(**v_copy)
             else:
@@ -54,7 +55,9 @@ class FileStateStore:
             json.dumps(data, indent=2), encoding="utf-8"
         )
 
-    def diff(self, current: list[FileState], project: str = "__default__") -> tuple[list[FileState], list[str]]:
+    def diff(
+        self, current: list[FileState], project: str = "__default__",
+    ) -> tuple[list[FileState], list[str]]:
         """Compare current scan with stored state.
 
         Returns:
@@ -63,6 +66,10 @@ class FileStateStore:
         """
         old = self.load(project)
         current_map = {s.file_path: s for s in current}
-        changed = [s for s in current if s.file_path not in old or old[s.file_path].content_hash != s.content_hash]
+        changed = [
+            s for s in current
+            if s.file_path not in old
+            or old[s.file_path].content_hash != s.content_hash
+        ]
         deleted = [p for p in old if p not in current_map]
         return changed, deleted

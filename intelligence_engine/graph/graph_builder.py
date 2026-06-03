@@ -13,7 +13,7 @@ class GraphBuilder:
         g = nx.DiGraph()
         for s in symbols:
             file_node = f"file:{s.file_path}"
-            sym_node = f"symbol:{s.name}:{s.file_path}:{s.start_line}"
+            sym_node = f"symbol:{s.name}:{s.file_path}:{s.line_start}"
             g.add_node(file_node, type="file", path=s.file_path)
             g.add_node(sym_node, type="symbol", name=s.name, kind=s.kind, path=s.file_path)
             g.add_edge(file_node, sym_node, relation=R.DEFINES)

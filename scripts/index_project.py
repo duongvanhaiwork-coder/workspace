@@ -41,18 +41,18 @@ def index_project(project_name: str, full: bool = False) -> None:
     parsed_cache: dict[str, tuple] = {}  # rel_path -> (symbols, imports, routes, chunks)
 
     for state in all_states:
-        path = root / state.path
-        parsed = parser_factory.get_parser(path).parse(path, rel_path=state.path)
+        path = root / state.file_path
+        parsed = parser_factory.get_parser(path).parse(path, rel_path=state.file_path)
         file_symbols = sym_extractor.extract(parsed)
         file_imports = imp_extractor.extract(parsed)
         file_routes = route_extractor.extract(parsed)
         file_chunks = chunker.chunk(parsed, file_symbols)
-        parsed_cache[state.path] = (file_symbols, file_imports, file_routes, file_chunks)
+        parsed_cache[state.file_path] = (file_symbols, file_imports, file_routes, file_chunks)
 
     # Upsert only changed file chunks
     chunks_to_upsert = []
     for state in states_to_process:
-        _, _, _, file_chunks = parsed_cache[state.path]
+        _, _, _, file_chunks = parsed_cache[state.file_path]
         chunks_to_upsert.extend(file_chunks)
 
     if chunks_to_upsert:
@@ -75,7 +75,8 @@ def index_project(project_name: str, full: bool = False) -> None:
         all_imports.extend(imports)
         all_routes.extend(routes)
 
-    get_graph_store().save(GraphBuilder().build(all_symbols, all_imports, all_routes), project=project_name)
+    graph = GraphBuilder().build(all_symbols, all_imports, all_routes)
+    get_graph_store().save(graph, project=project_name)
     file_state_store.save(all_states, project=project_name)
 
     mode = "full" if full else "incremental"

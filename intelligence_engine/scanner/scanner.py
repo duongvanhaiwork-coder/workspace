@@ -4,7 +4,9 @@ from .file_state import FileState, hash_file, detect_language
 DEFAULT_EXTENSIONS = {".py", ".js", ".jsx", ".ts", ".tsx", ".cs"}
 
 class Scanner:
-    def __init__(self, exclude: list[str] | None = None, extensions: set[str] | None = None) -> None:
+    def __init__(
+        self, exclude: list[str] | None = None, extensions: set[str] | None = None,
+    ) -> None:
         self.exclude = set(exclude or [])
         self.extensions = extensions or DEFAULT_EXTENSIONS
 

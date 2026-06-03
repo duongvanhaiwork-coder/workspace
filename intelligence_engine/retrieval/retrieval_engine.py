@@ -187,7 +187,13 @@ class RetrievalEngine:
 
 
 def _relation_to_usage(relation: str) -> str:
-    return {"defines": "definition", "imports": "import", "references": "read", "calls": "read"}.get(relation, "read")
+    mapping = {
+        "defines": "definition",
+        "imports": "import",
+        "references": "read",
+        "calls": "read",
+    }
+    return mapping.get(relation, "read")
 
 
 def _classify_usage(snippet: str, symbol: str) -> str:

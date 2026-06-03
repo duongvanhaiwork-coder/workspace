@@ -5,11 +5,7 @@ Scanner → Tree-sitter → Symbol Extractor → Chunker → Embedder → LanceD
 """
 
 from intelligence_engine.storage import (
-    get_file_state_store,
-    get_graph_store,
     get_retrieval_cache_store,
-    get_symbol_index_store,
-    get_vector_store,
 )
 
 

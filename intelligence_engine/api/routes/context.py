@@ -23,4 +23,6 @@ def get_context(req: ContextRequest):
     rows = HybridSearch(store, Embedder()).search(req.query, req.top_k * 2, project=req.project)
     rows = SimpleReranker().rerank(req.query, rows)[:req.top_k]
     budget = TokenBudget(max_tokens=req.max_tokens)
-    return {"context": ContextBuilder(budget=budget).build(rows), "items": rows}
+    builder = ContextBuilder(budget=budget)
+    chunks = builder.build_chunks(rows, req.query)
+    return {"context": chunks, "items": rows}

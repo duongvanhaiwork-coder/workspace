@@ -37,7 +37,10 @@ def analyze_impact(args: dict) -> dict:
     return result
 
 
-def _analyze_via_graph(engine: RetrievalEngine, builder: ContextBuilder, target: str, graph, depth: int) -> dict:
+def _analyze_via_graph(
+    engine: RetrievalEngine, builder: ContextBuilder,
+    target: str, graph, depth: int,
+) -> dict:
     impacted = engine.get_impact(target, graph, depth)
     paths = engine.get_dependency_paths(target, graph)
     paths = builder.trim_dependency_paths(paths)
@@ -71,8 +74,13 @@ def _analyze_via_graph(engine: RetrievalEngine, builder: ContextBuilder, target:
     if not impacted:
         missing.append(f"'{target}' not found in code graph")
 
+    summary = (
+        f"Impact for '{target}': {len(affected_files)} file(s), "
+        f"{len(affected_symbols)} symbol(s). Risk: {risk}."
+    )
+
     return {
-        "summary": f"Impact for '{target}': {len(affected_files)} file(s), {len(affected_symbols)} symbol(s). Risk: {risk}.",
+        "summary": summary,
         "affected_files": affected_files,
         "affected_symbols": affected_symbols,
         "dependency_paths": paths,
@@ -109,14 +117,22 @@ def _analyze_via_search(engine: RetrievalEngine, builder: ContextBuilder, target
     actions = _suggest_actions(target, affected_files)
     confidence = round(min(0.7, 0.3 + len(affected_files) * 0.03), 2)
 
+    summary = (
+        f"Impact for '{target}': {len(affected_files)} file(s), "
+        f"{len(affected_symbols)} symbol(s). Risk: {risk}."
+    )
+
     return {
-        "summary": f"Impact for '{target}': {len(affected_files)} file(s), {len(affected_symbols)} symbol(s). Risk: {risk}.",
+        "summary": summary,
         "affected_files": affected_files,
         "affected_symbols": affected_symbols,
         "dependency_paths": [],
         "risk_level": risk,
         "suggested_actions": actions,
-        "missing_context": ["Analysis based on text search (graph unavailable) — may be incomplete"],
+        "missing_context": [
+            "Analysis based on text search (graph unavailable)"
+            " — may be incomplete"
+        ],
         "confidence": confidence,
     }
 

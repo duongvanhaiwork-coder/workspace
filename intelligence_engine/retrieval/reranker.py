@@ -64,13 +64,15 @@ class CrossEncoderReranker:
     - cross-encoder/ms-marco-MiniLM-L-12-v2  (better quality, ~33MB)
     """
 
+    _UNLOADED = object()  # sentinel: model not yet attempted
+
     def __init__(self, model_name: str = "cross-encoder/ms-marco-MiniLM-L-6-v2") -> None:
         self._model_name = model_name
-        self._model = None  # lazy load
+        self._model: object = CrossEncoderReranker._UNLOADED  # lazy load
 
     def _load_model(self):
         """Lazy load to avoid slow startup when reranker isn't used."""
-        if self._model is not None:
+        if self._model is not CrossEncoderReranker._UNLOADED:
             return
         try:
             from sentence_transformers import CrossEncoder
@@ -80,6 +82,12 @@ class CrossEncoderReranker:
             logger.warning(
                 "sentence-transformers not installed — falling back to SimpleReranker. "
                 "Install with: pip install sentence-transformers"
+            )
+            self._model = None
+        except Exception as exc:
+            logger.warning(
+                f"Failed to load cross-encoder model '{self._model_name}': {exc} "
+                "— falling back to SimpleReranker."
             )
             self._model = None
 

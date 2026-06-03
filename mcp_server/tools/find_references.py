@@ -45,7 +45,10 @@ def find_references(args: dict) -> dict:
     summary = f"Found {len(refs)} reference(s) for '{symbol}'."
     missing = []
     if not refs:
-        missing.append(f"No references found for '{symbol}' — symbol may not be indexed or graph not built")
+        missing.append(
+            f"No references found for '{symbol}'"
+            " — symbol may not be indexed or graph not built"
+        )
 
     return {
         "summary": summary,

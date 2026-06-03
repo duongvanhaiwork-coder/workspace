@@ -11,7 +11,9 @@ class ParsedFile:
 class BaseParser:
     language: str = "unknown"
 
-    def parse(self, path: Path, source: str | None = None, rel_path: str | None = None) -> ParsedFile:
+    def parse(
+        self, path: Path, source: str | None = None, rel_path: str | None = None,
+    ) -> ParsedFile:
         """Parse a file.
 
         Args:

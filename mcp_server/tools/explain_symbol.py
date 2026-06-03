@@ -102,7 +102,10 @@ def _find_definition(symbol: str, rows: list[dict]) -> dict:
     return {}
 
 
-def _build_summary(symbol: str, kind: str, file: str, info: dict, deps: list, callers: list, calls: list) -> str:
+def _build_summary(
+    symbol: str, kind: str, file: str, info: dict,
+    deps: list, callers: list, calls: list,
+) -> str:
     parts = []
     if kind:
         parts.append(f"'{symbol}' is a {kind}")

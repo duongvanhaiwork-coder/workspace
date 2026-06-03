@@ -146,12 +146,28 @@ class Orchestrator:
         refs = self._extract_references(target, rows, graph)
         paths = self._find_dependency_paths(target, graph) if graph else []
         affected_files = list(dict.fromkeys(r["file"] for r in refs))
-        risk = "high" if len(affected_files) >= 10 else "medium" if len(affected_files) >= 3 else "low"
+        if len(affected_files) >= 10:
+            risk = "high"
+        elif len(affected_files) >= 3:
+            risk = "medium"
+        else:
+            risk = "low"
 
+        summary = (
+            f"Refactor '{target}': {len(refs)} reference(s) "
+            f"in {len(affected_files)} file(s). Risk: {risk}."
+        )
+        affected_symbols = [
+            {"name": r["symbol"], "kind": r.get("kind", ""), "file": r["file"]}
+            for r in refs if r.get("symbol")
+        ]
         return {
-            "summary": f"Refactor '{target}': {len(refs)} reference(s) in {len(affected_files)} file(s). Risk: {risk}.",
-            "affected_files": [{"file": f, "reason": "Contains reference"} for f in affected_files],
-            "affected_symbols": [{"name": r["symbol"], "kind": r.get("kind", ""), "file": r["file"]} for r in refs if r.get("symbol")],
+            "summary": summary,
+            "affected_files": [
+                {"file": f, "reason": "Contains reference"}
+                for f in affected_files
+            ],
+            "affected_symbols": affected_symbols,
             "dependency_paths": paths,
             "risk_level": risk,
             "suggested_actions": self._refactor_actions(target, affected_files),
@@ -194,7 +210,10 @@ class Orchestrator:
         call_chain = self._find_dependency_paths(target, graph) if graph else []
 
         return {
-            "summary": f"Debug '{target}': {len(writes)} write location(s), {len(reads)} read location(s).",
+            "summary": (
+                f"Debug '{target}': {len(writes)} write location(s), "
+                f"{len(reads)} read location(s)."
+            ),
             "possible_sources": writes[:5],
             "call_chain": call_chain,
             "write_locations": writes[:5],
@@ -207,18 +226,30 @@ class Orchestrator:
     def _build_test(self, target: str, rows: list[dict], graph: nx.DiGraph | None) -> dict:
         budget = TokenBudget(self.max_tokens)
         chunks = self._build_chunks(rows, budget, target)
-        definition = next((c for c in chunks if target.lower() in c.get("symbol", "").lower()), None)
+        definition = next(
+            (c for c in chunks if target.lower() in c.get("symbol", "").lower()),
+            None,
+        )
         deps = self._find_graph_dependencies(target, graph) if graph else []
 
+        def_status = "found" if definition else "not found"
+        summary = (
+            f"Test context for '{target}': definition {def_status}, "
+            f"{len(deps)} dependency(ies)."
+        )
+        missing = (
+            [] if definition
+            else [f"Definition of '{target}' not found in index"]
+        )
         return {
-            "summary": f"Test context for '{target}': definition {'found' if definition else 'not found'}, {len(deps)} dependency(ies).",
+            "summary": summary,
             "symbol": target,
             "method_definition": definition,
             "dependencies": deps,
             "edge_cases": self._suggest_edge_cases(target, chunks),
             "chunks": chunks[:5],
             "confidence": 0.7 if definition else 0.4,
-            "missing_context": [] if definition else [f"Definition of '{target}' not found in index"],
+            "missing_context": missing,
         }
 
     def _build_generate(self, target: str, rows: list[dict], graph: nx.DiGraph | None) -> dict:
@@ -228,7 +259,10 @@ class Orchestrator:
         deps = self._find_graph_dependencies(target, graph) if graph else []
 
         return {
-            "summary": f"Generate context for '{target}': {len(chunks)} chunk(s), {len(deps)} dependency(ies).",
+            "summary": (
+                f"Generate context for '{target}': "
+                f"{len(chunks)} chunk(s), {len(deps)} dependency(ies)."
+            ),
             "references": refs[:10],
             "dependencies": deps,
             "chunks": chunks[:8],
@@ -239,7 +273,9 @@ class Orchestrator:
 
     # --- Utility methods ---
 
-    def _extract_references(self, symbol: str, rows: list[dict], graph: nx.DiGraph | None) -> list[dict]:
+    def _extract_references(
+        self, symbol: str, rows: list[dict], graph: nx.DiGraph | None,
+    ) -> list[dict]:
         """Find references from search results + graph."""
         refs: list[dict] = []
         seen: set[str] = set()
@@ -392,7 +428,10 @@ class Orchestrator:
         if symbols:
             parts.append(f"Key symbols: {', '.join(symbols[:5])}.")
         if entrypoints:
-            parts.append(f"Entrypoint(s): {', '.join(e.get('symbol', e['file']) for e in entrypoints[:3])}.")
+            entry_names = ', '.join(
+                e.get('symbol', e['file']) for e in entrypoints[:3]
+            )
+            parts.append(f"Entrypoint(s): {entry_names}.")
         return " ".join(parts)
 
     # --- Classification helpers ---
@@ -411,7 +450,13 @@ class Orchestrator:
         return "read"
 
     def _relation_to_usage(self, relation: str) -> str:
-        return {"defines": "definition", "imports": "import", "references": "read", "calls": "read"}.get(relation, "read")
+        mapping = {
+            "defines": "definition",
+            "imports": "import",
+            "references": "read",
+            "calls": "read",
+        }
+        return mapping.get(relation, "read")
 
     def _is_write(self, chunk: dict, target: str) -> bool:
         content = chunk.get("content", "")
