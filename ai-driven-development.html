@@ -1,0 +1,1873 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI-Driven Development — Từ "Code thủ công" → "AI Co-Developer"</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --primary: #6366f1;
+            --primary-light: #818cf8;
+            --secondary: #ec4899;
+            --accent: #f59e0b;
+            --success: #10b981;
+            --danger: #ef4444;
+            --dark: #0f172a;
+            --dark-2: #1e293b;
+            --dark-3: #334155;
+            --light: #f8fafc;
+            --gradient-1: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --gradient-2: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            --gradient-3: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            --gradient-4: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+            --gradient-5: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--dark);
+            color: var(--light);
+            overflow: hidden;
+            height: 100vh;
+        }
+
+        .presentation { width: 100vw; height: 100vh; position: relative; }
+
+        .slide {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 50px 70px;
+            opacity: 0;
+            transform: translateX(100%);
+            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            overflow-y: auto;
+        }
+        .slide.active { opacity: 1; transform: translateX(0); }
+        .slide.prev { opacity: 0; transform: translateX(-100%); }
+
+        .nav-controls {
+            position: fixed; bottom: 30px; right: 40px;
+            display: flex; gap: 12px; z-index: 1000;
+        }
+        .nav-btn {
+            width: 50px; height: 50px; border-radius: 50%;
+            border: 2px solid rgba(255,255,255,0.2);
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(10px);
+            color: white; font-size: 18px; cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            transition: all 0.3s;
+        }
+        .nav-btn:hover { background: var(--primary); border-color: var(--primary); transform: scale(1.1); }
+
+        .slide-counter {
+            position: fixed; bottom: 40px; left: 40px;
+            font-size: 14px; color: rgba(255,255,255,0.5);
+            z-index: 1000; font-family: 'JetBrains Mono', monospace;
+        }
+        .narrative-hint {
+            position: fixed; bottom: 40px; left: 50%; transform: translateX(-50%);
+            font-size: 0.7rem; color: rgba(255,255,255,0.2);
+            z-index: 999; font-style: italic; letter-spacing: 0.3px;
+            pointer-events: none;
+        }
+        .progress-bar {
+            position: fixed; top: 0; left: 0; height: 3px;
+            background: var(--gradient-1); transition: width 0.4s ease; z-index: 1000;
+        }
+
+        .title-slide { background: radial-gradient(ellipse at top, #1e293b 0%, #0f172a 70%); text-align: center; }
+        .title-slide h1 {
+            font-size: 3.5rem; font-weight: 900;
+            background: var(--gradient-1); -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent; background-clip: text;
+            margin-bottom: 20px; line-height: 1.2;
+        }
+        .title-slide .subtitle { font-size: 1.4rem; color: rgba(255,255,255,0.6); font-weight: 300; margin-bottom: 20px; }
+        .title-slide .description { font-size: 1.1rem; color: rgba(255,255,255,0.45); font-weight: 300; margin-bottom: 40px; max-width: 700px; line-height: 1.6; }
+        .title-slide .badge-row { display: flex; gap: 15px; margin-top: 10px; }
+        .title-slide .emoji-row { font-size: 3rem; margin-bottom: 30px; }
+
+        .section-header { background: radial-gradient(ellipse at center, var(--dark-2) 0%, var(--dark) 100%); }
+        .section-header h2 { font-size: 3rem; font-weight: 800; text-align: center; margin-bottom: 20px; }
+        .section-header .section-icon { font-size: 5rem; margin-bottom: 30px; }
+
+        .content-slide {
+            background: radial-gradient(ellipse at top right, var(--dark-2) 0%, var(--dark) 100%);
+            align-items: flex-start; justify-content: flex-start; padding-top: 35px;
+        }
+        .content-slide h2 {
+            font-size: 1.9rem; font-weight: 700; margin-bottom: 25px;
+            display: flex; align-items: center; gap: 15px;
+        }
+        .content-slide h3 { font-size: 1.3rem; font-weight: 600; margin-bottom: 12px; color: var(--primary-light); }
+        .content-slide p, .content-slide li { font-size: 1.05rem; line-height: 1.8; color: rgba(255,255,255,0.85); }
+        .content-slide ul { list-style: none; padding-left: 0; }
+        .content-slide ul li { padding: 6px 0; padding-left: 25px; position: relative; }
+        .content-slide ul li::before { content: '▸'; position: absolute; left: 0; color: var(--primary-light); font-weight: bold; }
+
+        .code-block {
+            background: #0d1117;
+            border: 1px solid rgba(99, 102, 241, 0.15);
+            border-radius: 12px;
+            padding: 22px 26px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.78rem;
+            line-height: 1.8;
+            overflow-x: auto;
+            width: 100%;
+            margin: 12px 0;
+            position: relative;
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
+            white-space: pre;
+            tab-size: 4;
+        }
+        .code-block::before {
+            content: attr(data-lang);
+            position: absolute; top: 10px; right: 14px;
+            font-size: 0.6rem; color: rgba(255,255,255,0.25);
+            text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600;
+            background: rgba(99, 102, 241, 0.1); padding: 2px 8px; border-radius: 4px;
+        }
+        .code-block .kw { color: #ff79c6; }
+        .code-block .str { color: #a5d6ff; }
+        .code-block .cmt { color: #8b949e; font-style: italic; }
+        .code-block .fn { color: #d2a8ff; }
+        .code-block .num { color: #79c0ff; }
+        .code-block .tp { color: #7ee787; }
+        .code-block .op { color: #ff7b72; }
+
+        .illustration {
+            background: rgba(99, 102, 241, 0.03);
+            border: 1px solid rgba(99, 102, 241, 0.15);
+            border-radius: 16px;
+            padding: 35px 30px;
+            margin: 15px 0;
+            width: 100%;
+            text-align: center;
+            position: relative; overflow: hidden;
+        }
+        .illustration::before {
+            content: ''; position: absolute; top: -50%; left: -50%;
+            width: 200%; height: 200%;
+            background: radial-gradient(circle, rgba(99, 102, 241, 0.04) 0%, transparent 70%);
+            animation: pulse 4s ease-in-out infinite;
+        }
+        @keyframes pulse { 0%, 100% { transform: scale(1); opacity: 0.5; } 50% { transform: scale(1.1); opacity: 1; } }
+        .illustration .emoji-art { font-size: 4rem; margin-bottom: 10px; position: relative; z-index: 1; }
+        .illustration .caption { font-size: 0.9rem; color: rgba(255,255,255,0.6); position: relative; z-index: 1; }
+
+        .cards-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 18px; width: 100%; margin: 15px 0; }
+        .card {
+            background: rgba(30, 41, 59, 0.8); border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 16px; padding: 22px; transition: all 0.3s;
+        }
+        .card:hover { transform: translateY(-4px); border-color: var(--primary); box-shadow: 0 15px 35px rgba(99, 102, 241, 0.1); }
+        .card .card-icon { font-size: 2.2rem; margin-bottom: 12px; }
+        .card h4 { font-size: 1rem; margin-bottom: 8px; color: var(--light); }
+        .card p { font-size: 0.85rem; color: rgba(255,255,255,0.6); line-height: 1.6; }
+
+        .compare-container { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; width: 100%; margin: 15px 0; }
+        .compare-box { border-radius: 12px; padding: 18px; border: 1px solid; }
+        .compare-box.bad { background: rgba(239, 68, 68, 0.04); border-color: rgba(239, 68, 68, 0.25); }
+        .compare-box.good { background: rgba(16, 185, 129, 0.04); border-color: rgba(16, 185, 129, 0.25); }
+        .compare-box .label { font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+        .compare-box.bad .label { color: var(--danger); }
+        .compare-box.good .label { color: var(--success); }
+
+        .diagram { background: rgba(15, 23, 42, 0.5); border: 1px solid rgba(255,255,255,0.08); border-radius: 16px; padding: 25px; width: 100%; margin: 12px 0; }
+        .diagram-flow { display: flex; align-items: center; justify-content: center; gap: 12px; flex-wrap: wrap; }
+        .diagram-node { background: var(--dark-2); border: 2px solid var(--primary); border-radius: 12px; padding: 10px 18px; font-size: 0.85rem; font-weight: 500; text-align: center; min-width: 110px; }
+        .diagram-arrow { color: var(--primary-light); font-size: 1.4rem; }
+
+        .badge { display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+        .badge-danger { background: rgba(239,68,68,0.2); color: #fca5a5; }
+        .badge-success { background: rgba(16,185,129,0.2); color: #6ee7b7; }
+        .badge-warning { background: rgba(245,158,11,0.2); color: #fcd34d; }
+        .badge-info { background: rgba(99,102,241,0.2); color: #a5b4fc; }
+
+        .hl { color: var(--accent); font-weight: 600; }
+        .hl-p { color: var(--primary-light); font-weight: 600; }
+        .hl-d { color: var(--danger); font-weight: 600; }
+        .hl-s { color: var(--success); font-weight: 600; }
+
+        .bg-shapes { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; overflow: hidden; z-index: 0; }
+        .bg-shapes .shape { position: absolute; border-radius: 50%; opacity: 0.03; }
+        .bg-shapes .shape:nth-child(1) { width: 600px; height: 600px; background: var(--primary); top: -200px; right: -200px; animation: float 8s ease-in-out infinite; }
+        .bg-shapes .shape:nth-child(2) { width: 400px; height: 400px; background: var(--secondary); bottom: -100px; left: -100px; animation: float 6s ease-in-out infinite reverse; }
+        @keyframes float { 0%, 100% { transform: translate(0, 0); } 50% { transform: translate(20px, -20px); } }
+
+        .speech-bubble { background: rgba(99, 102, 241, 0.1); border: 2px solid var(--primary); border-radius: 20px; padding: 18px 28px; position: relative; margin: 15px 0; font-size: 1.1rem; font-weight: 500; width: 100%; }
+        .speech-bubble::after { content: ''; position: absolute; bottom: -14px; left: 40px; width: 0; height: 0; border-left: 14px solid transparent; border-right: 14px solid transparent; border-top: 14px solid var(--primary); }
+
+        .toc-list { list-style: none; width: 100%; max-width: 750px; }
+        .toc-list li { padding: 14px 22px; margin: 6px 0; background: rgba(30, 41, 59, 0.6); border-radius: 12px; border-left: 4px solid; font-size: 1.05rem; font-weight: 500; display: flex; align-items: center; gap: 15px; transition: all 0.3s; }
+        .toc-list li:hover { transform: translateX(10px); background: rgba(30, 41, 59, 0.9); }
+        .toc-list li:nth-child(1) { border-color: var(--primary-light); }
+        .toc-list li:nth-child(2) { border-color: var(--danger); }
+        .toc-list li:nth-child(3) { border-color: var(--success); }
+        .toc-list li:nth-child(4) { border-color: var(--accent); }
+        .toc-list li:nth-child(5) { border-color: var(--secondary); }
+        .toc-list li:nth-child(6) { border-color: var(--primary); }
+        .toc-list li:nth-child(7) { border-color: var(--danger); }
+        .toc-list li:nth-child(8) { border-color: var(--success); }
+        .toc-list li:nth-child(9) { border-color: var(--accent); }
+        .toc-number { width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.85rem; background: rgba(99,102,241,0.2); color: #a5b4fc; }
+
+        .scroll-content { overflow-y: auto; max-height: calc(100vh - 70px); width: 100%; padding-right: 10px; scroll-behavior: smooth; }
+        .scroll-content::-webkit-scrollbar { width: 5px; }
+        .scroll-content::-webkit-scrollbar-track { background: transparent; }
+        .scroll-content::-webkit-scrollbar-thumb { background: rgba(99, 102, 241, 0.3); border-radius: 3px; }
+
+        .warn-box { background: rgba(239, 68, 68, 0.04); border: 1px solid rgba(239, 68, 68, 0.25); border-radius: 12px; padding: 14px 18px; margin: 10px 0; display: flex; align-items: flex-start; gap: 12px; }
+        .tip-box { background: rgba(16, 185, 129, 0.04); border: 1px solid rgba(16, 185, 129, 0.25); border-radius: 12px; padding: 14px 18px; margin: 10px 0; display: flex; align-items: flex-start; gap: 12px; }
+        .bonus-box { background: linear-gradient(135deg, rgba(245, 158, 11, 0.08) 0%, rgba(239, 68, 68, 0.08) 100%); border: 2px solid rgba(245, 158, 11, 0.3); border-radius: 16px; padding: 22px; margin-top: 18px; width: 100%; }
+        .bonus-box h4 { color: var(--accent); font-size: 1.15rem; margin-bottom: 10px; display: flex; align-items: center; gap: 10px; }
+
+        .perf-meter { display: flex; align-items: center; gap: 15px; margin: 10px 0; }
+        .perf-bar { height: 28px; border-radius: 14px; display: flex; align-items: center; padding: 0 12px; font-size: 0.75rem; font-weight: 600; font-family: 'JetBrains Mono', monospace; transition: width 1s ease; white-space: nowrap; min-width: fit-content; }
+        .perf-bar.slow { background: linear-gradient(90deg, #ef4444, #f97316); color: white; }
+        .perf-bar.fast { background: linear-gradient(90deg, #10b981, #34d399); color: white; }
+        .perf-label { font-size: 0.8rem; color: rgba(255,255,255,0.6); min-width: 80px; }
+
+        .character { display: inline-block; animation: bounce 2s ease-in-out infinite; }
+        @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+
+        .ending-slide { text-align: center; }
+        .ending-slide h2 { font-size: 3rem; margin-bottom: 20px; }
+        .ending-slide .qa-icon { font-size: 6rem; margin-bottom: 30px; animation: bounce 2s ease-in-out infinite; }
+
+        .shortcuts-hint { position: fixed; bottom: 40px; left: 50%; transform: translateX(-50%); font-size: 0.7rem; color: rgba(255,255,255,0.25); z-index: 1000; }
+        kbd { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); border-radius: 4px; padding: 2px 6px; font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; }
+
+        .full-w { width: 100%; }
+
+        .metric-row { display: flex; gap: 20px; justify-content: center; margin: 15px 0; flex-wrap: wrap; }
+        .metric-card { text-align: center; padding: 15px 25px; border-radius: 12px; background: rgba(30,41,59,0.6); border: 1px solid rgba(255,255,255,0.08); min-width: 130px; }
+        .metric-card .metric-value { font-size: 1.8rem; font-weight: 800; font-family: 'JetBrains Mono', monospace; }
+        .metric-card .metric-label { font-size: 0.7rem; color: rgba(255,255,255,0.5); margin-top: 4px; text-transform: uppercase; letter-spacing: 0.5px; }
+        .metric-card.bad .metric-value { color: var(--danger); }
+        .metric-card.good .metric-value { color: var(--success); }
+
+        .level-table { width: 100%; border-collapse: separate; border-spacing: 0; margin: 15px 0; border-radius: 12px; overflow: hidden; }
+        .level-table th { background: rgba(99,102,241,0.15); padding: 12px 16px; text-align: left; font-size: 0.85rem; font-weight: 600; color: var(--primary-light); }
+        .level-table td { padding: 12px 16px; font-size: 0.9rem; border-top: 1px solid rgba(255,255,255,0.05); color: rgba(255,255,255,0.8); }
+        .level-table tr:nth-child(even) td { background: rgba(30,41,59,0.3); }
+        .level-table tr:hover td { background: rgba(99,102,241,0.05); }
+
+        .timeline-table { width: 100%; border-collapse: separate; border-spacing: 0; margin: 15px 0; border-radius: 12px; overflow: hidden; }
+        .timeline-table th { background: rgba(245,158,11,0.15); padding: 10px 16px; text-align: left; font-size: 0.85rem; font-weight: 600; color: var(--accent); }
+        .timeline-table td { padding: 10px 16px; font-size: 0.9rem; border-top: 1px solid rgba(255,255,255,0.05); color: rgba(255,255,255,0.8); }
+        .timeline-table tr:nth-child(even) td { background: rgba(30,41,59,0.3); }
+    </style>
+</head>
+<body>
+    <div class="progress-bar" id="progressBar"></div>
+    <div class="presentation" id="presentation">
+
+        <!-- ==================== SLIDE 1: TITLE ==================== -->
+        <div class="slide title-slide active" data-slide="1">
+            <div class="bg-shapes"><div class="shape"></div><div class="shape"></div></div>
+            <div style="font-size: 3rem; margin-bottom: 25px; letter-spacing: 12px;">🤖 🧠 ⚡ 🚀</div>
+            <h1>AI-Driven Development</h1>
+            <p class="subtitle">Từ "Code thủ công" đến "AI Co-Developer"</p>
+            <p class="description">Tư duy, prompting và workflow để áp dụng AI vào quá trình phát triển phần mềm</p>
+            <div class="badge-row">
+                <span class="badge badge-warning">Prompt Engineering</span>
+                <span class="badge badge-danger">Workflow</span>
+                <span class="badge badge-info">Real Project Experience</span>
+            </div>
+        </div>
+
+        <!-- ==================== SLIDE 2: OPENING ==================== -->
+        <div class="slide content-slide" data-slide="2" style="justify-content: center; align-items: center; padding: 40px 60px;">
+            <div class="bg-shapes"><div class="shape"></div><div class="shape"></div></div>
+            <h2 style="text-align: center; margin-bottom: 10px;">🎯 Sau buổi này, team sẽ hiểu:</h2>
+            <p style="text-align: center; color: rgba(255,255,255,0.5); margin-bottom: 30px; font-size: 0.95rem;">6 điều cốt lõi để áp dụng AI vào công việc dev hàng ngày</p>
+
+            <div class="cards-grid" style="grid-template-columns: 1fr 1fr 1fr; gap: 20px; max-width: 1100px;">
+                <div class="card" style="text-align: center; padding: 28px 20px;">
+                    
+                    <h4>AI-Driven Development là gì</h4>
+                    <p>AI = Co-Developer, không phải magic button</p>
+                </div>
+                <div class="card" style="text-align: center; padding: 28px 20px;">
+                    
+                    <h4>Khi nào dùng AI hiệu quả</h4>
+                    <p>Task nào AI nhanh 3x, task nào AI fail</p>
+                </div>
+                <div class="card" style="text-align: center; padding: 28px 20px;">
+                    
+                    <h4>Workflow theo complexity</h4>
+                    <p>Chọn đúng level, tránh overkill</p>
+                </div>
+                <div class="card" style="text-align: center; padding: 28px 20px;">
+                    
+                    <h4>Prompt Engineering</h4>
+                    <p>5 thành phần biến prompt mơ hồ → output chính xác</p>
+                </div>
+                <div class="card" style="text-align: center; padding: 28px 20px;">
+                    
+                    <h4>7 sai lầm thường gặp</h4>
+                    <p>Anti-patterns và cách tránh</p>
+                </div>
+                <div class="card" style="text-align: center; padding: 28px 20px;">
+                    
+                    <h4>Real project metrics</h4>
+                    <p>Số liệu thật: trước/sau khi dùng AI</p>
+                </div>
+            </div>
+
+            <!-- Narrative thesis -->
+            <div style="margin-top: 30px; text-align: center; max-width: 700px;">
+                <p style="font-size: 1.3rem; font-weight: 700; color: var(--light); line-height: 1.6;">
+                    "AI không thay thế Developer.<br>AI thay đổi cách Developer làm việc."
+                </p>
+                <p style="font-size: 0.9rem; color: rgba(255,255,255,0.4); margin-top: 10px;">
+                    Từ "viết code" → "điều phối AI để xây dựng software"
+                </p>
+            </div>
+        </div>
+
+        <!-- ==================== SLIDE 3: TOC ==================== -->
+        <div class="slide section-header" data-slide="3">
+            <div class="bg-shapes"><div class="shape"></div><div class="shape"></div></div>
+            <h2 style="margin-bottom: 30px; font-size: 2.5rem;">📋 Agenda</h2>
+            <ul class="toc-list">
+                <li><span class="toc-number">1</span>AI-Driven Development là gì?</li>
+                <li><span class="toc-number">2</span>Khi nào nên / không nên dùng AI</li>
+                <li><span class="toc-number">3</span>AI Development Stack</li>
+                <li><span class="toc-number">4</span>Prompt Engineering cho Developer</li>
+                <li><span class="toc-number">5</span>AI Workflow theo độ phức tạp</li>
+                <li><span class="toc-number">6</span>Sai lầm phổ biến & Bài học thực tế</li>
+                <li><span class="toc-number">7</span>Tương lai AI-Driven Development</li>
+            </ul>
+        </div>
+
+        <!-- ==================== PART 1: AI-DRIVEN DEVELOPMENT LÀ GÌ ==================== -->
+        <div class="slide section-header" data-slide="4">
+            <div class="bg-shapes"><div class="shape"></div><div class="shape"></div></div>
+            
+            <h2 style="background: var(--gradient-1); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;"><span style="-webkit-text-fill-color: initial;">🧠</span> Phần 1: AI-Driven Development là gì?</h2>
+            <p style="color: rgba(255,255,255,0.5); margin-top: 15px; font-size: 1.1rem;">AI-Driven Development ≠ ChatGPT hỏi đáp</p>
+        </div>
+
+        <!-- SLIDE 5: Định nghĩa AI-Driven Development -->
+        <div class="slide content-slide" data-slide="5" style="justify-content: center; align-items: center; padding: 40px 60px;">
+            <div class="bg-shapes"><div class="shape"></div><div class="shape"></div></div>
+            <h2 style="text-align: center; margin-bottom: 10px;">🤖 AI-Driven Development là gì?</h2>
+            <p style="text-align: center; color: rgba(255,255,255,0.5); margin-bottom: 30px; font-size: 0.95rem;">Không phải "dùng ChatGPT hỏi đáp" — mà là một phương pháp phát triển phần mềm mới</p>
+
+            <!-- Definition box -->
+            <div class="speech-bubble" style="max-width: 900px; margin-bottom: 25px;">
+                <p style="font-size: 1.1rem; line-height: 1.8;"><b>AI-Driven Development</b> = Phương pháp phát triển phần mềm trong đó <span class="hl-p">AI tham gia xuyên suốt</span> mọi giai đoạn (phân tích → thiết kế → code → test → review), với developer giữ vai trò <span class="hl">người ra quyết định và kiểm soát chất lượng</span>.</p>
+            </div>
+
+            <!-- 3 trụ cột chính -->
+            <div class="cards-grid" style="grid-template-columns: 1fr 1fr 1fr; gap: 20px; max-width: 1000px; margin-bottom: 25px;">
+                <div class="card" style="padding: 24px 18px; border-top: 4px solid var(--primary);">
+                    
+                    <h4 style="text-align: center; color: var(--primary-light); margin-bottom: 10px;">Intent over Syntax</h4>
+                    <p style="font-size: 0.88rem; line-height: 1.8; color: rgba(255,255,255,0.8); text-align: center;">Mô tả <b>muốn gì</b> → AI chuyển thành code</p>
+                </div>
+                <div class="card" style="padding: 24px 18px; border-top: 4px solid var(--success);">
+                    
+                    <h4 style="text-align: center; color: var(--success); margin-bottom: 10px;">Generate → Review → Iterate</h4>
+                    <p style="font-size: 0.88rem; line-height: 1.8; color: rgba(255,255,255,0.8); text-align: center;">AI generate → Dev review → Feedback → Repeat</p>
+                </div>
+                <div class="card" style="padding: 24px 18px; border-top: 4px solid var(--accent);">
+                    
+                    <h4 style="text-align: center; color: var(--accent); margin-bottom: 10px;">Context is Everything</h4>
+                    <p style="font-size: 0.88rem; line-height: 1.8; color: rgba(255,255,255,0.8); text-align: center;">Nhiều context = output chính xác hơn</p>
+                </div>
+            </div>
+
+            <!-- So sánh nhanh: KHÔNG PHẢI vs ĐÚNG LÀ -->
+            <div class="compare-container" style="max-width: 1000px;">
+                <div class="compare-box bad">
+                    <div class="label">❌ AI-Driven Development KHÔNG PHẢI</div>
+                    <ul style="font-size: 0.88rem; line-height: 2; color: rgba(255,255,255,0.8); list-style: none; padding: 0;">
+                        <li>▸ Copy-paste từ ChatGPT vào project</li>
+                        <li>▸ Để AI viết mọi thứ rồi ship không review</li>
+                        <li>▸ Thay thế developer bằng AI</li>
+                        <li>▸ Chỉ dùng AI khi "không biết viết gì"</li>
+                    </ul>
+                </div>
+                <div class="compare-box good">
+                    <div class="label">✅ AI-Driven Development ĐÚNG LÀ</div>
+                    <ul style="font-size: 0.88rem; line-height: 2; color: rgba(255,255,255,0.8); list-style: none; padding: 0;">
+                        <li>▸ AI tham gia từ đầu đến cuối như team member</li>
+                        <li>▸ Dev điều phối, AI thực thi, Dev verify</li>
+                        <li>▸ Nâng cấp developer thành AI-native developer</li>
+                        <li>▸ Dùng AI có hệ thống: workflow + rules + context</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 6: AI từ Assistant → Co-Developer (Timeline evolution) -->
+        <div class="slide content-slide" data-slide="6" style="justify-content: center; align-items: center; padding: 40px 60px;">
+            <div class="bg-shapes"><div class="shape"></div><div class="shape"></div></div>
+            <h2 style="text-align: center; margin-bottom: 10px;">📈 AI trong Development: Hành trình tiến hóa</h2>
+            <p style="text-align: center; color: rgba(255,255,255,0.5); margin-bottom: 30px; font-size: 0.95rem;">Từ "gợi ý 1 dòng code" đến "implement cả feature" — chỉ trong 3 năm</p>
+
+            <!-- Timeline 3 giai đoạn — with visual connector -->
+            <div style="position: relative; max-width: 1100px; margin-bottom: 25px;">
+                <!-- Timeline line -->
+                <div style="position: absolute; top: 50px; left: 10%; right: 10%; height: 4px; background: linear-gradient(90deg, var(--danger), var(--accent), var(--success)); border-radius: 2px; z-index: 0;"></div>
+                
+                <div class="cards-grid" style="grid-template-columns: 1fr 1fr 1fr; gap: 20px; position: relative; z-index: 1;">
+                    <div class="card" style="text-align: center; padding: 28px 20px; border-color: rgba(239,68,68,0.3); border-top: 4px solid var(--danger);">
+                        <div style="width: 24px; height: 24px; background: var(--danger); border-radius: 50%; margin: 0 auto 12px; box-shadow: 0 0 12px rgba(239,68,68,0.4);"></div>
+                        <h4 style="color: var(--danger); font-size: 1.1rem;">2022</h4>
+                        <h4 style="color: var(--light); font-size: 0.9rem; margin-top: 4px;">Autocomplete</h4>
+                        <p style="margin: 10px 0; font-size: 0.82rem;">Gợi ý dòng tiếp theo. 1 file context. 5–10 dòng snippet.</p>
+                        <p style="font-size: 0.75rem; color: rgba(255,255,255,0.4);">Copilot, TabNine</p>
+                        <div style="margin-top: 10px; padding: 6px 12px; background: rgba(239,68,68,0.15); border-radius: 8px; display: inline-block;">
+                            <span style="font-size: 0.75rem; color: var(--danger); font-weight: 600;">Autocomplete</span>
+                        </div>
+                    </div>
+                    <div class="card" style="text-align: center; padding: 28px 20px; border-color: rgba(245,158,11,0.3); border-top: 4px solid var(--accent);">
+                        <div style="width: 24px; height: 24px; background: var(--accent); border-radius: 50%; margin: 0 auto 12px; box-shadow: 0 0 12px rgba(245,158,11,0.4);"></div>
+                        <h4 style="color: var(--accent); font-size: 1.1rem;">2023–2024</h4>
+                        <h4 style="color: var(--light); font-size: 0.9rem; margin-top: 4px;">Chat Assistant</h4>
+                        <p style="margin: 10px 0; font-size: 0.82rem;">Hỏi đáp, explain, fix. Copy-paste giữa chat ↔ IDE.</p>
+                        <p style="font-size: 0.75rem; color: rgba(255,255,255,0.4);">ChatGPT, Copilot Chat</p>
+                        <div style="margin-top: 10px; padding: 6px 12px; background: rgba(245,158,11,0.15); border-radius: 8px; display: inline-block;">
+                            <span style="font-size: 0.75rem; color: var(--accent); font-weight: 600;">Chat Assistant</span>
+                        </div>
+                    </div>
+                    <div class="card" style="text-align: center; padding: 28px 20px; border-color: rgba(16,185,129,0.3); border-top: 4px solid var(--success);">
+                        <div style="width: 24px; height: 24px; background: var(--success); border-radius: 50%; margin: 0 auto 12px; box-shadow: 0 0 12px rgba(16,185,129,0.4);"></div>
+                        <h4 style="color: var(--success); font-size: 1.1rem;">2025–2026</h4>
+                        <h4 style="color: var(--light); font-size: 0.9rem; margin-top: 4px;">Co-Developer</h4>
+                        <p style="margin: 10px 0; font-size: 0.82rem;">Hiểu codebase, multi-file, test, review — trong IDE.</p>
+                        <p style="font-size: 0.75rem; color: rgba(255,255,255,0.4);">Cursor, Kiro, Windsurf</p>
+                        <div style="margin-top: 10px; padding: 6px 12px; background: rgba(16,185,129,0.15); border-radius: 8px; display: inline-block;">
+                            <span style="font-size: 0.75rem; color: var(--success); font-weight: 600;">Co-Developer</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Diagram: Capabilities của Co-Developer -->
+            <div class="diagram" style="max-width: 1100px;">
+                <p style="font-size: 0.85rem; color: var(--primary-light); font-weight: 600; margin-bottom: 15px; text-align: center;">Co-Developer 2025 có gì khác biệt?</p>
+                <div class="diagram-flow">
+                    <div class="diagram-node" style="border-color: var(--success);">Context Engine<br><span style="font-size: 0.7rem; color: rgba(255,255,255,0.5);">Hệ thống đọc hiểu code:<br>index cả codebase, hiểu cross-file</span></div>
+                    <div class="diagram-arrow">+</div>
+                    <div class="diagram-node" style="border-color: var(--accent);">Multi-file Gen<br><span style="font-size: 0.7rem; color: rgba(255,255,255,0.5);">Entity → DTO → Service<br>→ Controller → Test</span></div>
+                    <div class="diagram-arrow">+</div>
+                    <div class="diagram-node" style="border-color: var(--secondary);">Auto Review<br><span style="font-size: 0.7rem; color: rgba(255,255,255,0.5);">N+1 query, security,<br>pattern violations</span></div>
+                    <div class="diagram-arrow">+</div>
+                    <div class="diagram-node" style="border-color: var(--primary);">Agentic Loop<br><span style="font-size: 0.7rem; color: rgba(255,255,255,0.5);">Plan → Code → Test<br>→ Fix → Verify tự động</span></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 7: Traditional vs AI-Driven vs Vibe Coding (SIGNATURE SLIDE) -->
+        <div class="slide content-slide" data-slide="7" style="justify-content: center; align-items: center; padding: 40px 60px;">
+            <div class="bg-shapes"><div class="shape"></div><div class="shape"></div></div>
+            <h2 style="text-align: center; margin-bottom: 30px; font-size: 2.2rem;">📊 3 Phong cách Development</h2>
+
+            <!-- 3 approaches — larger, cleaner -->
+            <div class="cards-grid" style="grid-template-columns: 1fr 1fr 1fr; gap: 24px; max-width: 1200px; margin-bottom: 30px;">
+                <div class="card" style="padding: 30px 24px; border-color: rgba(239,68,68,0.3); border-top: 5px solid var(--danger); text-align: center;">
+                                        <h4 style="color: var(--danger); font-size: 1.3rem; margin-bottom: 15px;">Traditional</h4>
+                    <p style="font-size: 1.1rem; color: rgba(255,255,255,0.8); line-height: 1.8;">Dev viết từng dòng<br>Search Google khi stuck<br>Context trong đầu</p>
+                    <div style="margin-top: 18px; padding: 10px; background: rgba(239,68,68,0.1); border-radius: 10px;">
+                        <span style="font-size: 0.9rem; color: var(--danger); font-weight: 700;">"Viết gì?"</span>
+                    </div>
+                </div>
+                <div class="card" style="padding: 30px 24px; border-color: rgba(16,185,129,0.3); border-top: 5px solid var(--success); text-align: center; transform: scale(1.05); box-shadow: 0 0 40px rgba(16,185,129,0.15);">
+                                        <h4 style="color: var(--success); font-size: 1.3rem; margin-bottom: 15px;">AI-Driven</h4>
+                    <p style="font-size: 1.1rem; color: rgba(255,255,255,0.8); line-height: 1.8;">Dev mô tả intent<br>AI generate, Dev review<br>Context từ codebase</p>
+                    <div style="margin-top: 18px; padding: 10px; background: rgba(16,185,129,0.1); border-radius: 10px;">
+                        <span style="font-size: 0.9rem; color: var(--success); font-weight: 700;">"Muốn gì?"</span>
+                    </div>
+                </div>
+                <div class="card" style="padding: 30px 24px; border-color: rgba(99,102,241,0.3); border-top: 5px solid var(--primary); text-align: center;">
+                                        <h4 style="color: var(--primary-light); font-size: 1.3rem; margin-bottom: 15px;">Vibe Coding</h4>
+                    <p style="font-size: 1.1rem; color: rgba(255,255,255,0.8); line-height: 1.8;">Dev set rules + workflow<br>AI plan → execute → verify<br>Dev: define goals, review, approve</p>
+                    <p style="font-size: 0.75rem; color: rgba(255,255,255,0.4); margin-top: 8px; font-style: italic;">(Code bằng mô tả tự nhiên, AI thực thi, dev kiểm soát hướng đi)</p>
+                    <div style="margin-top: 18px; padding: 10px; background: rgba(99,102,241,0.1); border-radius: 10px;">
+                        <span style="font-size: 0.9rem; color: var(--primary-light); font-weight: 700;">"Flow nào?"</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Simple role split -->
+            <div class="diagram" style="max-width: 1000px; padding: 20px;">
+                <div class="diagram-flow" style="gap: 30px;">
+                    <div style="text-align: center;">
+                        <div style="font-size: 0.85rem; color: var(--danger); font-weight: 600; margin-bottom: 6px;">Traditional</div>
+                        <div style="font-size: 1.5rem; font-weight: 900; color: var(--danger);">Dev viết</div>
+                        <div style="font-size: 0.7rem; color: rgba(255,255,255,0.5);">Toàn bộ code</div>
+                    </div>
+                    <div class="diagram-arrow">→</div>
+                    <div style="text-align: center;">
+                        <div style="font-size: 0.85rem; color: var(--success); font-weight: 600; margin-bottom: 6px;">AI-Driven</div>
+                        <div style="font-size: 1.5rem; font-weight: 900; color: var(--success);">AI + Dev</div>
+                        <div style="font-size: 0.7rem; color: rgba(255,255,255,0.5);">Phối hợp liên tục</div>
+                    </div>
+                    <div class="diagram-arrow">→</div>
+                    <div style="text-align: center;">
+                        <div style="font-size: 0.85rem; color: var(--primary-light); font-weight: 600; margin-bottom: 6px;">Vibe Coding</div>
+                        <div style="font-size: 1.5rem; font-weight: 900; color: var(--primary-light);">AI chạy</div>
+                        <div style="font-size: 0.7rem; color: rgba(255,255,255,0.5);">Dev define + review + approve</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== PART 2: KHI NÀO DÙNG AI ==================== -->
+        <div class="slide section-header" data-slide="8">
+            <div class="bg-shapes"><div class="shape"></div><div class="shape"></div></div>
+            
+            <h2 style="background: var(--gradient-3); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;"><span style="-webkit-text-fill-color: initial;">🎯</span> Phần 2: Khi nào nên / không nên dùng AI</h2>
+            <p style="color: rgba(255,255,255,0.5); margin-top: 15px; font-size: 1.1rem;">Dùng đúng chỗ = nhanh gấp 3x. Dùng sai chỗ = chậm hơn!</p>
+        </div>
+
+        <!-- SLIDE 8: AI mạnh nhất khi -->
+        <div class="slide content-slide" data-slide="9" style="justify-content: center; align-items: center; padding: 40px 60px;">
+            <div class="bg-shapes"><div class="shape"></div><div class="shape"></div></div>
+            <h2 style="text-align: center; margin-bottom: 10px;">✅ AI mạnh nhất khi...</h2>
+            <p style="text-align: center; color: rgba(255,255,255,0.5); margin-bottom: 30px; font-size: 0.95rem;">Những loại task mà AI xử lý nhanh hơn con người rõ rệt</p>
+
+            <div class="cards-grid" style="grid-template-columns: 1fr 1fr 1fr; gap: 20px; max-width: 1100px;">
+                <div class="card" style="text-align: center; padding: 28px 20px;">
+                    
+                    <h4>Boilerplate</h4>
+                    <p>CRUD, DTO, schema, validation — ~30 phút → vài phút (ước lượng)</p>
+                </div>
+                <div class="card" style="text-align: center; padding: 28px 20px;">
+                    
+                    <h4>Refactor</h4>
+                    <p>Rename xuyên file, split function, convert patterns</p>
+                </div>
+                <div class="card" style="text-align: center; padding: 28px 20px;">
+                    
+                    <h4>Explain codebase</h4>
+                    <p>Đọc 2000 dòng → tóm tắt flow trong 30 giây</p>
+                </div>
+                <div class="card" style="text-align: center; padding: 28px 20px;">
+                    
+                    <h4>Documentation</h4>
+                    <p>API docs, migration guides, README từ code</p>
+                </div>
+                <div class="card" style="text-align: center; padding: 28px 20px;">
+                    
+                    <h4>Unit tests</h4>
+                    <p>10-15 test cases trong 2 phút, cover edge cases</p>
+                </div>
+                <div class="card" style="text-align: center; padding: 28px 20px;">
+                    
+                    <h4>Debug (stack trace rõ)</h4>
+                    <p>Paste error → root cause + fix trong vài giây</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 9: AI yếu khi -->
+        <div class="slide content-slide" data-slide="10" style="justify-content: center; align-items: center; padding: 40px 60px;">
+            <div class="bg-shapes"><div class="shape"></div><div class="shape"></div></div>
+            <h2 style="text-align: center; margin-bottom: 10px;">❌ AI yếu khi...</h2>
+            <p style="text-align: center; color: rgba(255,255,255,0.5); margin-bottom: 30px; font-size: 0.95rem;">Những loại task mà AI thường fail hoặc chậm hơn code tay</p>
+
+            <div class="cards-grid" style="grid-template-columns: 1fr 1fr 1fr; gap: 20px; max-width: 1100px;">
+                <div class="card" style="text-align: center; padding: 28px 20px; border-color: rgba(239,68,68,0.3);">
+                    
+                    <h4>Business rule phức tạp</h4>
+                    <p>15 điều kiện pricing → AI thường sai nếu thiếu context đầy đủ</p>
+                </div>
+                <div class="card" style="text-align: center; padding: 28px 20px; border-color: rgba(239,68,68,0.3);">
+                    
+                    <h4>Thiếu context project</h4>
+                    <p>Không biết convention, infra constraints → output generic</p>
+                </div>
+                <div class="card" style="text-align: center; padding: 28px 20px; border-color: rgba(239,68,68,0.3);">
+                    
+                    <h4>Feature không chia scope</h4>
+                    <p>"Build complete payment system" → 100% fail</p>
+                </div>
+                <div class="card" style="text-align: center; padding: 28px 20px; border-color: rgba(239,68,68,0.3);">
+                    
+                    <h4>Complex debugging</h4>
+                    <p>Race condition, memory leak → AI thiếu runtime context</p>
+                </div>
+                <div class="card" style="text-align: center; padding: 28px 20px; border-color: rgba(239,68,68,0.3);">
+                    
+                    <h4>Security-critical code</h4>
+                    <p>Auth, encryption, permissions — sai 1 chút = breach</p>
+                </div>
+                <div class="card" style="text-align: center; padding: 28px 20px; border-color: rgba(239,68,68,0.3);">
+                    
+                    <h4>Cross-team coordination</h4>
+                    <p>API contracts, migration — cần human communication</p>
+                </div>
+            </div>
+
+            <div class="speech-bubble" style="margin-top: 20px; max-width: 800px; text-align: center;">
+                <strong>Quy tắc vàng:</strong> "AI càng nhiều context → output càng đúng." Thiếu context = garbage output.
+            </div>
+        </div>
+
+        <!-- BREATHING SLIDE: Context insight -->
+        <div class="slide section-header" data-slide="11">
+            <div class="bg-shapes"><div class="shape"></div><div class="shape"></div></div>
+            <h2 style="font-size: 2.8rem; font-weight: 300; color: rgba(255,255,255,0.9); line-height: 1.6; max-width: 800px;">
+                "AI không thiếu intelligence.<br><span style="background: var(--gradient-1); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 800;">AI thiếu context.</span>"
+            </h2>
+        </div>
+
+        <!-- ==================== PART 3: AI DEVELOPMENT STACK ==================== -->
+        <div class="slide section-header" data-slide="12">
+            <div class="bg-shapes"><div class="shape"></div><div class="shape"></div></div>
+            <h2 style="background: var(--gradient-3); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;"><span style="-webkit-text-fill-color: initial;">🛠️</span> Phần 3: Tại sao AI 2026 khác ChatGPT?</h2>
+            <p style="color: rgba(255,255,255,0.5); margin-top: 15px; font-size: 1.1rem;">4 thứ biến AI từ "chat hỏi đáp" thành teammate thực sự</p>
+        </div>
+
+        <!-- SLIDE: AI 2023 vs 2026 -->
+        <div class="slide content-slide" data-slide="13" style="justify-content: center; align-items: center; padding: 40px 60px;">
+            <div class="bg-shapes"><div class="shape"></div><div class="shape"></div></div>
+            <h2 style="text-align: center; margin-bottom: 10px;">📈 AI Coding: 2023 vs 2026</h2>
+            
+
+            <table class="level-table" style="max-width: 900px;">
+                <tr>
+                    <th style="width: 45%;">2023 (ChatGPT thuần)</th>
+                    <th style="width: 10%;"></th>
+                    <th style="width: 45%;">2026 (AI IDE + Stack)</th>
+                </tr>
+                <tr>
+                    <td style="color: var(--danger);">Chat box tách biệt</td>
+                    <td style="text-align: center; color: rgba(255,255,255,0.3);">→</td>
+                    <td style="color: var(--success);">Tích hợp ngay trong IDE</td>
+                </tr>
+                <tr>
+                    <td style="color: var(--danger);">Không nhớ project conventions</td>
+                    <td style="text-align: center; color: rgba(255,255,255,0.3);">→</td>
+                    <td style="color: var(--success);">Tự biết rules, patterns, naming</td>
+                </tr>
+                <tr>
+                    <td style="color: var(--danger);">Copy-paste giữa chat ↔ IDE</td>
+                    <td style="text-align: center; color: rgba(255,255,255,0.3);">→</td>
+                    <td style="color: var(--success);">Edit trực tiếp multi-file</td>
+                </tr>
+                <tr>
+                    <td style="color: var(--danger);">Không access DB, docs, APIs</td>
+                    <td style="text-align: center; color: rgba(255,255,255,0.3);">→</td>
+                    <td style="color: var(--success);">Có MCP — đọc DB schema, docs, cloud</td>
+                </tr>
+                <tr>
+                    <td style="color: var(--danger);">Single prompt → single answer</td>
+                    <td style="text-align: center; color: rgba(255,255,255,0.3);">→</td>
+                    <td style="color: var(--success);">Workflow: plan → code → test → fix loop</td>
+                </tr>
+            </table>
+
+            <div class="speech-bubble" style="max-width: 900px; margin-top: 22px; padding: 14px 22px;">
+                <p style="font-size: 0.95rem; margin: 0;"><b>Key insight:</b> ChatGPT 2023 và Claude 2026 dùng cùng LLM — khác biệt nằm ở <span class="hl-p">stack xung quanh</span>: Rules, Context, Tools, Workflow.</p>
+            </div>
+        </div>
+
+        <!-- SLIDE: 4 thứ làm AI mạnh hơn -->
+        <div class="slide content-slide" data-slide="14" style="justify-content: center; align-items: center; padding: 40px 60px;">
+            <div class="bg-shapes"><div class="shape"></div><div class="shape"></div></div>
+            <h2 style="text-align: center; margin-bottom: 10px;">🏗️ 4 thứ biến AI thành AI Teammate</h2>
+            
+
+            <table class="level-table" style="max-width: 900px; font-size: 1rem;">
+                <tr>
+                    <th style="width: 35%;">Problem</th>
+                    <th style="width: 30%;">Layer</th>
+                    <th style="width: 35%;">Outcome</th>
+                </tr>
+                <tr>
+                    <td>AI quên conventions</td>
+                    <td style="color: var(--accent); font-weight: 600;">Rules</td>
+                    <td style="color: var(--success);">Output consistent</td>
+                </tr>
+                <tr>
+                    <td>AI thiếu context project</td>
+                    <td style="color: var(--success); font-weight: 600;">Context Engine</td>
+                    <td style="color: var(--success);">Hiểu cross-file</td>
+                </tr>
+                <tr>
+                    <td>AI không access DB/docs</td>
+                    <td style="color: var(--primary-light); font-weight: 600;">MCP / Tools</td>
+                    <td style="color: var(--success);">Đọc schema, docs trực tiếp</td>
+                </tr>
+                <tr>
+                    <td>Copy-paste mất flow</td>
+                    <td style="color: var(--secondary); font-weight: 600;">AI IDE</td>
+                    <td style="color: var(--success);">Workflow liền mạch</td>
+                </tr>
+            </table>
+
+            <div class="speech-bubble" style="max-width: 900px; margin-top: 30px; padding: 14px 22px;">
+                <p style="font-size: 0.95rem; margin: 0;"><b>Takeaway:</b> LLM chỉ là engine. Stack xung quanh (Rules + Context + Tools + IDE) mới quyết định output quality.</p>
+            </div>
+        </div>
+
+        <!-- SLIDE: Ví dụ thực tế — có stack vs không -->
+        <div class="slide content-slide" data-slide="15" style="justify-content: center; align-items: center; padding: 40px 60px;">
+            <div class="bg-shapes"><div class="shape"></div><div class="shape"></div></div>
+            <h2 style="text-align: center; margin-bottom: 10px;">⚖️ Cùng 1 task — có stack vs không có stack</h2>
+            <p style="text-align: center; color: rgba(255,255,255,0.5); margin-bottom: 30px; font-size: 0.95rem;">Task: "Viết API tạo order"</p>
+
+            <div class="compare-container" style="max-width: 1100px;">
+                <div class="compare-box bad" style="padding: 24px;">
+                    <div class="label">❌ Không có stack</div>
+                    <div style="margin-top: 14px; font-size: 1rem; color: rgba(255,255,255,0.75); line-height: 2.4;">
+                        <ul style="list-style: none; padding: 0;">
+                            <li>▸ Generic output</li>
+                            <li>▸ Sai conventions</li>
+                            <li>▸ Sai schema</li>
+                            <li>▸ Rewrite nhiều</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="compare-box good" style="padding: 24px;">
+                    <div class="label">✅ Có stack</div>
+                    <div style="margin-top: 14px; font-size: 1rem; color: rgba(255,255,255,0.75); line-height: 2.4;">
+                        <ul style="list-style: none; padding: 0;">
+                            <li>▸ Đúng patterns</li>
+                            <li>▸ Đúng schema</li>
+                            <li>▸ Đúng conventions</li>
+                            <li>▸ Gần production-ready</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="speech-bubble" style="max-width: 1100px; margin-top: 20px; padding: 14px 22px;">
+                <p style="font-size: 0.95rem; margin: 0;">Cùng 1 prompt "Tạo API order" — khác biệt hoàn toàn chỉ nhờ <span class="hl-p">context</span> + <span class="hl-s">rules</span> + <span class="hl">tools</span>.</p>
+            </div>
+        </div>
+
+        <!-- BREATHING SLIDE: after stack section -->
+        <div class="slide section-header" data-slide="16">
+            <div class="bg-shapes"><div class="shape"></div><div class="shape"></div></div>
+            <h2 style="font-size: 2.8rem; font-weight: 300; color: rgba(255,255,255,0.9); line-height: 1.6; max-width: 800px;">
+                "Garbage context =<br><span style="background: var(--gradient-2); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 800;">Garbage output.</span>"
+            </h2>
+        </div>
+
+        <!-- ==================== PART 5: WORKFLOW ==================== -->
+        <div class="slide section-header" data-slide="17">
+            <div class="bg-shapes"><div class="shape"></div><div class="shape"></div></div>
+            
+            <h2 style="background: var(--gradient-5); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;"><span style="-webkit-text-fill-color: initial;">✍️</span> Phần 4: Prompt Engineering cho Developer</h2>
+            <p style="color: rgba(255,255,255,0.5); margin-top: 15px; font-size: 1.1rem;">Prompt quyết định: ngữ cảnh • ràng buộc • chất lượng • khả năng bảo trì</p>
+        </div>
+
+        <!-- SLIDE: Công thức Prompt -->
+        <div class="slide content-slide" data-slide="18" style="justify-content: center; align-items: center; padding: 40px 60px;">
+            <div class="bg-shapes"><div class="shape"></div><div class="shape"></div></div>
+            <h2 style="text-align: center; margin-bottom: 10px;">📐 Prompt hiệu quả = 5 thành phần</h2>
+            <p style="text-align: center; color: rgba(255,255,255,0.5); margin-bottom: 30px; font-size: 0.95rem;">Thiếu phần nào → AI tự đoán → output sai</p>
+
+            <!-- 5 pills -->
+            <div style="display: flex; gap: 12px; margin-bottom: 30px; flex-wrap: wrap; justify-content: center;">
+                <div style="padding: 12px 22px; border-radius: 10px; background: rgba(239,68,68,0.12); border: 2px solid rgba(239,68,68,0.3); font-size: 0.95rem; font-weight: 600; color: var(--danger);">1. Role</div>
+                <div style="padding: 12px 22px; border-radius: 10px; background: rgba(99,102,241,0.12); border: 2px solid rgba(99,102,241,0.3); font-size: 0.95rem; font-weight: 600; color: var(--primary-light);">2. Context</div>
+                <div style="padding: 12px 22px; border-radius: 10px; background: rgba(16,185,129,0.12); border: 2px solid rgba(16,185,129,0.3); font-size: 0.95rem; font-weight: 600; color: var(--success);">3. Task</div>
+                <div style="padding: 12px 22px; border-radius: 10px; background: rgba(245,158,11,0.12); border: 2px solid rgba(245,158,11,0.3); font-size: 0.95rem; font-weight: 600; color: var(--accent);">4. Constraints</div>
+                <div style="padding: 12px 22px; border-radius: 10px; background: rgba(236,72,153,0.12); border: 2px solid rgba(236,72,153,0.3); font-size: 0.95rem; font-weight: 600; color: var(--secondary);">5. Output</div>
+            </div>
+
+            <!-- 1 example -->
+            <div class="code-block" data-lang="Prompt hoàn chỉnh" style="font-size: 0.8rem; max-width: 900px;">
+<span class="cmt">[Role]</span> Senior Node.js engineer, experience with Bull queue.
+<span class="cmt">[Context]</span> NestJS + Bull + Redis. Existing: EmailService, NotificationModule.
+<span class="cmt">[Task]</span> Create a queue worker that retries failed email sends (max 3 attempts, exponential backoff).
+<span class="cmt">[Constraints]</span> Use @Processor decorator. Log each attempt. Dead-letter after 3 fails.
+<span class="cmt">[Output]</span> Worker class + module registration only. No test.
+</div>
+
+            <div class="speech-bubble" style="max-width: 900px; margin-top: 22px; padding: 14px 22px;">
+                <p style="font-size: 0.92rem; margin: 0;"><b>Pro tip:</b> Setup Rules file 1 lần → Role + Context + Constraints auto-apply. Mỗi prompt chỉ cần viết <span class="hl-s">Task</span> + <span class="hl-p">Output</span>.</p>
+            </div>
+        </div>
+
+        <!-- SLIDE: Bad vs Good Prompt -->
+        <div class="slide content-slide" data-slide="19" style="justify-content: center; align-items: center; padding: 40px 60px;">
+            <div class="bg-shapes"><div class="shape"></div><div class="shape"></div></div>
+            <h2 style="text-align: center; margin-bottom: 10px;">❌ vs ✅ Bad Prompt vs Good Prompt</h2>
+            <p style="text-align: center; color: rgba(255,255,255,0.5); margin-bottom: 25px; font-size: 0.95rem;">Cùng 1 task — kết quả hoàn toàn khác</p>
+
+            <div class="compare-container" style="max-width: 1100px;">
+                <div class="compare-box bad" style="padding: 22px;">
+                    <div class="label">❌ Prompt xấu</div>
+                    <div class="code-block" data-lang="" style="font-size: 0.85rem; margin-top: 12px;">"Viết API upload file"</div>
+                    <p style="font-size: 0.9rem; color: rgba(255,255,255,0.7); margin-top: 14px; line-height: 1.8;">AI đoán sai: framework, storage, validation, pattern → <b style="color: var(--danger);">rewrite từ đầu</b></p>
+                </div>
+                <div class="compare-box good" style="padding: 22px;">
+                    <div class="label">✅ Prompt tốt</div>
+                    <div class="code-block" data-lang="" style="font-size: 0.75rem; margin-top: 12px;">
+<span class="cmt">[Role]</span> Senior Node.js engineer
+<span class="cmt">[Context]</span> NestJS, S3, PostgreSQL
+<span class="cmt">[Task]</span> POST /api/files, max 10MB
+<span class="cmt">[Constraints]</span> Validate mimetype, S3 storage
+<span class="cmt">[Output]</span> DTO + Service + Controller</div>
+                    <p style="font-size: 0.9rem; color: rgba(255,255,255,0.7); margin-top: 14px; line-height: 1.8;">AI output đúng stack, đúng pattern → <b style="color: var(--success);">dùng ngay</b></p>
+                </div>
+            </div>
+
+            <div class="speech-bubble" style="max-width: 1100px; margin-top: 22px; padding: 14px 22px;">
+                <p style="font-size: 0.92rem; margin: 0;"><b>Rule:</b> 2 phút viết prompt kỹ = tiết kiệm 30 phút rewrite. <span class="hl">Scope nhỏ</span> + <span class="hl-p">Context cụ thể</span> + <span class="hl-s">Iterate</span> = output tốt.</p>
+            </div>
+        </div>
+
+        <!-- SLIDE: Token & Context Window -->
+        <div class="slide content-slide" data-slide="20">
+            <div class="bg-shapes"><div class="shape"></div><div class="shape"></div></div>
+            <div class="scroll-content">
+                <h2>⚖️ vs ✅ Ví dụ Prompt thực tế</h2>
+                <p style="font-size: 0.92rem; color: rgba(255,255,255,0.6); margin-bottom: 15px;">Cùng 1 task — prompt xấu vs prompt tốt cho kết quả hoàn toàn khác</p>
+
+                <!-- Ví dụ 1 -->
+                <h3 style="font-size: 1rem; margin-bottom: 10px;">Ví dụ 1: API Upload File</h3>
+                <div class="compare-container" style="margin-bottom: 18px;">
+                    <div class="compare-box bad">
+                        <div class="label">❌ Prompt xấu</div>
+                        <div class="code-block" data-lang="Bad" style="font-size: 0.72rem;">
+"Viết API upload file"
+</div>
+                        <p style="font-size: 0.82rem; color: var(--danger); margin-top: 8px;"><b>AI sẽ đoán:</b></p>
+                        <ul style="font-size: 0.8rem; line-height: 1.8;">
+                            <li>Framework? → Express (mặc định) — nhưng project dùng NestJS</li>
+                            <li>Storage? → Local disk — nhưng team dùng S3</li>
+                            <li>Validation? → Không có — AI skip luôn</li>
+                            <li>Pattern? → Viết hết vào 1 file controller</li>
+                        </ul>
+                        <p style="font-size: 0.78rem; color: rgba(255,255,255,0.4); margin-top: 8px;">→ Output không dùng được, phải viết lại từ đầu.</p>
+                    </div>
+                    <div class="compare-box good">
+                        <div class="label">✅ Prompt tốt</div>
+                        <div class="code-block" data-lang="Good" style="font-size: 0.68rem;">
+<span class="cmt">[Role]</span> Senior Node.js backend engineer.
+<span class="cmt">[Context]</span> NestJS, TypeORM, AWS S3 SDK v3, PostgreSQL.
+<span class="cmt">[Task]</span> Create file upload API (POST /api/files).
+<span class="cmt">[Constraints]</span>
+- Max 10MB, allow: jpg, png, webp, pdf
+- Store file on S3, metadata to FileEntity
+- Validate mimetype (not just extension)
+- Follow existing service/controller pattern
+- Return { id, url, size, mimeType, createdAt }
+<span class="cmt">[Output]</span> DTO, Service, Controller. No test yet.
+</div>
+                        <p style="font-size: 0.78rem; color: rgba(255,255,255,0.4); margin-top: 8px;">→ Output đúng stack, đúng pattern, dùng được ngay.</p>
+                    </div>
+                </div>
+
+                <!-- Ví dụ 2 -->
+                <h3 style="font-size: 1rem; margin-bottom: 10px;">Ví dụ 2: Fix Bug</h3>
+                <div class="compare-container">
+                    <div class="compare-box bad">
+                        <div class="label">❌ Prompt xấu</div>
+                        <div class="code-block" data-lang="Bad" style="font-size: 0.72rem;">
+"Login bị lỗi, fix giúp"
+</div>
+                        <p style="font-size: 0.82rem; color: var(--danger); margin-top: 8px;"><b>Thiếu:</b> Lỗi gì? Ở đâu? Reproduce sao? Log nói gì?</p>
+                    </div>
+                    <div class="compare-box good">
+                        <div class="label">✅ Prompt tốt</div>
+                        <div class="code-block" data-lang="Good" style="font-size: 0.68rem;">
+Bug: POST /auth/login returns 500 when email has uppercase.
+Root cause: bcrypt compare fails because email lookup
+is case-sensitive (findOne where email = 'User@...')
+but registration lowercases email.
+
+Fix in: src/auth/auth.service.ts, method validateUser
+Constraint: use .toLowerCase() before DB lookup.
+Don't change the registration flow.
+</div>
+                    </div>
+                </div>
+
+                <div class="tip-box" style="margin-top: 12px;">
+                    
+                    <div style="font-size: 0.82rem;">
+                        <b>Key takeaway:</b> Prompt xấu = 1 dòng mơ hồ → output vứt đi. Prompt tốt = 5-10 dòng có structure → output dùng ngay. <b>Đầu tư 2 phút viết prompt kỹ = tiết kiệm 30 phút rewrite.</b>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- BREATHING SLIDE: Context is source code -->
+        <div class="slide section-header" data-slide="21">
+            <div class="bg-shapes"><div class="shape"></div><div class="shape"></div></div>
+            <h2 style="font-size: 2.8rem; font-weight: 300; color: rgba(255,255,255,0.9); line-height: 1.6; max-width: 800px;">
+                "Context quyết định chất lượng<br><span style="background: var(--gradient-3); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 800;">output của AI.</span>"
+            </h2>
+            <p style="color: rgba(255,255,255,0.35); margin-top: 25px; font-size: 1rem;">Rules + Skills + MCP + Intelligence = AI hiểu project như senior dev</p>
+        </div>
+
+        <!-- ==================== PART 4: AI IDE TOOLING ==================== -->
+        <div class="slide section-header" data-slide="22">
+            <div class="bg-shapes"><div class="shape"></div><div class="shape"></div></div>
+            
+            <h2 style="background: var(--gradient-4); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;"><span style="-webkit-text-fill-color: initial;">📶</span> Phần 5: AI Workflow theo độ phức tạp</h2>
+            <p style="color: rgba(255,255,255,0.5); margin-top: 15px; font-size: 1.1rem;">Task đơn giản → workflow nhẹ. Task phức tạp → workflow chặt. Chọn đúng level, tránh overkill.</p>
+        </div>
+
+        <!-- SLIDE: AI-Driven Development Life Cycle -->
+        <div class="slide content-slide" data-slide="23" style="justify-content: center; align-items: center; padding: 40px 60px;">
+            <div class="bg-shapes"><div class="shape"></div><div class="shape"></div></div>
+            <h2 style="text-align: center; margin-bottom: 10px;">🔄 AI-Driven Development Life Cycle</h2>
+            <p style="text-align: center; color: rgba(255,255,255,0.5); margin-bottom: 12px; font-size: 0.95rem;">Vòng đời tổng quát khi làm việc với AI — mọi task đều đi qua các giai đoạn này (tùy level skip/thêm bước)</p>
+            <p style="text-align: center; color: rgba(255,255,255,0.35); margin-bottom: 25px; font-size: 0.85rem; font-style: italic;">Developer không còn chỉ viết code — Developer điều phối workflow, context và AI.</p>
+
+            <!-- Life Cycle Diagram — grouped by role -->
+            <div class="diagram" style="max-width: 1050px; padding: 30px;">
+                <!-- Role legend -->
+                <div style="display: flex; justify-content: center; gap: 30px; margin-bottom: 18px;">
+                    <span style="font-size: 0.75rem; color: rgba(255,255,255,0.6);"><span style="display: inline-block; width: 12px; height: 12px; background: var(--primary); border-radius: 3px; margin-right: 6px;"></span>👨‍💻 Dev quyết định</span>
+                    <span style="font-size: 0.75rem; color: rgba(255,255,255,0.6);"><span style="display: inline-block; width: 12px; height: 12px; background: var(--success); border-radius: 3px; margin-right: 6px;"></span>🤖 AI thực thi</span>
+                    <span style="font-size: 0.75rem; color: rgba(255,255,255,0.6);"><span style="display: inline-block; width: 12px; height: 12px; background: var(--accent); border-radius: 3px; margin-right: 6px;"></span>🔄 Cả hai phối hợp</span>
+                </div>
+
+                <!-- Pipeline flow -->
+                <div class="diagram-flow" style="gap: 6px;">
+                    <div class="diagram-node" style="border-color: var(--primary); min-width: 90px; background: rgba(99,102,241,0.08);">
+                        <div style="font-size: 1.4rem;">📋</div>
+                        <div style="font-size: 0.8rem; font-weight: 700;">Define</div>
+                        <div style="font-size: 0.6rem; color: var(--primary-light);">👨‍💻</div>
+                    </div>
+                    <div class="diagram-arrow" style="font-size: 1.2rem;">→</div>
+                    <div class="diagram-node" style="border-color: var(--accent); min-width: 90px; background: rgba(245,158,11,0.08);">
+                        <div style="font-size: 1.4rem;">📐</div>
+                        <div style="font-size: 0.8rem; font-weight: 700;">Spec</div>
+                        <div style="font-size: 0.6rem; color: var(--accent);">🔄</div>
+                    </div>
+                    <div class="diagram-arrow" style="font-size: 1.2rem;">→</div>
+                    <div class="diagram-node" style="border-color: var(--accent); min-width: 90px; background: rgba(245,158,11,0.08);">
+                        <div style="font-size: 1.4rem;">🗺️</div>
+                        <div style="font-size: 0.8rem; font-weight: 700;">Plan</div>
+                        <div style="font-size: 0.6rem; color: var(--accent);">🔄</div>
+                    </div>
+                    <div class="diagram-arrow" style="font-size: 1.2rem;">→</div>
+                    <div class="diagram-node" style="border-color: var(--success); min-width: 90px; background: rgba(16,185,129,0.08);">
+                        <div style="font-size: 1.4rem;">🧪</div>
+                        <div style="font-size: 0.8rem; font-weight: 700;">Test</div>
+                        <div style="font-size: 0.6rem; color: var(--success);">🤖</div>
+                    </div>
+                    <div class="diagram-arrow" style="font-size: 1.2rem;">→</div>
+                    <div class="diagram-node" style="border-color: var(--success); min-width: 90px; background: rgba(16,185,129,0.08);">
+                        <div style="font-size: 1.4rem;">💻</div>
+                        <div style="font-size: 0.8rem; font-weight: 700;">Code</div>
+                        <div style="font-size: 0.6rem; color: var(--success);">🤖</div>
+                    </div>
+                    <div class="diagram-arrow" style="font-size: 1.2rem;">→</div>
+                    <div class="diagram-node" style="border-color: var(--accent); min-width: 90px; background: rgba(245,158,11,0.08);">
+                        <div style="font-size: 1.4rem;">✅</div>
+                        <div style="font-size: 0.8rem; font-weight: 700;">Verify</div>
+                        <div style="font-size: 0.6rem; color: var(--accent);">🔄</div>
+                    </div>
+                    <div class="diagram-arrow" style="font-size: 1.2rem;">→</div>
+                    <div class="diagram-node" style="border-color: var(--primary); min-width: 90px; background: rgba(99,102,241,0.08);">
+                        <div style="font-size: 1.4rem;">🚀</div>
+                        <div style="font-size: 0.8rem; font-weight: 700;">Ship</div>
+                        <div style="font-size: 0.6rem; color: var(--primary-light);">👨‍💻</div>
+                    </div>
+                </div>
+
+                <!-- Iterate + Feedback Loop -->
+                <div style="text-align: center; margin-top: 12px;">
+                    <span style="font-size: 0.75rem; color: rgba(255,255,255,0.4);">↩️ Iterate (nếu Verify fail → quay lại Code/Test)</span>
+                </div>
+                <div style="text-align: center; margin-top: 8px; padding: 10px; border: 1px dashed rgba(245,158,11,0.3); border-radius: 10px;">
+                    <span style="font-size: 0.8rem; color: var(--accent);"><b>Production Feedback Loop</b></span>
+                    <span style="font-size: 0.75rem; color: rgba(255,255,255,0.5); display: block; margin-top: 4px;">Deploy → Monitor → Bugs/Insights quay lại Define → vòng mới bắt đầu</span>
+                </div>
+            </div>
+
+            <!-- Giải thích từng giai đoạn -->
+            <div class="cards-grid" style="grid-template-columns: repeat(4, 1fr); gap: 14px; max-width: 1050px; margin-top: 25px;">
+                <div class="card" style="padding: 16px; text-align: center; border-top: 3px solid var(--primary);">
+                    <h4 style="font-size: 0.85rem; color: var(--primary-light); margin-bottom: 6px;">Define + Spec</h4>
+                    <p style="font-size: 0.78rem;">Dev mô tả intent → AI restate & xác nhận yêu cầu, edge cases, acceptance criteria.</p>
+                    <p style="font-size: 0.7rem; color: rgba(255,255,255,0.4); margin-top: 6px;">‍💻 quyết định WHAT</p>
+                </div>
+                <div class="card" style="padding: 16px; text-align: center; border-top: 3px solid var(--accent);">
+                    <h4 style="font-size: 0.85rem; color: var(--accent); margin-bottom: 6px;">Plan + Test</h4>
+                    <p style="font-size: 0.78rem;">AI lập kế hoạch implement, viết test trước code (TDD). Dev approve plan.</p>
+                    <p style="font-size: 0.7rem; color: rgba(255,255,255,0.4); margin-top: 6px;">đề xuất HOW</p>
+                </div>
+                <div class="card" style="padding: 16px; text-align: center; border-top: 3px solid var(--success);">
+                    <h4 style="font-size: 0.85rem; color: var(--success); margin-bottom: 6px;">Code + Verify</h4>
+                    <p style="font-size: 0.78rem;">AI implement code → chạy build & tests → paste evidence. Iterate nếu fail.</p>
+                    <p style="font-size: 0.7rem; color: rgba(255,255,255,0.4); margin-top: 6px;">thực thi, 👨‍💻 verify</p>
+                </div>
+                <div class="card" style="padding: 16px; text-align: center; border-top: 3px solid var(--danger);">
+                    <h4 style="font-size: 0.85rem; color: var(--danger); margin-bottom: 6px;">Review + Ship</h4>
+                    <p style="font-size: 0.78rem;">Dev review final diff, AI self-review. Commit, PR, deploy. Document kết quả.</p>
+                    <p style="font-size: 0.7rem; color: rgba(255,255,255,0.4); margin-top: 6px;">‍💻 approve & ship</p>
+                </div>
+            </div>
+
+            <div class="tip-box" style="max-width: 1050px; margin-top: 18px;">
+                
+                <div style="font-size: 0.88rem;">
+                    <b>Nguyên tắc:</b> Mọi task đều follow life cycle này. Task nhỏ (L1-L2) skip Plan/Test. Task lớn (L3-L4) đi đủ bước + thêm Regression & formal Review. Tiếp theo sẽ xem chi tiết từng level.
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE: Life Cycle × Level -->
+        <div class="slide content-slide" data-slide="24" style="justify-content: center; align-items: center; padding: 40px 60px;">
+            <div class="bg-shapes"><div class="shape"></div><div class="shape"></div></div>
+            <h2 style="text-align: center; margin-bottom: 10px;">📶 Life Cycle × Level — Mỗi level dùng bao nhiêu bước?</h2>
+            <p style="text-align: center; color: rgba(255,255,255,0.5); margin-bottom: 25px; font-size: 0.95rem;">Cùng 1 vòng đời, nhưng task đơn giản skip bước — task phức tạp đi đầy đủ</p>
+
+            <!-- Visual: Life Cycle với highlight per level -->
+            <table class="level-table" style="max-width: 1050px; margin-bottom: 20px; font-size: 0.82rem;">
+                <thead>
+                    <tr>
+                        <th style="width: 90px;">Level</th>
+                        <th style="width: 60px; text-align: center;">Define</th>
+                        <th style="width: 60px; text-align: center;">Spec</th>
+                        <th style="width: 60px; text-align: center;">Plan</th>
+                        <th style="width: 60px; text-align: center;">Test</th>
+                        <th style="width: 60px; text-align: center;">Code</th>
+                        <th style="width: 60px; text-align: center;">Verify</th>
+                        <th style="width: 70px; text-align: center;">Review</th>
+                        <th style="width: 60px; text-align: center;">Ship</th>
+                        <th>Tóm tắt</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><span class="badge badge-success">L1</span> Chat</td>
+                        <td style="text-align: center;">✅</td>
+                        <td style="text-align: center; color: rgba(255,255,255,0.2);">—</td>
+                        <td style="text-align: center; color: rgba(255,255,255,0.2);">—</td>
+                        <td style="text-align: center; color: rgba(255,255,255,0.2);">—</td>
+                        <td style="text-align: center; color: rgba(255,255,255,0.2);">—</td>
+                        <td style="text-align: center; color: rgba(255,255,255,0.2);">—</td>
+                        <td style="text-align: center; color: rgba(255,255,255,0.2);">—</td>
+                        <td style="text-align: center; color: rgba(255,255,255,0.2);">—</td>
+                        <td style="font-size: 0.78rem;">Hỏi → AI trả lời → Xong. Không sửa code.</td>
+                    </tr>
+                    <tr>
+                        <td><span class="badge badge-info">L2</span> Patch</td>
+                        <td style="text-align: center;">✅</td>
+                        <td style="text-align: center;">✅</td>
+                        <td style="text-align: center; color: rgba(255,255,255,0.2);">—</td>
+                        <td style="text-align: center; color: rgba(255,255,255,0.2);">—</td>
+                        <td style="text-align: center;">✅</td>
+                        <td style="text-align: center;">✅</td>
+                        <td style="text-align: center;">✅</td>
+                        <td style="text-align: center;">✅</td>
+                        <td style="font-size: 0.78rem;">Mô tả → Spec → Patch → Verify → Review → Done.</td>
+                    </tr>
+                    <tr>
+                        <td><span class="badge badge-warning">L3</span> Feature</td>
+                        <td style="text-align: center;">✅</td>
+                        <td style="text-align: center;">✅</td>
+                        <td style="text-align: center;">✅</td>
+                        <td style="text-align: center;">✅</td>
+                        <td style="text-align: center;">✅</td>
+                        <td style="text-align: center;">✅</td>
+                        <td style="text-align: center;">✅</td>
+                        <td style="text-align: center;">✅</td>
+                        <td style="font-size: 0.78rem;">Đi đủ bước + Regression. Test trước Code (TDD).</td>
+                    </tr>
+                    <tr>
+                        <td><span class="badge badge-danger">L4</span> System</td>
+                        <td style="text-align: center;">✅</td>
+                        <td style="text-align: center;">✅</td>
+                        <td style="text-align: center;">✅</td>
+                        <td style="text-align: center;">✅</td>
+                        <td style="text-align: center;">✅</td>
+                        <td style="text-align: center;">✅</td>
+                        <td style="text-align: center;">✅</td>
+                        <td style="text-align: center;">✅</td>
+                        <td style="font-size: 0.78rem;">Full flow 15 bước + Discover + Test Design GATE + Regression.</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <!-- Cách chọn Level -->
+            <div class="diagram" style="max-width: 1050px; padding: 20px;">
+                <p style="font-size: 0.85rem; color: var(--primary-light); font-weight: 600; margin-bottom: 15px; text-align: center;">Cách chọn Level — Decision Flow</p>
+                <div class="diagram-flow" style="flex-wrap: wrap; gap: 10px;">
+                    <div class="diagram-node" style="border-color: var(--accent); min-width: 140px;">Task cần<br>sửa code không?</div>
+                    <div class="diagram-arrow">→</div>
+                    <div class="diagram-node" style="border-color: var(--success); min-width: 80px; font-size: 0.75rem;">Không → <b>L1</b></div>
+                    <div class="diagram-arrow">|</div>
+                    <div class="diagram-node" style="border-color: var(--accent); min-width: 140px;">Có → Sửa file có sẵn<br>hay tạo module mới?</div>
+                    <div class="diagram-arrow">→</div>
+                    <div class="diagram-node" style="border-color: var(--primary); min-width: 80px; font-size: 0.75rem;">Sửa có sẵn → <b>L2</b></div>
+                    <div class="diagram-arrow">|</div>
+                    <div class="diagram-node" style="border-color: var(--accent); min-width: 140px;">Tạo mới → Bounded<br>trong 1 module?</div>
+                    <div class="diagram-arrow">→</div>
+                    <div class="diagram-node" style="border-color: var(--accent); min-width: 80px; font-size: 0.75rem;">Có → <b>L3</b></div>
+                    <div class="diagram-arrow">|</div>
+                    <div class="diagram-node" style="border-color: var(--danger); min-width: 80px; font-size: 0.75rem;">Cross-module → <b>L4</b></div>
+                </div>
+            </div>
+
+            <div class="tip-box" style="max-width: 1050px; margin-top: 15px;">
+                
+                <div style="font-size: 0.85rem;">
+                    <b>Nguyên tắc:</b> Luôn chọn level nhẹ nhất phù hợp. Phân vân L2 hay L3? → Bắt đầu L2, escalate nếu scope vượt quá. Tiếp theo sẽ xem chi tiết workflow từng level.
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE: Level 1 — Chat Answer -->
+        <div class="slide content-slide" data-slide="25" style="justify-content: center; align-items: center; padding: 40px 60px;">
+            <div class="bg-shapes"><div class="shape"></div><div class="shape"></div></div>
+            <h2 style="text-align: center; margin-bottom: 10px;">💬 Level 1 — Chat Answer</h2>
+            <p style="text-align: center; color: rgba(255,255,255,0.5); margin-bottom: 30px; font-size: 0.95rem;">Hỏi → Hiểu → Xong. Không sửa code.</p>
+
+            <div class="card" style="padding: 28px; border-top: 4px solid var(--success); max-width: 900px; width: 100%;">
+                <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 18px;">
+                    <span class="badge badge-success" style="font-size: 0.95rem; padding: 8px 18px;">L1</span>
+                    <h4 style="color: var(--success); font-size: 1.2rem; margin: 0;">Chat Answer</h4>
+                    <span style="font-size: 0.85rem; color: rgba(255,255,255,0.4); margin-left: auto;">< 2 phút</span>
+                </div>
+
+                <!-- Pipeline visual -->
+                <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 22px; padding: 14px 18px; background: rgba(16,185,129,0.06); border-radius: 10px; justify-content: center;">
+                    <div style="padding: 8px 16px; border-radius: 8px; background: rgba(16,185,129,0.2); font-size: 0.9rem; font-weight: 600; color: var(--success);">Hỏi</div>
+                    <span style="color: var(--success); font-size: 1.2rem;">→</span>
+                    <div style="padding: 8px 16px; border-radius: 8px; background: rgba(16,185,129,0.2); font-size: 0.9rem; font-weight: 600; color: var(--success);">AI trả lời</div>
+                    <span style="color: var(--success); font-size: 1.2rem;">→</span>
+                    <div style="padding: 8px 16px; border-radius: 8px; background: rgba(16,185,129,0.2); font-size: 0.9rem; font-weight: 600; color: var(--success);">Done ✓</div>
+                </div>
+
+                <!-- Khi nào dùng L1 -->
+                <div class="cards-grid" style="grid-template-columns: 1fr 1fr; gap: 14px; margin: 0;">
+                    <div style="padding: 14px; background: rgba(16,185,129,0.04); border: 1px solid rgba(16,185,129,0.15); border-radius: 10px;">
+                        <p style="font-size: 0.82rem; color: var(--success); font-weight: 600; margin-bottom: 6px;">Dùng khi:</p>
+                        <ul style="font-size: 0.82rem; line-height: 2; color: rgba(255,255,255,0.75);">
+                            <li>Explain code / concept</li>
+                            <li>So sánh approaches</li>
+                            <li>Hỏi "tại sao lại dùng pattern X?"</li>
+                            <li>Review idea trước khi code</li>
+                        </ul>
+                    </div>
+                    <div style="padding: 14px; background: rgba(239,68,68,0.04); border: 1px solid rgba(239,68,68,0.15); border-radius: 10px;">
+                        <p style="font-size: 0.82rem; color: var(--danger); font-weight: 600; margin-bottom: 6px;">Không phải L1:</p>
+                        <ul style="font-size: 0.82rem; line-height: 2; color: rgba(255,255,255,0.75);">
+                            <li>Yêu cầu sửa file → L2</li>
+                            <li>Tạo feature mới → L3/L4</li>
+                            <li>Generate code → L2+</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE: Level 2 — Patch Workflow -->
+        <div class="slide content-slide" data-slide="26" style="justify-content: center; align-items: flex-start; padding: 35px 60px;">
+            <div class="bg-shapes"><div class="shape"></div><div class="shape"></div></div>
+            <h2 style="margin-bottom: 8px;">🔧 Level 2 — Patch Workflow</h2>
+            <p style="color: rgba(255,255,255,0.5); margin-bottom: 18px; font-size: 0.9rem;">Sửa/thêm code trong file đã có • 5–30 phút • 1–3 files</p>
+
+            <!-- Mini pipeline visual with phase colors -->
+            <div style="display: flex; align-items: center; gap: 5px; margin-bottom: 18px; padding: 10px 14px; background: rgba(99,102,241,0.04); border-radius: 8px; flex-wrap: wrap; width: 100%;">
+                <div style="padding: 5px 10px; border-radius: 6px; background: rgba(99,102,241,0.2); font-size: 0.75rem; font-weight: 600; color: var(--primary-light);">Context</div>
+                <span style="color: rgba(255,255,255,0.3); font-size: 0.8rem;">→</span>
+                <div style="padding: 5px 10px; border-radius: 6px; background: rgba(99,102,241,0.2); font-size: 0.75rem; font-weight: 600; color: var(--primary-light);">Spec ⚠️</div>
+                <span style="color: rgba(255,255,255,0.3); font-size: 0.8rem;">→</span>
+                <div style="padding: 5px 10px; border-radius: 6px; background: rgba(16,185,129,0.2); font-size: 0.75rem; font-weight: 600; color: var(--success);">Patch</div>
+                <span style="color: rgba(255,255,255,0.3); font-size: 0.8rem;">→</span>
+                <div style="padding: 5px 10px; border-radius: 6px; background: rgba(245,158,11,0.2); font-size: 0.75rem; font-weight: 600; color: var(--accent);">Verify+Test</div>
+                <span style="color: rgba(255,255,255,0.3); font-size: 0.8rem;">→</span>
+                <div style="padding: 5px 10px; border-radius: 6px; background: rgba(245,158,11,0.2); font-size: 0.75rem; font-weight: 600; color: var(--accent);">Review</div>
+                <span style="color: rgba(255,255,255,0.3); font-size: 0.8rem;">→</span>
+                <div style="padding: 5px 10px; border-radius: 6px; background: rgba(236,72,153,0.2); font-size: 0.75rem; font-weight: 600; color: var(--secondary);">Done</div>
+            </div>
+
+            <!-- Phase-grouped table -->
+            <table class="level-table" style="margin: 0; font-size: 0.82rem; width: 100%;">
+                <thead>
+                    <tr><th style="width: 35px;">#</th><th style="width: 110px;">Step</th><th>AI làm gì</th><th>Dev làm gì</th></tr>
+                </thead>
+                <tbody>
+                    <tr style="background: rgba(99,102,241,0.04);"><td style="color: var(--primary-light); font-weight: 700;">1</td><td><b>Context</b></td><td>Đọc file + imports. Hiểu pattern & conventions.</td><td>Chỉ rõ file/function. Cung cấp @file.</td></tr>
+                    <tr style="background: rgba(99,102,241,0.04);"><td style="color: var(--primary-light); font-weight: 700;">2</td><td><b>Spec (+TC) ⚠️</b></td><td>Sẽ sửa gì, ảnh hưởng gì. Generate test cases.</td><td>⚠️ Bug → root cause. Behavior → TC.</td></tr>
+                    <tr style="background: rgba(16,185,129,0.04);"><td style="color: var(--success); font-weight: 700;">3</td><td><b>Patch</b></td><td>Generate diff. Apply trực tiếp vào IDE.</td><td>Xem diff. Accept/reject từng hunk.</td></tr>
+                    <tr style="background: rgba(245,158,11,0.04);"><td style="color: var(--accent); font-weight: 700;">4</td><td><b>Verify + Test</b></td><td>Chạy build+test. AI generate unit test. Paste evidence.</td><td>Review output + test logic. Iterate nếu fail.</td></tr>
+                    <tr style="background: rgba(245,158,11,0.04);"><td style="color: var(--accent); font-weight: 700;">5</td><td><b>Review</b></td><td>Self-review diff. AI check impacted areas.</td><td>Approve hoặc request changes.</td></tr>
+                    <tr style="background: rgba(236,72,153,0.04);"><td style="color: var(--secondary); font-weight: 700;">6</td><td><b>Done</b></td><td>Commit message. Summary docs.</td><td>Commit + push. ✓</td></tr>
+                </tbody>
+            </table>
+
+            <div class="warn-box" style="margin-top: 12px; padding: 10px 14px;">
+                
+                <div style="font-size: 0.8rem;"><b>Gates:</b> Không patch mù — root cause/TC trước. Verify phải paste evidence trước "done".</div>
+            </div>
+        </div>
+
+        <!-- SLIDE: Level 3 — Giai đoạn Chuẩn bị (Step 1–4) -->
+        <div class="slide content-slide" data-slide="27" style="justify-content: center; align-items: center; padding: 40px 60px;">
+            <div class="bg-shapes"><div class="shape"></div><div class="shape"></div></div>
+            <h2 style="text-align: center; margin-bottom: 8px;">⚙️ Level 3 — Chuẩn bị (Step 1–4)</h2>
+            <p style="text-align: center; color: rgba(255,255,255,0.5); margin-bottom: 30px; font-size: 0.95rem;">Module/API/Worker mới • 1–4 giờ • 5–15 files</p>
+
+            <div class="diagram" style="max-width: 1000px; padding: 30px;">
+                <p style="font-size: 0.85rem; color: var(--primary-light); font-weight: 600; margin-bottom: 20px; text-align: center;">Giai đoạn Define & Plan</p>
+                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px;">
+                    <div style="padding: 20px 16px; border-radius: 12px; background: rgba(99,102,241,0.12); border: 2px solid rgba(99,102,241,0.3); text-align: center;">
+                        <div style="font-size: 1rem; font-weight: 700; color: var(--primary-light); margin-bottom: 6px;">1. Context</div>
+                        <div style="font-size: 0.85rem; color: rgba(255,255,255,0.6);">Scan codebase: patterns, conventions, dependencies</div>
+                    </div>
+                    <div style="padding: 20px 16px; border-radius: 12px; background: rgba(99,102,241,0.12); border: 2px solid rgba(99,102,241,0.3); text-align: center;">
+                        <div style="font-size: 1rem; font-weight: 700; color: var(--primary-light); margin-bottom: 6px;">2. Spec</div>
+                        <div style="font-size: 0.85rem; color: rgba(255,255,255,0.6);">API contract, entities, business rules, edge cases</div>
+                    </div>
+                    <div style="padding: 20px 16px; border-radius: 12px; background: rgba(99,102,241,0.12); border: 2px solid rgba(99,102,241,0.3); text-align: center;">
+                        <div style="font-size: 1rem; font-weight: 700; color: var(--primary-light); margin-bottom: 6px;">3. Plan</div>
+                        <div style="font-size: 0.85rem; color: rgba(255,255,255,0.6);">Files cần tạo/sửa, thứ tự, dependencies</div>
+                    </div>
+                    <div style="padding: 20px 16px; border-radius: 12px; background: rgba(99,102,241,0.06); border: 2px dashed rgba(99,102,241,0.2); text-align: center;">
+                        <div style="font-size: 1rem; font-weight: 600; color: rgba(255,255,255,0.4); margin-bottom: 6px;">[4. Scaffold]</div>
+                        <div style="font-size: 0.85rem; color: rgba(255,255,255,0.35);">Optional: file skeleton, interfaces</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="speech-bubble" style="max-width: 1000px; margin-top: 20px; padding: 14px 22px;">
+                <p style="font-size: 0.95rem; margin: 0;"><b>Key point:</b> Không code ngay — phải có Spec + Plan được approve trước. AI cần context đầy đủ để output chính xác.</p>
+            </div>
+        </div>
+
+        <!-- SLIDE: Level 3 — Giai đoạn Thực thi (Step 5–13) -->
+        <div class="slide content-slide" data-slide="28" style="justify-content: center; align-items: center; padding: 40px 60px;">
+            <div class="bg-shapes"><div class="shape"></div><div class="shape"></div></div>
+            <h2 style="text-align: center; margin-bottom: 8px;">⚙️ Level 3 — Thực thi (Step 5–13)</h2>
+            <p style="text-align: center; color: rgba(255,255,255,0.5); margin-bottom: 25px; font-size: 0.95rem;">Build → Validate → Ship</p>
+
+            <div class="diagram" style="max-width: 1050px; padding: 25px;">
+                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 14px;">
+                    <div style="padding: 16px 12px; border-radius: 12px; background: rgba(16,185,129,0.15); border: 2px solid rgba(16,185,129,0.4); text-align: center;">
+                        <div style="font-size: 0.95rem; font-weight: 700; color: var(--success); margin-bottom: 4px;">5. Test ⚠️</div>
+                        <div style="font-size: 0.8rem; color: rgba(255,255,255,0.6);">TDD first — GATE</div>
+                    </div>
+                    <div style="padding: 16px 12px; border-radius: 12px; background: rgba(16,185,129,0.12); border: 2px solid rgba(16,185,129,0.3); text-align: center;">
+                        <div style="font-size: 0.95rem; font-weight: 700; color: var(--success); margin-bottom: 4px;">6. Code</div>
+                        <div style="font-size: 0.8rem; color: rgba(255,255,255,0.6);">Implement feature</div>
+                    </div>
+                    <div style="padding: 16px 12px; border-radius: 12px; background: rgba(245,158,11,0.12); border: 2px solid rgba(245,158,11,0.3); text-align: center;">
+                        <div style="font-size: 0.95rem; font-weight: 700; color: var(--accent); margin-bottom: 4px;">7. Verify</div>
+                        <div style="font-size: 0.8rem; color: rgba(255,255,255,0.6);">Build + Tests pass</div>
+                    </div>
+                </div>
+                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 14px;">
+                    <div style="padding: 16px 12px; border-radius: 12px; background: rgba(245,158,11,0.12); border: 2px solid rgba(245,158,11,0.3); text-align: center;">
+                        <div style="font-size: 0.95rem; font-weight: 700; color: var(--accent); margin-bottom: 4px;">8. Regression</div>
+                        <div style="font-size: 0.8rem; color: rgba(255,255,255,0.6);">Module + 1-hop tests</div>
+                    </div>
+                    <div style="padding: 16px 12px; border-radius: 12px; background: rgba(245,158,11,0.12); border: 2px solid rgba(245,158,11,0.3); text-align: center;">
+                        <div style="font-size: 0.95rem; font-weight: 700; color: var(--accent); margin-bottom: 4px;">9. Review</div>
+                        <div style="font-size: 0.8rem; color: rgba(255,255,255,0.6);">Arch + Security</div>
+                    </div>
+                    <div style="padding: 16px 12px; border-radius: 12px; background: rgba(236,72,153,0.12); border: 2px solid rgba(236,72,153,0.3); text-align: center;">
+                        <div style="font-size: 0.95rem; font-weight: 700; color: var(--secondary); margin-bottom: 4px;">12–13. Ship + MD</div>
+                        <div style="font-size: 0.8rem; color: rgba(255,255,255,0.6);">PR + STATUS docs</div>
+                    </div>
+                </div>
+                <p style="font-size: 0.8rem; color: rgba(255,255,255,0.4); text-align: center; font-style: italic;">Optional: [10. Iterate] fix failures · [11. Refine] polish code</p>
+            </div>
+
+            <div class="speech-bubble" style="max-width: 1050px; margin-top: 16px; padding: 14px 22px;">
+                <p style="font-size: 0.92rem; margin: 0;"><b>Mindset L3:</b> AI = <span class="hl-s">accelerator</span>, Developer = <span class="hl-p">orchestrator</span>. Giá trị lớn nhất nằm ở <b>validation & regression acceleration</b>, không chỉ code generation.</p>
+            </div>
+        </div>
+
+        <!-- SLIDE: Level 3 — Gates & Key Rules -->
+        <div class="slide content-slide" data-slide="29" style="justify-content: center; align-items: center; padding: 40px 60px;">
+            <div class="bg-shapes"><div class="shape"></div><div class="shape"></div></div>
+            <h2 style="text-align: center; margin-bottom: 10px;">🚦 Level 3 — Gates quan trọng</h2>
+            <p style="text-align: center; color: rgba(255,255,255,0.5); margin-bottom: 30px; font-size: 0.95rem;">Những điểm "dừng lại kiểm tra" bắt buộc — vi phạm = bug production</p>
+
+            <div class="cards-grid" style="grid-template-columns: 1fr 1fr; gap: 20px; max-width: 1000px;">
+                <div class="card" style="border-top: 4px solid var(--danger); padding: 24px;">
+                    
+                    <h4 style="color: var(--danger); font-size: 1.05rem; margin-bottom: 10px;">GATE 1: Test trước Code</h4>
+                    <p style="font-size: 0.88rem; line-height: 1.8; color: rgba(255,255,255,0.8);">AI generate test cases <b>TRƯỚC</b> khi viết implementation. Dev approve test strategy → rồi mới code.</p>
+                    <p style="font-size: 0.8rem; color: rgba(255,255,255,0.5); margin-top: 8px;"><b>Tại sao?</b> Test-first = AI hiểu rõ expected behavior → code đúng ngay. Code-first = AI đoán.</p>
+                </div>
+                <div class="card" style="border-top: 4px solid var(--accent); padding: 24px;">
+                    
+                    <h4 style="color: var(--accent); font-size: 1.05rem; margin-bottom: 10px;">GATE 2: Verify = Evidence</h4>
+                    <p style="font-size: 0.88rem; line-height: 1.8; color: rgba(255,255,255,0.8);">Không "done" khi chưa có <b>bằng chứng</b>: build pass, tests green, no lint errors.</p>
+                    <p style="font-size: 0.8rem; color: rgba(255,255,255,0.5); margin-top: 8px;"><b>Tại sao?</b> AI có thể tự tin nói "done" nhưng code chưa compile. Paste evidence = truth.</p>
+                </div>
+                <div class="card" style="border-top: 4px solid var(--primary); padding: 24px;">
+                    
+                    <h4 style="color: var(--primary-light); font-size: 1.05rem; margin-bottom: 10px;">GATE 3: Spec = Source of Truth</h4>
+                    <p style="font-size: 0.88rem; line-height: 1.8; color: rgba(255,255,255,0.8);">Dev approve spec <b>trước</b> khi AI bắt đầu code. Spec sai → code sai → phải làm lại.</p>
+                    <p style="font-size: 0.8rem; color: rgba(255,255,255,0.5); margin-top: 8px;"><b>Tại sao?</b> 5 phút review spec tiết kiệm 2 giờ refactor code sai hướng.</p>
+                </div>
+                <div class="card" style="border-top: 4px solid var(--success); padding: 24px;">
+                    
+                    <h4 style="color: var(--success); font-size: 1.05rem; margin-bottom: 10px;">GATE 4: Review = Không autopilot</h4>
+                    <p style="font-size: 0.88rem; line-height: 1.8; color: rgba(255,255,255,0.8);">AI output luôn qua <b>human review</b>. Accept/reject từng hunk. Không bao giờ "Accept All" mù.</p>
+                    <p style="font-size: 0.8rem; color: rgba(255,255,255,0.5); margin-top: 8px;"><b>Tại sao?</b> AI miss security, N+1 query, race condition — human catch những lỗi này.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE: Level 4 — Giai đoạn Chuẩn bị (Step 1–8) -->
+        <div class="slide content-slide" data-slide="30" style="justify-content: center; align-items: center; padding: 40px 60px;">
+            <div class="bg-shapes"><div class="shape"></div><div class="shape"></div></div>
+            <h2 style="text-align: center; margin-bottom: 8px;">🏗️ Level 4 — Chuẩn bị (Step 1–8)</h2>
+            <p style="text-align: center; color: rgba(255,255,255,0.5); margin-bottom: 25px; font-size: 0.95rem;">Cross-service, multi-module • Nhiều ngày • Define → Test Design trước khi code</p>
+
+            <div class="diagram" style="max-width: 1050px; padding: 28px;">
+                <p style="font-size: 0.85rem; color: var(--primary-light); font-weight: 600; margin-bottom: 18px; text-align: center;">Giai đoạn Define, Plan & Test Design</p>
+                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 14px;">
+                    <div style="padding: 18px 12px; border-radius: 12px; background: rgba(99,102,241,0.12); border: 2px solid rgba(99,102,241,0.3); text-align: center;">
+                        <div style="font-size: 0.95rem; font-weight: 700; color: var(--primary-light); margin-bottom: 4px;">1. Define</div>
+                        <div style="font-size: 0.82rem; color: rgba(255,255,255,0.6);">Goal & Done-when</div>
+                    </div>
+                    <div style="padding: 18px 12px; border-radius: 12px; background: rgba(99,102,241,0.12); border: 2px solid rgba(99,102,241,0.3); text-align: center;">
+                        <div style="font-size: 0.95rem; font-weight: 700; color: var(--primary-light); margin-bottom: 4px;">2. Scope</div>
+                        <div style="font-size: 0.82rem; color: rgba(255,255,255,0.6);">Modules in/out, timeline</div>
+                    </div>
+                    <div style="padding: 18px 12px; border-radius: 12px; background: rgba(99,102,241,0.12); border: 2px solid rgba(99,102,241,0.3); text-align: center;">
+                        <div style="font-size: 0.95rem; font-weight: 700; color: var(--primary-light); margin-bottom: 4px;">3. Validate</div>
+                        <div style="font-size: 0.82rem; color: rgba(255,255,255,0.6);">Feasibility, blockers</div>
+                    </div>
+                </div>
+                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 14px;">
+                    <div style="padding: 18px 12px; border-radius: 12px; background: rgba(99,102,241,0.12); border: 2px solid rgba(99,102,241,0.3); text-align: center;">
+                        <div style="font-size: 0.95rem; font-weight: 700; color: var(--primary-light); margin-bottom: 4px;">4. Discover</div>
+                        <div style="font-size: 0.82rem; color: rgba(255,255,255,0.6);">Blast radius analysis</div>
+                    </div>
+                    <div style="padding: 18px 12px; border-radius: 12px; background: rgba(99,102,241,0.12); border: 2px solid rgba(99,102,241,0.3); text-align: center;">
+                        <div style="font-size: 0.95rem; font-weight: 700; color: var(--primary-light); margin-bottom: 4px;">5. Spec</div>
+                        <div style="font-size: 0.82rem; color: rgba(255,255,255,0.6);">Contracts + Data models</div>
+                    </div>
+                    <div style="padding: 18px 12px; border-radius: 12px; background: rgba(99,102,241,0.12); border: 2px solid rgba(99,102,241,0.3); text-align: center;">
+                        <div style="font-size: 0.95rem; font-weight: 700; color: var(--primary-light); margin-bottom: 4px;">6. Plan</div>
+                        <div style="font-size: 0.82rem; color: rgba(255,255,255,0.6);">Phases + Rollback strategy</div>
+                    </div>
+                </div>
+                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px;">
+                    <div style="padding: 18px 12px; border-radius: 12px; background: rgba(16,185,129,0.12); border: 2px solid rgba(16,185,129,0.3); text-align: center;">
+                        <div style="font-size: 0.95rem; font-weight: 700; color: var(--success); margin-bottom: 4px;">7. Scaffold</div>
+                        <div style="font-size: 0.82rem; color: rgba(255,255,255,0.6);">Project structure, interfaces</div>
+                    </div>
+                    <div style="padding: 18px 12px; border-radius: 12px; background: rgba(239,68,68,0.15); border: 2px solid rgba(239,68,68,0.4); text-align: center;">
+                        <div style="font-size: 0.95rem; font-weight: 700; color: var(--danger); margin-bottom: 4px;">8. Test Design ⚠️ GATE</div>
+                        <div style="font-size: 0.82rem; color: rgba(255,255,255,0.6);">Approve test strategy TRƯỚC code</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="speech-bubble" style="max-width: 1050px; margin-top: 16px; padding: 14px 22px;">
+                <p style="font-size: 0.92rem; margin: 0;"><b>Key point:</b> 8 bước chuẩn bị trước khi viết 1 dòng code. L4 = đầu tư planning để giảm risk khi implement cross-service.</p>
+            </div>
+        </div>
+
+        <!-- SLIDE: Level 4 — Giai đoạn Thực thi (Step 9–15) -->
+        <div class="slide content-slide" data-slide="31" style="justify-content: center; align-items: center; padding: 40px 60px;">
+            <div class="bg-shapes"><div class="shape"></div><div class="shape"></div></div>
+            <h2 style="text-align: center; margin-bottom: 8px;">🏗️ Level 4 — Thực thi (Step 9–15)</h2>
+            <p style="text-align: center; color: rgba(255,255,255,0.5); margin-bottom: 25px; font-size: 0.95rem;">Implement → Validate → Ship (per phase, per service)</p>
+
+            <div class="diagram" style="max-width: 1050px; padding: 28px;">
+                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 14px;">
+                    <div style="padding: 18px 12px; border-radius: 12px; background: rgba(16,185,129,0.12); border: 2px solid rgba(16,185,129,0.3); text-align: center;">
+                        <div style="font-size: 0.95rem; font-weight: 700; color: var(--success); margin-bottom: 4px;">9. Implement</div>
+                        <div style="font-size: 0.82rem; color: rgba(255,255,255,0.6);">Code per phase, PR per service</div>
+                    </div>
+                    <div style="padding: 18px 12px; border-radius: 12px; background: rgba(245,158,11,0.12); border: 2px solid rgba(245,158,11,0.3); text-align: center;">
+                        <div style="font-size: 0.95rem; font-weight: 700; color: var(--accent); margin-bottom: 4px;">10. Verify</div>
+                        <div style="font-size: 0.82rem; color: rgba(255,255,255,0.6);">Unit + Integration + E2E</div>
+                    </div>
+                    <div style="padding: 18px 12px; border-radius: 12px; background: rgba(245,158,11,0.12); border: 2px solid rgba(245,158,11,0.3); text-align: center;">
+                        <div style="font-size: 0.95rem; font-weight: 700; color: var(--accent); margin-bottom: 4px;">11. Regression</div>
+                        <div style="font-size: 0.82rem; color: rgba(255,255,255,0.6);">ALL impacted services</div>
+                    </div>
+                </div>
+                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 14px;">
+                    <div style="padding: 18px 12px; border-radius: 12px; background: rgba(245,158,11,0.12); border: 2px solid rgba(245,158,11,0.3); text-align: center;">
+                        <div style="font-size: 0.95rem; font-weight: 700; color: var(--accent); margin-bottom: 4px;">12. Review</div>
+                        <div style="font-size: 0.82rem; color: rgba(255,255,255,0.6);">Security + Architecture audit</div>
+                    </div>
+                    <div style="padding: 18px 12px; border-radius: 12px; background: rgba(236,72,153,0.06); border: 2px dashed rgba(236,72,153,0.2); text-align: center;">
+                        <div style="font-size: 0.95rem; font-weight: 600; color: rgba(255,255,255,0.4); margin-bottom: 4px;">13–14. Iterate + Refine</div>
+                        <div style="font-size: 0.82rem; color: rgba(255,255,255,0.35);">Fix issues, docs, monitoring</div>
+                    </div>
+                    <div style="padding: 18px 12px; border-radius: 12px; background: rgba(236,72,153,0.12); border: 2px solid rgba(236,72,153,0.3); text-align: center;">
+                        <div style="font-size: 0.95rem; font-weight: 700; color: var(--secondary); margin-bottom: 4px;">15. Ship + MD</div>
+                        <div style="font-size: 0.82rem; color: rgba(255,255,255,0.6);">Canary → Rollout, STATUS.md</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="speech-bubble" style="max-width: 1050px; margin-top: 16px; padding: 14px 22px;">
+                <p style="font-size: 0.92rem; margin: 0;"><b>Mindset L4:</b> <span class="hl-d">Senior engineering process</span>. Giá trị lớn nhất: <b>validation acceleration</b> — AI detect impact, generate regression, analyze failures. Developer = <span class="hl-p">system architect + quality gate</span>.</p>
+            </div>
+        </div>
+
+        <!-- SLIDE: Level 4 — Gates -->
+        <div class="slide content-slide" data-slide="32" style="justify-content: center; align-items: center; padding: 40px 60px;">
+            <div class="bg-shapes"><div class="shape"></div><div class="shape"></div></div>
+            <h2 style="text-align: center; margin-bottom: 10px;">🚦 Level 4 — Gates quan trọng</h2>
+            <p style="text-align: center; color: rgba(255,255,255,0.5); margin-bottom: 30px; font-size: 0.95rem;">4 gates bắt buộc — mỗi phase phải deployable + rollback-able independently</p>
+
+            <div class="cards-grid" style="grid-template-columns: 1fr 1fr; gap: 20px; max-width: 1050px;">
+                <div class="card" style="border-top: 4px solid var(--danger); padding: 24px;">
+                    <h4 style="color: var(--danger); font-size: 1.05rem; margin-bottom: 10px;">GATE 1: Test Design trước Implement</h4>
+                    <p style="font-size: 0.88rem; line-height: 1.8; color: rgba(255,255,255,0.8);">Step 8 phải <b>hoàn thành và được approve</b> trước khi Step 9. AI generate test strategy (unit/integration/E2E/security/contract).</p>
+                    <p style="font-size: 0.8rem; color: rgba(255,255,255,0.5); margin-top: 8px;"><b>Tại sao?</b> Hệ thống lớn không có test strategy = ship bug ẩn cross-service.</p>
+                </div>
+                <div class="card" style="border-top: 4px solid var(--primary); padding: 24px;">
+                    <h4 style="color: var(--primary-light); font-size: 1.05rem; margin-bottom: 10px;">GATE 2: Discover = Blast radius bắt buộc</h4>
+                    <p style="font-size: 0.88rem; line-height: 1.8; color: rgba(255,255,255,0.8);">Step 4 — AI phân tích <b>tất cả service bị ảnh hưởng</b>, dependency graph, integration points trước khi Spec.</p>
+                    <p style="font-size: 0.8rem; color: rgba(255,255,255,0.5); margin-top: 8px;"><b>Tại sao?</b> Cross-service change thiếu blast radius = break service khác mà không biết.</p>
+                </div>
+                <div class="card" style="border-top: 4px solid var(--accent); padding: 24px;">
+                    <h4 style="color: var(--accent); font-size: 1.05rem; margin-bottom: 10px;">GATE 3: Human review liên tục</h4>
+                    <p style="font-size: 0.88rem; line-height: 1.8; color: rgba(255,255,255,0.8);">Không autopilot ở L4. Dev review <b>từng PR per phase</b>. Team/lead/security approve ở Step 12 trước Ship.</p>
+                    <p style="font-size: 0.8rem; color: rgba(255,255,255,0.5); margin-top: 8px;"><b>Tại sao?</b> AI generate code cho 1 service — không hiểu side effects trên service khác.</p>
+                </div>
+                <div class="card" style="border-top: 4px solid var(--success); padding: 24px;">
+                    <h4 style="color: var(--success); font-size: 1.05rem; margin-bottom: 10px;">GATE 4: Phase = Deployable + Rollback</h4>
+                    <p style="font-size: 0.88rem; line-height: 1.8; color: rgba(255,255,255,0.8);">Mỗi phase trong Plan phải <b>deploy được độc lập</b> và có rollback strategy (canary → rollout).</p>
+                    <p style="font-size: 0.8rem; color: rgba(255,255,255,0.5); margin-top: 8px;"><b>Tại sao?</b> Deploy big-bang 15+ files = risk max. Phased deploy = rollback an toàn.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== PART 4: PROMPT ENGINEERING ==================== -->
+        <div class="slide section-header" data-slide="33">
+            <div class="bg-shapes"><div class="shape"></div><div class="shape"></div></div>
+            
+            <h2 style="background: var(--gradient-2); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;"><span style="-webkit-text-fill-color: initial;">⚡</span> Phần 6: Thực tế khi áp dụng AI</h2>
+            <p style="color: rgba(255,255,255,0.5); margin-top: 15px; font-size: 1.1rem;">Thực tế khi áp dụng AI — sai lầm thường gặp và bài học rút ra từ project thật</p>
+        </div>
+
+        <!-- SLIDE 21: Sai lầm 1-4 -->
+        <!-- SLIDE: 7 Sai lầm (1–4) -->
+        <div class="slide content-slide" data-slide="34" style="justify-content: center; align-items: center; padding: 40px 60px;">
+            <div class="bg-shapes"><div class="shape"></div><div class="shape"></div></div>
+            <h2 style="text-align: center; margin-bottom: 10px;">💀 7 Sai lầm thường gặp (1–4)</h2>
+            <p style="text-align: center; color: rgba(255,255,255,0.5); margin-bottom: 30px; font-size: 0.95rem;">Anti-patterns khiến AI output tệ</p>
+
+            <div class="cards-grid" style="grid-template-columns: 1fr 1fr; gap: 18px; max-width: 1000px;">
+                <div class="card" style="border-left: 4px solid var(--danger); padding: 20px;">
+                    <h4 style="color: var(--danger); font-size: 1.05rem; margin-bottom: 8px;">1. Prompt quá mơ hồ</h4>
+                    <p style="font-size: 0.9rem; color: rgba(255,255,255,0.7);">AI đoán sai stack, pattern → rewrite từ đầu</p>
+                    <p style="font-size: 0.82rem; color: var(--success); margin-top: 8px;"><b>Fix:</b> Role + Context + Task + Constraints + Output</p>
+                </div>
+                <div class="card" style="border-left: 4px solid var(--danger); padding: 20px;">
+                    <h4 style="color: var(--danger); font-size: 1.05rem; margin-bottom: 8px;">2. Task quá lớn</h4>
+                    <p style="font-size: 0.9rem; color: rgba(255,255,255,0.7);">AI mất focus, output fragmentary, thiếu edge cases</p>
+                    <p style="font-size: 0.82rem; color: var(--success); margin-top: 8px;"><b>Fix:</b> Chia 1 feature → 5-10 prompts nhỏ</p>
+                </div>
+                <div class="card" style="border-left: 4px solid var(--danger); padding: 20px;">
+                    <h4 style="color: var(--danger); font-size: 1.05rem; margin-bottom: 8px;">3. Copy code không hiểu</h4>
+                    <p style="font-size: 0.9rem; color: rgba(255,255,255,0.7);">Accept All → bug production → không debug được</p>
+                    <p style="font-size: 0.82rem; color: var(--success); margin-top: 8px;"><b>Fix:</b> Đọc hiểu từng block trước khi accept</p>
+                </div>
+                <div class="card" style="border-left: 4px solid var(--danger); padding: 20px;">
+                    <h4 style="color: var(--danger); font-size: 1.05rem; margin-bottom: 8px;">4. Trust AI tuyệt đối</h4>
+                    <p style="font-size: 0.9rem; color: rgba(255,255,255,0.7);">AI hallucination: API không tồn tại, logic sai edge case</p>
+                    <p style="font-size: 0.82rem; color: var(--success); margin-top: 8px;"><b>Fix:</b> "Trust but verify" — luôn chạy test</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE: 7 Sai lầm (5–7) -->
+        <div class="slide content-slide" data-slide="35" style="justify-content: center; align-items: center; padding: 40px 60px;">
+            <div class="bg-shapes"><div class="shape"></div><div class="shape"></div></div>
+            <h2 style="text-align: center; margin-bottom: 10px;">💀 7 Sai lầm thường gặp (5–7)</h2>
+            <p style="text-align: center; color: rgba(255,255,255,0.5); margin-bottom: 30px; font-size: 0.95rem;">3 sai lầm còn lại + tổng kết</p>
+
+            <div class="cards-grid" style="grid-template-columns: 1fr 1fr 1fr; gap: 18px; max-width: 1050px; margin-bottom: 25px;">
+                <div class="card" style="border-left: 4px solid var(--danger); padding: 20px;">
+                    <h4 style="color: var(--danger); font-size: 1rem; margin-bottom: 8px;">5. Không review security</h4>
+                    <p style="font-size: 0.88rem; color: rgba(255,255,255,0.7);">AI thiếu: auth check, pagination, sanitization</p>
+                    <p style="font-size: 0.82rem; color: var(--success); margin-top: 8px;"><b>Fix:</b> Security checklist mỗi PR</p>
+                </div>
+                <div class="card" style="border-left: 4px solid var(--danger); padding: 20px;">
+                    <h4 style="color: var(--danger); font-size: 1rem; margin-bottom: 8px;">6. Thiếu context codebase</h4>
+                    <p style="font-size: 0.88rem; color: rgba(255,255,255,0.7);">AI dùng style khác nhau mỗi lần generate</p>
+                    <p style="font-size: 0.82rem; color: var(--success); margin-top: 8px;"><b>Fix:</b> Rules file + @file reference</p>
+                </div>
+                <div class="card" style="border-left: 4px solid var(--danger); padding: 20px;">
+                    <h4 style="color: var(--danger); font-size: 1rem; margin-bottom: 8px;">7. One-shot mindset</h4>
+                    <p style="font-size: 0.88rem; color: rgba(255,255,255,0.7);">Expect 1 prompt = perfect output. Thực tế cần 2-3 rounds.</p>
+                    <p style="font-size: 0.82rem; color: var(--success); margin-top: 8px;"><b>Fix:</b> Generate → Review → Refine → Done</p>
+                </div>
+            </div>
+
+            <div class="speech-bubble" style="max-width: 1050px; padding: 14px 22px;">
+                <p style="font-size: 0.95rem; margin: 0;"><b>Pattern chung:</b> Thiếu <span class="hl-p">context</span> + thiếu <span class="hl">scope control</span> + thiếu <span class="hl-d">verification</span> = AI output tệ. Fix = Rules + Chia nhỏ + Verify.</p>
+            </div>
+        </div>
+
+        <!-- BREATHING SLIDE: Quote (thuộc Phần 6) -->
+        <div class="slide section-header" data-slide="36">
+            <div class="bg-shapes"><div class="shape"></div><div class="shape"></div></div>
+            <h2 style="font-size: 2.5rem; font-weight: 300; color: rgba(255,255,255,0.9); line-height: 1.6; max-width: 850px;">
+                "Developer giỏi không bị AI thay thế —<br><span style="background: var(--gradient-4); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 800;">họ dùng AI để scale chính mình.</span>"
+            </h2>
+        </div>
+
+        <!-- SLIDE: Số liệu thực (thuộc Phần 6) -->
+        <div class="slide content-slide" data-slide="37" style="justify-content: center; align-items: center; padding: 40px 60px;">
+            <div class="bg-shapes"><div class="shape"></div><div class="shape"></div></div>
+            <h2 style="text-align: center; margin-bottom: 10px;">📊 Số liệu thực từ project</h2>
+            <p style="text-align: center; color: rgba(255,255,255,0.5); margin-bottom: 30px; font-size: 0.95rem;">Đo lường cụ thể: task nào AI giúp nhanh hơn, task nào không</p>
+
+            <table class="level-table" style="max-width: 900px; margin-bottom: 25px;">
+                <tr>
+                    <th>Task</th>
+                    <th style="text-align: center;">‍💻 Traditional</th>
+                    <th style="text-align: center;">AI-Driven</th>
+                    <th style="text-align: center;">Tiết kiệm</th>
+                </tr>
+                <tr>
+                    <td>CRUD API (Entity → Controller)</td>
+                    <td style="text-align: center; color: var(--danger);">1h</td>
+                    <td style="text-align: center; color: var(--success);">15m</td>
+                    <td style="text-align: center; font-weight: 700; color: var(--success);">75%</td>
+                </tr>
+                <tr>
+                    <td>Unit tests (10 cases)</td>
+                    <td style="text-align: center; color: var(--danger);">45m</td>
+                    <td style="text-align: center; color: var(--success);">5m</td>
+                    <td style="text-align: center; font-weight: 700; color: var(--success);">89%</td>
+                </tr>
+                <tr>
+                    <td>Refactor (rename + split)</td>
+                    <td style="text-align: center; color: var(--danger);">2h</td>
+                    <td style="text-align: center; color: var(--success);">20m</td>
+                    <td style="text-align: center; font-weight: 700; color: var(--success);">83%</td>
+                </tr>
+                <tr>
+                    <td>Đọc hiểu codebase mới</td>
+                    <td style="text-align: center; color: var(--danger);">1 day</td>
+                    <td style="text-align: center; color: var(--success);">10m</td>
+                    <td style="text-align: center; font-weight: 700; color: var(--success);">95%</td>
+                </tr>
+                <tr>
+                    <td>Business logic phức tạp</td>
+                    <td style="text-align: center;">2h</td>
+                    <td style="text-align: center; color: var(--accent);">1.5h</td>
+                    <td style="text-align: center; color: var(--accent);">25%</td>
+                </tr>
+                <tr>
+                    <td>Auth flow (security-critical)</td>
+                    <td style="text-align: center;">3h</td>
+                    <td style="text-align: center; color: var(--danger);">2.5h</td>
+                    <td style="text-align: center; color: var(--accent);">17%</td>
+                </tr>
+            </table>
+
+            <div class="metric-row" style="max-width: 900px;">
+                <div class="metric-card good">
+                    <div class="metric-value">60-80%</div>
+                    <div class="metric-label">Tiết kiệm (task routine)</div>
+                </div>
+                <div class="metric-card" style="border-color: rgba(245,158,11,0.3);">
+                    <div class="metric-value" style="color: var(--accent);">15-25%</div>
+                    <div class="metric-label">Tiết kiệm (task phức tạp)</div>
+                </div>
+                <div class="metric-card bad">
+                    <div class="metric-value">70-80%</div>
+                    <div class="metric-label">AI code cần review/sửa</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE: LIVE DEMO — Framing -->
+        <div class="slide section-header" data-slide="38">
+            <div class="bg-shapes"><div class="shape"></div><div class="shape"></div></div>
+            <h2 style="background: var(--gradient-5); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-size: 3rem;"><span style="-webkit-text-fill-color: initial;">🎬</span> Demo</h2>
+            <p style="color: rgba(255,255,255,0.7); margin-top: 25px; font-size: 1.2rem; max-width: 800px; line-height: 1.8; text-align: center;">
+                Demo này không phải để chứng minh AI code nhanh.<br>
+                Demo này để chứng minh:<br>
+                <span style="background: var(--gradient-4); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 800; font-size: 1.4rem;">Context + Workflow đúng → AI output khác hoàn toàn.</span>
+            </p>
+            <div style="margin-top: 35px; display: flex; gap: 20px; flex-wrap: wrap; justify-content: center;">
+                <div class="diagram-node" style="border-color: var(--danger); font-size: 0.9rem; min-width: 140px;">1. Bad prompt<br><span style="font-size: 0.7rem; color: rgba(255,255,255,0.4);">→ output generic</span></div>
+                <div class="diagram-arrow">→</div>
+                <div class="diagram-node" style="border-color: var(--accent); font-size: 0.9rem; min-width: 140px;">2. Better prompt<br><span style="font-size: 0.7rem; color: rgba(255,255,255,0.4);">→ output tốt hơn</span></div>
+                <div class="diagram-arrow">→</div>
+                <div class="diagram-node" style="border-color: var(--success); font-size: 0.9rem; min-width: 140px;">3. Full workflow<br><span style="font-size: 0.7rem; color: rgba(255,255,255,0.4);">→ production-ready</span></div>
+            </div>
+            <p style="color: rgba(255,255,255,0.35); margin-top: 25px; font-size: 0.85rem; font-style: italic;">Cùng 1 task — 3 cách dùng AI → 3 kết quả khác nhau</p>
+        </div>
+
+        <div class="slide section-header" data-slide="39">
+            <div class="bg-shapes"><div class="shape"></div><div class="shape"></div></div>
+            
+            <h2 style="background: var(--gradient-4); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;"><span style="-webkit-text-fill-color: initial;">🔮</span> Phần 7: Tương lai AI-Driven Development</h2>
+            <p style="color: rgba(255,255,255,0.5); margin-top: 15px; font-size: 1.1rem;">Xu hướng 2026+ — Developer sẽ trở thành gì?</p>
+        </div>
+
+        <!-- SLIDE 27: Future -->
+        <div class="slide content-slide" data-slide="40">
+            <div class="bg-shapes"><div class="shape"></div><div class="shape"></div></div>
+            <div class="scroll-content">
+                <h2>🔮 Xu hướng 2025–2027: AI Development sẽ đi đâu?</h2>
+                <p style="font-size: 0.92rem; color: rgba(255,255,255,0.6); margin-bottom: 15px;">3 trend chính đang định hình cách developer làm việc trong 2-3 năm tới</p>
+
+                <div class="cards-grid" style="grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin-bottom: 18px;">
+                    <div class="card" style="border-top: 4px solid var(--primary); padding: 18px;">
+                        <h4 style="color: var(--primary-light); margin-bottom: 10px;">AI-Native IDE</h4>
+                        <p style="font-size: 0.82rem; color: rgba(255,255,255,0.7); line-height: 1.7; margin-bottom: 8px;">IDE được thiết kế <b>từ đầu</b> cho AI — không phải plugin add-on. AI là first-class citizen trong mọi workflow.</p>
+                        <ul style="font-size: 0.78rem; line-height: 1.9; color: rgba(255,255,255,0.6);">
+                            <li><b>Cursor</b> — AI-first fork VS Code</li>
+                            <li><b>Kiro</b> — Spec-driven development</li>
+                            <li><b>Windsurf</b> — Cascade context engine</li>
+                            <li><b>Claude Code</b> — Terminal-based agent</li>
+                        </ul>
+                        <p style="font-size: 0.75rem; color: var(--primary-light); margin-top: 8px;"><b>Impact:</b> IDE cũ (VS Code thuần) sẽ dần bị thay thế bởi AI-native IDEs.</p>
+                    </div>
+                    <div class="card" style="border-top: 4px solid var(--success); padding: 18px;">
+                        <h4 style="color: var(--success); margin-bottom: 10px;">Autonomous Agents</h4>
+                        <p style="font-size: 0.82rem; color: rgba(255,255,255,0.7); line-height: 1.7; margin-bottom: 8px;">AI không chỉ generate code — mà tự <b>plan → execute → test → fix → ship</b> theo loop tự động.</p>
+                        <ul style="font-size: 0.78rem; line-height: 1.9; color: rgba(255,255,255,0.6);">
+                            <li><b>Agentic Loop</b> — AI tự lặp: plan → code → test → fix cho đến khi pass</li>
+                            <li><b>Multi-agent</b> — nhiều AI phối hợp, mỗi AI 1 vai trò (code, test, review)</li>
+                            <li><b>Background workers</b> — AI chạy async tasks</li>
+                            <li><b>Self-healing</b> — AI tự phát hiện + sửa bug khi code chạy lỗi</li>
+                        </ul>
+                        <p style="font-size: 0.75rem; color: var(--success); margin-top: 8px;"><b>Impact:</b> Dev chuyển từ "code" → "review + approve" cho routine tasks.</p>
+                    </div>
+                    <div class="card" style="border-top: 4px solid var(--accent); padding: 18px;">
+                        <h4 style="color: var(--accent); margin-bottom: 10px;">Deep Codebase Understanding</h4>
+                        <p style="font-size: 0.82rem; color: rgba(255,255,255,0.7); line-height: 1.7; margin-bottom: 8px;">AI hiểu project như senior developer: history, decisions, patterns, team conventions — không chỉ syntax.</p>
+                        <ul style="font-size: 0.78rem; line-height: 1.9; color: rgba(255,255,255,0.6);">
+                            <li><b>Code Graph</b> — dependency + call chain</li>
+                            <li><b>Git History</b> — hiểu evolution of decisions</li>
+                            <li><b>Team Knowledge</b> — learn từ PR reviews</li>
+                            <li><b>Domain Model</b> — hiểu business concepts</li>
+                        </ul>
+                        <p style="font-size: 0.75rem; color: var(--accent); margin-top: 8px;"><b>Impact:</b> AI output match team style 95%+ — gần như không cần sửa.</p>
+                    </div>
+                </div>
+
+                <div class="warn-box">
+                    
+                    <div style="font-size: 0.85rem;">
+                        <b>Kỹ năng dev cần phát triển (AI không thể thay thế):</b> Architecture thinking • Domain expertise • System design • Security mindset • Code review skill • Prompt engineering • AI workflow orchestration
+                    </div>
+                </div>
+
+                <!-- Timeline: Evolution of AI capability -->
+                <div class="diagram" style="margin-top: 15px; padding: 18px;">
+                    <p style="font-size: 0.8rem; color: var(--primary-light); font-weight: 600; margin-bottom: 12px; text-align: center;">AI Capability Timeline</p>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 10px; text-align: center;">
+                        <div style="padding: 10px; border-radius: 8px; background: rgba(239,68,68,0.08); border: 1px solid rgba(239,68,68,0.2);">
+                            <p style="font-size: 0.75rem; color: var(--danger); font-weight: 700;">2022</p>
+                            <p style="font-size: 0.68rem; color: rgba(255,255,255,0.6);">Autocomplete<br>1 file context</p>
+                        </div>
+                        <div style="padding: 10px; border-radius: 8px; background: rgba(245,158,11,0.08); border: 1px solid rgba(245,158,11,0.2);">
+                            <p style="font-size: 0.75rem; color: var(--accent); font-weight: 700;">2024</p>
+                            <p style="font-size: 0.68rem; color: rgba(255,255,255,0.6);">Chat + multi-file<br>Context window 128K</p>
+                        </div>
+                        <div style="padding: 10px; border-radius: 8px; background: rgba(16,185,129,0.08); border: 1px solid rgba(16,185,129,0.2);">
+                            <p style="font-size: 0.75rem; color: var(--success); font-weight: 700;">2025</p>
+                            <p style="font-size: 0.68rem; color: rgba(255,255,255,0.6);">Agentic + codebase<br>Plan→Code→Test loop</p>
+                        </div>
+                        <div style="padding: 10px; border-radius: 8px; background: rgba(99,102,241,0.08); border: 1px solid rgba(99,102,241,0.2);">
+                            <p style="font-size: 0.75rem; color: var(--primary-light); font-weight: 700;">2027?</p>
+                            <p style="font-size: 0.68rem; color: rgba(255,255,255,0.6);">Full autonomous<br>Dev = architect only</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE: Developer sẽ thay đổi như nào -->
+        <div class="slide content-slide" data-slide="41" style="justify-content: center; align-items: center; padding: 40px 60px;">
+            <div class="bg-shapes"><div class="shape"></div><div class="shape"></div></div>
+            <h2 style="text-align: center; margin-bottom: 10px;">‍💻 Developer sẽ thay đổi như nào?</h2>
+            <p style="text-align: center; color: rgba(255,255,255,0.5); margin-bottom: 30px; font-size: 0.95rem;">Vai trò developer đang shift — từ "người viết code" sang "người thiết kế + điều phối"</p>
+
+            <div class="compare-container" style="max-width: 1050px; margin-bottom: 25px;">
+                <div class="compare-box bad" style="padding: 22px;">
+                    <div class="label">👨‍💻 Traditional Developer</div>
+                    <ul style="font-size: 0.88rem; line-height: 2.2; color: rgba(255,255,255,0.8); list-style: none; padding: 0; margin-top: 10px;">
+                        <li>▸ Viết code từ đầu đến cuối</li>
+                        <li>▸ Nhớ syntax, API, patterns bằng đầu</li>
+                        <li>▸ Debug bằng print/log thủ công</li>
+                        <li>▸ Search Google/StackOverflow cho mỗi vấn đề</li>
+                        <li>▸ Tự viết tests, docs, boilerplate</li>
+                        <li>▸ Giá trị = số dòng code viết được / ngày</li>
+                    </ul>
+                </div>
+                <div class="compare-box good" style="padding: 22px;">
+                    <div class="label">🎯 AI-Era Developer</div>
+                    <ul style="font-size: 0.88rem; line-height: 2.2; color: rgba(255,255,255,0.8); list-style: none; padding: 0; margin-top: 10px;">
+                        <li>▸ <b>Design systems</b> — kiến trúc, contracts, boundaries</li>
+                        <li>▸ <b>Orchestrate AI</b> — prompt, rules, workflow design</li>
+                        <li>▸ <b>Validate architecture</b> — review AI output vs business needs</li>
+                        <li>▸ <b>Review & approve</b> — security, performance, correctness</li>
+                        <li>▸ <b>Define constraints</b> — rules, conventions, quality gates</li>
+                        <li>▸ Giá trị = <b>quality of decisions</b> / ngày</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="diagram" style="max-width: 1050px; padding: 20px;">
+                <div class="diagram-flow" style="gap: 12px;">
+                    <div class="diagram-node" style="border-color: var(--danger); min-width: 150px;">
+                        <div style="font-size: 0.8rem; font-weight: 600;">Before</div>
+                        <div style="font-size: 0.7rem; color: rgba(255,255,255,0.5);">80% viết code<br>20% thiết kế</div>
+                    </div>
+                    <div class="diagram-arrow">→</div>
+                    <div class="diagram-node" style="border-color: var(--accent); min-width: 150px;">
+                        <div style="font-size: 0.8rem; font-weight: 600;">Now (2025)</div>
+                        <div style="font-size: 0.7rem; color: rgba(255,255,255,0.5);">40% review/decide<br>30% prompt/orchestrate<br>30% viết code</div>
+                    </div>
+                    <div class="diagram-arrow">→</div>
+                    <div class="diagram-node" style="border-color: var(--success); min-width: 150px;">
+                        <div style="font-size: 0.8rem; font-weight: 600;">Future (2027+)</div>
+                        <div style="font-size: 0.7rem; color: rgba(255,255,255,0.5);">60% design/decide<br>30% review/verify<br>10% manual code</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tip-box" style="max-width: 1050px; margin-top: 18px;">
+                
+                <div style="font-size: 0.88rem;">
+                    <b>Key message:</b> Developer không bị thay thế — developer được <b>nâng cấp</b>. Kỹ năng quan trọng nhất sẽ là: <span class="hl-p">architecture thinking</span>, <span class="hl">domain expertise</span>, <span class="hl-s">AI orchestration</span>. Code sẽ trở thành commodity — decisions mới là giá trị.
+                </div>
+            </div>
+        </div>
+
+        <!-- BREATHING SLIDE: Closing quote -->
+        <div class="slide section-header" data-slide="42">
+            <div class="bg-shapes"><div class="shape"></div><div class="shape"></div></div>
+            <h2 style="font-size: 2.5rem; font-weight: 300; color: rgba(255,255,255,0.9); line-height: 1.6; max-width: 850px;">
+                "AI không thay thế developer.<br><span style="background: var(--gradient-1); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 800;">Developer dùng AI sẽ thay thế phần còn lại.</span>"
+            </h2>
+        </div>
+
+        <!-- SLIDE: Hành động — Ending -->
+        <div class="slide content-slide" data-slide="43" style="justify-content: center; align-items: center; padding: 40px 60px;">
+            <div class="bg-shapes"><div class="shape"></div><div class="shape"></div></div>
+            <h2 style="text-align: center; margin-bottom: 30px; font-size: 2rem;">🚀 Sau buổi này — hãy bắt đầu ngay</h2>
+
+            <div class="cards-grid" style="grid-template-columns: 1fr; gap: 12px; max-width: 700px;">
+                <div class="card" style="border-left: 5px solid var(--primary); padding: 16px 22px; display: flex; align-items: center; gap: 18px;">
+                    <span style="font-size: 1.8rem; font-weight: 900; color: var(--primary-light);">1</span>
+                    <div>
+                        <h4 style="font-size: 1.05rem;">Dùng AI mỗi ngày</h4>
+                        <p style="font-size: 0.85rem; color: rgba(255,255,255,0.6);">Không cần hoàn hảo — chỉ cần bắt đầu</p>
+                    </div>
+                </div>
+                <div class="card" style="border-left: 5px solid var(--success); padding: 16px 22px; display: flex; align-items: center; gap: 18px;">
+                    <span style="font-size: 1.8rem; font-weight: 900; color: var(--success);">2</span>
+                    <div>
+                        <h4 style="font-size: 1.05rem;">Prompt có structure</h4>
+                        <p style="font-size: 0.85rem; color: rgba(255,255,255,0.6);">Role + Context + Task + Constraints + Output</p>
+                    </div>
+                </div>
+                <div class="card" style="border-left: 5px solid var(--accent); padding: 16px 22px; display: flex; align-items: center; gap: 18px;">
+                    <span style="font-size: 1.8rem; font-weight: 900; color: var(--accent);">3</span>
+                    <div>
+                        <h4 style="font-size: 1.05rem;">Chia task nhỏ</h4>
+                        <p style="font-size: 0.85rem; color: rgba(255,255,255,0.6);">1 prompt = 1 output rõ ràng, đo được</p>
+                    </div>
+                </div>
+                <div class="card" style="border-left: 5px solid var(--danger); padding: 16px 22px; display: flex; align-items: center; gap: 18px;">
+                    <span style="font-size: 1.8rem; font-weight: 900; color: var(--danger);">4</span>
+                    <div>
+                        <h4 style="font-size: 1.05rem;">Review AI như junior dev</h4>
+                        <p style="font-size: 0.85rem; color: rgba(255,255,255,0.6);">Tin nhưng phải kiểm — không bao giờ accept mù</p>
+                    </div>
+                </div>
+                <div class="card" style="border-left: 5px solid var(--secondary); padding: 16px 22px; display: flex; align-items: center; gap: 18px;">
+                    <span style="font-size: 1.8rem; font-weight: 900; color: var(--secondary);">5</span>
+                    <div>
+                        <h4 style="font-size: 1.05rem;">Xây workflow riêng</h4>
+                        <p style="font-size: 0.85rem; color: rgba(255,255,255,0.6);">Quy tắc + Kỹ năng + Quy trình phù hợp team</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== SLIDE: Q&A ==================== -->
+        <div class="slide section-header ending-slide" data-slide="44">
+            <div class="bg-shapes"><div class="shape"></div><div class="shape"></div></div>
+            
+            <h2 style="background: var(--gradient-1); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;"><span style="-webkit-text-fill-color: initial;">🙋‍♂️</span> Q & A</h2>
+            <p style="color: rgba(255,255,255,0.5); margin-top: 20px; font-size: 1.2rem;">Cảm ơn mọi người đã lắng nghe! 🙏</p>
+            <p style="color: rgba(255,255,255,0.4); margin-top: 25px; font-size: 1.1rem; max-width: 600px; line-height: 1.8; text-align: center;">
+                <span style="color: var(--primary-light); font-weight: 600;">Developer + AI</span> > Developer một mình
+            </p>
+            <div style="margin-top: 35px; display: flex; gap: 20px;">
+                
+                
+                
+                
+            </div>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <div class="nav-controls">
+        <button class="nav-btn" onclick="prevSlide()" title="Previous (←)">◀</button>
+        <button class="nav-btn" onclick="nextSlide()" title="Next (→)">▶</button>
+    </div>
+    <div class="slide-counter" id="slideCounter"></div>
+    <div class="narrative-hint">"AI không thay thế developer. AI thay đổi cách developer làm việc."</div>
+
+    <script>
+        let currentSlide = 1;
+        const slides = document.querySelectorAll('.slide');
+        const totalSlides = slides.length;
+
+        function showSlide(n) {
+            if (n < 1 || n > totalSlides) return;
+            slides.forEach((slide, index) => {
+                slide.classList.remove('active', 'prev');
+                if (index + 1 === n) slide.classList.add('active');
+                else if (index + 1 < n) slide.classList.add('prev');
+            });
+            currentSlide = n;
+            document.getElementById('slideCounter').textContent = `${n} / ${totalSlides}`;
+            document.getElementById('progressBar').style.width = `${(n / totalSlides) * 100}%`;
+        }
+
+        function nextSlide() { showSlide(currentSlide + 1); }
+        function prevSlide() { showSlide(currentSlide - 1); }
+
+        document.addEventListener('keydown', (e) => {
+            switch(e.key) {
+                case 'ArrowRight': case ' ': case 'Enter':
+                    e.preventDefault(); nextSlide(); break;
+                case 'ArrowLeft': case 'Backspace':
+                    e.preventDefault(); prevSlide(); break;
+                case 'Home': e.preventDefault(); showSlide(1); break;
+                case 'End': e.preventDefault(); showSlide(totalSlides); break;
+            }
+        });
+
+        let touchStartX = 0;
+        document.addEventListener('touchstart', (e) => { touchStartX = e.changedTouches[0].screenX; });
+        document.addEventListener('touchend', (e) => {
+            const diff = touchStartX - e.changedTouches[0].screenX;
+            if (Math.abs(diff) > 50) { diff > 0 ? nextSlide() : prevSlide(); }
+        });
+
+        showSlide(1);
+    </script>
+</body>
+</html>
