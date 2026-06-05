@@ -27,10 +27,10 @@ No `/question-scope` at **message start or end** (after trim) → **normal chat*
 
 ## User entry (canonical — suggest only this)
 
-| User sends | Agent |
-| ---------- | ----- |
+| User sends                                     | Agent                                                                                        |
+| ---------------------------------------------- | -------------------------------------------------------------------------------------------- |
 | **`/question-scope`** + task (no L on command) | Idea → suggest → **level picker** (**2** if one gray pair fits, else **4** L1–L4) → **STOP** |
-| **`/question-scope L1`…`L4`** + task | Run that pipeline — **no** level-picker step |
+| **`/question-scope L1`…`L4`** + task           | Run that pipeline — **no** level-picker step                                                 |
 
 **Only** `/question-scope` and `/question-scope L1`…`L4` activate scope (`/question-scope L2`, not `/question-scopeL2`). **Placement:** command at **start or end** of message (after trim) — **not** mid-sentence (skill **Parsing**). **`level Lx` and `?` + keyword do not.** **Glued `L`:** reply once: `Detected /question-scopeL2 — use /question-scope L2` (skill **Parsing**).
 
@@ -38,13 +38,13 @@ No `/question-scope` at **message start or end** (after trim) → **normal chat*
 
 ## Tokens (summary — full table in skill)
 
-| Token | Scope |
-| ----- | ----- |
-| `qs:off`, `no-scope`, `quick:` | Off (`quick:` beats `/question-scope Lx` in same message) |
-| `qs:meta`, `audit:` | Off — explicit audit/review (beats `/question-scope` in same message) |
-| `sp:off`, `no-sp` | Supplement off only when scope already active |
-| `scope:light` | On — L2 chat rollup, no required `docs/work/` (skill **ide-aligned-practices**) |
-| `clarify:off` | On — skip §12 clarifying options (skill **clarifying-options**) |
+| Token                          | Scope                                                                           |
+| ------------------------------ | ------------------------------------------------------------------------------- |
+| `qs:off`, `no-scope`, `quick:` | Off (`quick:` beats `/question-scope Lx` in same message)                       |
+| `qs:meta`, `audit:`            | Off — explicit audit/review (beats `/question-scope` in same message)           |
+| `sp:off`, `no-sp`              | Supplement off only when scope already active                                   |
+| `scope:light`                  | On — L2 chat rollup, no required `docs/work/` (skill **ide-aligned-practices**) |
+| `clarify:off`                  | On — skip §12 clarifying options (skill **clarifying-options**)                 |
 
 ## No L on `/question-scope`
 
@@ -62,3 +62,22 @@ No `/question-scope` at **message start or end** (after trim) → **normal chat*
 **Human guide (Vietnamese):** skill → `README.md`. **Quickstart:** `rules/QUICKSTART.md`.
 
 Any host without a structured picker: numbered list + STOP (same labels) — skill `references/host-ui.md`.
+
+## ⛔ HARD GATE — docs/work/ BEFORE source code (L2–L4)
+
+**This is a non-negotiable enforcement rule.**
+
+When `/question-scope L2`…`L4` is active:
+
+1. **MUST** create `docs/work/YYYY-MM-DD-<slug>/STATUS.md` as the **FIRST write action** — before ANY source code file (`src/`, `lib/`, `app/`, etc.).
+2. **MUST NOT** write, edit, or create any source code file until `STATUS.md` exists.
+3. **No exceptions** — not for "small changes", not for "I'll add it later", not for speed.
+4. If you realize you are about to write source code without `STATUS.md`: **STOP immediately**, create `docs/work/` + `STATUS.md` first, then continue.
+
+**Sequence (mandatory):**
+
+```
+Context gathering → Create docs/work/YYYY-MM-DD-<slug>/STATUS.md → Spec/Plan phase files → THEN source code
+```
+
+**Violation = critical error.** The user has explicitly flagged this as a recurring failure. Treat this rule with the same severity as security rules.

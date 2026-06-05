@@ -66,3 +66,21 @@ No `/question-scope` at **message start or end** (after trim) → **normal chat*
 **Human guide (Vietnamese):** skill → `README.md`. **Quickstart:** `rules/QUICKSTART.md`.
 
 Any host without a structured picker: numbered list + STOP (same labels) — skill `references/host-ui.md`.
+
+## ⛔ HARD GATE — docs/work/ BEFORE source code (L2–L4)
+
+**This is a non-negotiable enforcement rule.**
+
+When `/question-scope L2`…`L4` is active:
+
+1. **MUST** create `docs/work/YYYY-MM-DD-<slug>/STATUS.md` as the **FIRST write action** — before ANY source code file (`src/`, `lib/`, `app/`, etc.).
+2. **MUST NOT** write, edit, or create any source code file until `STATUS.md` exists.
+3. **No exceptions** — not for "small changes", not for "I'll add it later", not for speed.
+4. If you realize you are about to write source code without `STATUS.md`: **STOP immediately**, create `docs/work/` + `STATUS.md` first, then continue.
+
+**Sequence (mandatory):**
+```
+Context gathering → Create docs/work/YYYY-MM-DD-<slug>/STATUS.md → Spec/Plan phase files → THEN source code
+```
+
+**Violation = critical error.** The user has explicitly flagged this as a recurring failure. Treat this rule with the same severity as security rules.
