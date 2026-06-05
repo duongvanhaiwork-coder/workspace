@@ -1,9 +1,18 @@
-"""search_code — find code by semantic similarity + keyword overlap.
+"""search_code — find candidate files/symbols by semantic similarity + keyword overlap.
+
+Use search_code only to find candidate files/symbols.
+Do NOT edit code based only on search_code results.
+After search_code returns relevant results, call get_context with the selected
+file_path/symbol to load full implementation and related context before making changes.
+
+When include_context=true, search_code automatically calls get_context internally
+and returns full context inline — use this when the intent is to modify or understand code.
 
 Output schema:
 {
     "summary": "...",
     "results": [...],
+    "next_recommended_tool": { "name": "get_context", "reason": "...", "input": {...} },
     "missing_context": [],
     "confidence": 0.92
 }
@@ -17,6 +26,7 @@ def search_code(args: dict) -> dict:
     query = args["query"]
     top_k = int(args.get("top_k", 10))
     project = args.get("project", "__default__")
+    include_context = args.get("include_context", False)
 
     engine = RetrievalEngine(project=project)
     rows = engine.search(query, top_k=top_k * 2)[:top_k]
@@ -41,11 +51,74 @@ def search_code(args: dict) -> dict:
     if top_files:
         summary += f" Top files: {', '.join(top_files)}."
 
-    return {
+    # If include_context=true, auto-call get_context and merge results
+    if include_context and results:
+        from mcp_server.tools.get_context import get_context
+        context_result = get_context({
+            "query": query,
+            "project": project,
+            "top_k": top_k,
+            "max_tokens": int(args.get("max_tokens", 12000)),
+        })
+        return {
+            "summary": summary,
+            "results": results,
+            "context": context_result,
+            "missing_context": _detect_missing(rows, query),
+            "confidence": confidence,
+        }
+
+    # Build next_recommended_tool from top results
+    next_tool = _build_next_recommended_tool(results, project, query)
+
+    output = {
         "summary": summary,
         "results": results,
         "missing_context": _detect_missing(rows, query),
         "confidence": confidence,
+    }
+    if next_tool:
+        output["next_recommended_tool"] = next_tool
+
+    return output
+
+
+def _build_next_recommended_tool(results: list[dict], project: str, query: str) -> dict | None:
+    """Build next_recommended_tool suggestion from top search results."""
+    if not results:
+        return None
+
+    # Pick top results with score >= 0.3 as targets
+    targets = []
+    seen_files: set[str] = set()
+    for r in results:
+        if r["score"] < 0.3:
+            break
+        file_path = r["file"]
+        if file_path in seen_files:
+            continue
+        seen_files.add(file_path)
+        target = {"file_path": file_path}
+        if r["symbol"]:
+            target["symbol"] = r["symbol"]
+        targets.append(target)
+        if len(targets) >= 3:
+            break
+
+    if not targets:
+        return None
+
+    return {
+        "name": "get_context",
+        "reason": (
+            "Use get_context to load full implementation, imports, references, "
+            "and related files before editing or answering implementation questions."
+        ),
+        "input": {
+            "query": query,
+            "project": project,
+            "max_tokens": 12000,
+        },
     }
 
 
