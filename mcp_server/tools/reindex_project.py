@@ -6,7 +6,11 @@ Scanner → Tree-sitter → Symbol Extractor → Chunker → Embedder → LanceD
 
 from intelligence_engine.storage import (
     get_retrieval_cache_store,
+    get_vector_store,
+    get_symbol_index_store,
+    get_relationship_index_store,
 )
+from intelligence_engine.retrieval.hybrid_search import HybridSearch
 
 
 def reindex_project(args: dict) -> dict:
@@ -24,17 +28,28 @@ def reindex_project(args: dict) -> dict:
     cache_store = get_retrieval_cache_store()
     invalidated = cache_store.invalidate_project(project)
 
-    # Report status — actual reindexing is done by scripts/index_project.py
-    # This tool signals that the caches are cleared and a reindex is needed
+    # Reload all stores from disk (picks up changes from external index_project.py)
+    get_vector_store().reload(project)
+    get_symbol_index_store().reload(project)
+    get_relationship_index_store().reload(project)
+
+    # Invalidate BM25 cache so it rebuilds on next search
+    # HybridSearch instances in RetrievalEngine will rebuild on next call
+    HybridSearch._invalidate_project_cache(project)
+
+    symbol_count = get_symbol_index_store().count(project)
+
     return {
         "summary": (
-            f"Caches cleared for project '{project}' ({invalidated} cache entries invalidated). "
-            f"Run `python scripts/index_project.py {project}` to perform full reindex."
+            f"Stores reloaded for project '{project}' ({invalidated} cache entries invalidated, "
+            f"{symbol_count} symbols now indexed). "
+            f"If data is stale, run `python scripts/index_project.py {project}` to perform full reindex, then call this tool again."
         ),
         "results": {
             "project": project,
             "cache_invalidated": invalidated,
-            "action_required": f"python scripts/index_project.py {project}",
+            "symbols_loaded": symbol_count,
+            "stores_reloaded": True,
         },
         "missing_context": [],
         "confidence": 1.0,

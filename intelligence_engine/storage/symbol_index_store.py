@@ -44,6 +44,16 @@ class SymbolIndexStore:
             except (json.JSONDecodeError, OSError):
                 continue
 
+    def reload(self, project: str) -> None:
+        """Reload a single project's data from disk (after external reindex)."""
+        file = self._project_path(project)
+        if file.exists():
+            try:
+                data = json.loads(file.read_text(encoding="utf-8"))
+                self._index[project] = data
+            except (json.JSONDecodeError, OSError):
+                pass
+
     def _persist(self, project: str) -> None:
         data = self._index.get(project, {})
         self._project_path(project).write_text(

@@ -45,10 +45,14 @@ class RetrievalEngine:
     # --- Search Layer ---
 
     def search(self, query: str, top_k: int = 20) -> list[dict]:
-        """Semantic + keyword search via LanceDB, then rerank."""
-        # Fetch more candidates for reranker to select from
+        """Full retrieval pipeline: hybrid (vector + BM25 + symbol + graph) → reranker.
+        
+        Flow:
+          1. HybridSearch returns top_k*2 candidates scored by 4 signals
+          2. CrossEncoderReranker (bge-reranker-base) refines to top_k
+        """
         candidates = self._hybrid.search(query, top_k=top_k, project=self.project)
-        return self._reranker.rerank(query, candidates, top_k=self._reranker_top_k)
+        return self._reranker.rerank(query, candidates, top_k=top_k)
 
     # --- Graph Layer ---
 

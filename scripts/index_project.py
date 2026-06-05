@@ -55,7 +55,7 @@ def index_project(project_name: str, full: bool = False) -> None:
         file_imports = imp_extractor.extract(parsed)
         file_routes = route_extractor.extract(parsed)
         file_calls = call_extractor.extract(parsed, file_symbols)
-        file_chunks = chunker.chunk(parsed, file_symbols)
+        file_chunks = chunker.chunk(parsed, file_symbols, imports=file_imports, calls=file_calls)
         parsed_cache[state.file_path] = (file_symbols, file_imports, file_routes, file_calls, file_chunks)
 
     # Upsert only changed file chunks
@@ -65,9 +65,18 @@ def index_project(project_name: str, full: bool = False) -> None:
         chunks_to_upsert.extend(file_chunks)
 
     if chunks_to_upsert:
+        # Build embedding texts: symbol context + content for better retrieval
+        embed_texts = []
+        for c in chunks_to_upsert:
+            # Prefix with symbol name and kind for the embedding model
+            prefix = ""
+            if c.symbol:
+                prefix = f"{c.kind}: {c.symbol}\n"
+            embed_texts.append(prefix + c.content)
+
         store.upsert_chunks(
             chunks_to_upsert,
-            embedder.embed_many([c.content for c in chunks_to_upsert]),
+            embedder.embed_many(embed_texts),
             project=project_name,
         )
 

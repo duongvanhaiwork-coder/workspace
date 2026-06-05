@@ -1,7 +1,11 @@
 """Reranking strategies for retrieval results.
 
-SimpleReranker: keyword-overlap boost (no external model, fast).
-CrossEncoderReranker: cross-encoder model for high-quality reranking.
+Production stack:
+  bge-reranker-base (CrossEncoderReranker) — default
+  SimpleReranker — fallback when model unavailable
+
+Scoring blend (CrossEncoder):
+  final = 0.6 * normalized_ce_score + 0.3 * hybrid_score + 0.1 * symbol_bonus
 """
 
 from __future__ import annotations
@@ -19,89 +23,79 @@ class Reranker(Protocol):
 
 
 class SimpleReranker:
-    """Keyword-overlap reranker with opinionated domain priority (section 10).
+    """Lightweight fallback reranker — uses hybrid score + symbol name boost."""
 
-    Priority boost: entity, dto, service, repository
-    Lower priority: helpers, utils, logger, constants
-    """
-
-    # Opinionated retrieval rules (section 10)
     _PRIORITY_PATTERNS = ("entity", "dto", "service", "repository", "repo")
     _NOISE_PATTERNS = ("helper", "util", "logger", "constant", "config", "common")
 
     def rerank(self, query: str, rows: list[dict], top_k: int | None = None) -> list[dict]:
-        terms = set(query.lower().split())
+        query_lower = query.lower()
 
-        def boost(row: dict) -> float:
-            content = row.get("content", "").lower()
-            file_path = row.get("file_path", "").lower()
-            overlap = sum(1 for t in terms if t in content)
-            base = row.get("score", 0) + overlap * 0.05
+        for row in rows:
+            symbol = (row.get("symbol") or "").lower()
+            file_path = (row.get("file_path") or "").lower()
 
-            # Opinionated domain priority
+            base = row.get("score", 0)
+
+            # Symbol name match bonus
+            if query_lower == symbol or query_lower == symbol.split(".")[-1]:
+                base += 0.1
+            elif query_lower in symbol:
+                base += 0.05
+
+            # Domain priority
             if any(p in file_path for p in self._PRIORITY_PATTERNS):
-                base += 0.08
+                base += 0.02
             elif any(p in file_path for p in self._NOISE_PATTERNS):
-                base -= 0.05
+                base -= 0.01
 
-            return base
+            row["score"] = base
 
-        ranked = sorted(rows, key=boost, reverse=True)
+        ranked = sorted(rows, key=lambda r: r["score"], reverse=True)
         if top_k:
             ranked = ranked[:top_k]
         return ranked
 
 
 class CrossEncoderReranker:
-    """Cross-encoder reranker using sentence-transformers.
+    """Production reranker using bge-reranker-base.
 
-    Takes top-N candidate chunks, scores each (query, chunk) pair
-    with a cross-encoder model, returns top-K by cross-encoder score.
+    Flow:
+      1. Receive candidates from hybrid search (already scored by vector + BM25 + symbol)
+      2. Score top-N pairs with cross-encoder
+      3. Blend: 0.6 * CE + 0.3 * hybrid + 0.1 * symbol_bonus
+      4. Return top-K
 
-    Models (small → large):
-    - cross-encoder/ms-marco-MiniLM-L-6-v2  (fastest, ~22MB)
-    - BAAI/bge-reranker-base                 (balanced, ~278MB)
-    - cross-encoder/ms-marco-MiniLM-L-12-v2  (better quality, ~33MB)
+    bge-reranker-base outputs raw logits — higher = more relevant.
+    We normalize to [0, 1] using sigmoid for blending.
     """
 
-    _UNLOADED = object()  # sentinel: model not yet attempted
+    _UNLOADED = object()
 
-    def __init__(self, model_name: str = "cross-encoder/ms-marco-MiniLM-L-6-v2") -> None:
+    def __init__(self, model_name: str = "BAAI/bge-reranker-base") -> None:
         self._model_name = model_name
-        self._model: object = CrossEncoderReranker._UNLOADED  # lazy load
+        self._model: object = CrossEncoderReranker._UNLOADED
 
     def _load_model(self):
-        """Lazy load to avoid slow startup when reranker isn't used."""
+        """Lazy load model on first use."""
         if self._model is not CrossEncoderReranker._UNLOADED:
             return
         try:
             from sentence_transformers import CrossEncoder
             self._model = CrossEncoder(self._model_name)
-            logger.info(f"Loaded cross-encoder model: {self._model_name}")
+            logger.info(f"Loaded reranker model: {self._model_name}")
         except ImportError:
             logger.warning(
-                "sentence-transformers not installed — falling back to SimpleReranker. "
-                "Install with: pip install sentence-transformers"
+                "sentence-transformers not installed — falling back to SimpleReranker."
             )
             self._model = None
         except Exception as exc:
             logger.warning(
-                f"Failed to load cross-encoder model '{self._model_name}': {exc} "
-                "— falling back to SimpleReranker."
+                f"Failed to load reranker '{self._model_name}': {exc}. Falling back."
             )
             self._model = None
 
     def rerank(self, query: str, rows: list[dict], top_k: int | None = None) -> list[dict]:
-        """Rerank rows using cross-encoder scoring.
-
-        Args:
-            query: user query
-            rows: candidate chunks from initial retrieval
-            top_k: number of results to return (default: min(10, len(rows)))
-
-        Returns:
-            Reranked rows with updated scores, limited to top_k.
-        """
         if not rows:
             return []
 
@@ -109,38 +103,70 @@ class CrossEncoderReranker:
 
         self._load_model()
         if self._model is None:
-            # Fallback to simple reranker if model not available
             return SimpleReranker().rerank(query, rows, top_k=top_k)
 
-        # Build (query, document) pairs for cross-encoder
+        # Build (query, document) pairs
+        # Use symbol + content as document for better matching
         pairs = []
         for row in rows:
-            content = row.get("content", "")
-            # Truncate long content to avoid OOM (cross-encoder max ~512 tokens)
-            doc = content[:1500] if len(content) > 1500 else content
+            symbol = row.get("symbol") or ""
+            content = row.get("content") or ""
+            # Prefix symbol name for the reranker to see it clearly
+            doc = f"{symbol}\n{content[:1200]}" if symbol else content[:1500]
             pairs.append((query, doc))
 
-        # Score all pairs
-        scores = self._model.predict(pairs)
+        # Cross-encoder scoring
+        raw_scores = self._model.predict(pairs)
 
-        # Attach cross-encoder score and sort
-        for row, ce_score in zip(rows, scores):
-            row["ce_score"] = float(ce_score)
-            # Blend: cross-encoder dominates, original score as tiebreaker
-            row["score"] = float(ce_score) * 0.8 + row.get("score", 0) * 0.2
+        # Normalize CE scores within this batch using min-max → [0, 1]
+        raw_floats = [float(s) for s in raw_scores]
+        min_score = min(raw_floats)
+        max_score = max(raw_floats)
+        score_range = max_score - min_score
+        if score_range > 0.01:
+            ce_scores = [(s - min_score) / score_range for s in raw_floats]
+        else:
+            # All scores nearly identical — use sigmoid fallback
+            import math
+            ce_scores = [1.0 / (1.0 + math.exp(-s)) for s in raw_floats]
+
+        # Blend scores
+        query_lower = query.lower()
+        for row, ce_score in zip(rows, ce_scores):
+            hybrid_score = row.get("score", 0)
+            # Normalize hybrid score (may be > 1 from the formula)
+            max_possible_hybrid = 1.0  # 0.45 + 0.35 + 0.20
+            norm_hybrid = min(hybrid_score / max_possible_hybrid, 1.0) if max_possible_hybrid > 0 else 0
+
+            # Symbol bonus: exact match in symbol name
+            symbol = (row.get("symbol") or "").lower()
+            symbol_bonus = 0.0
+            if query_lower == symbol or query_lower == symbol.split(".")[-1]:
+                symbol_bonus = 1.0
+            elif query_lower in symbol:
+                symbol_bonus = 0.8
+            elif any(part in symbol for part in query_lower.split(".")):
+                symbol_bonus = 0.4
+
+            # Final blend: CE dominant, hybrid for diversity, symbol for precision
+            row["score"] = (
+                0.6 * ce_score
+                + 0.3 * norm_hybrid
+                + 0.1 * symbol_bonus
+            )
+            row["ce_score"] = ce_score
 
         ranked = sorted(rows, key=lambda r: r["score"], reverse=True)
         return ranked[:top_k]
 
 
-def get_reranker(use_cross_encoder: bool = False, model_name: str | None = None) -> Reranker:
-    """Factory to get the appropriate reranker.
+def get_reranker(use_cross_encoder: bool = True, model_name: str | None = None) -> Reranker:
+    """Factory for reranker.
 
-    Args:
-        use_cross_encoder: whether to use cross-encoder model
-        model_name: override default model name
+    Default: bge-reranker-base (CrossEncoderReranker)
+    Fallback: SimpleReranker when model unavailable
     """
     if use_cross_encoder:
-        name = model_name or "cross-encoder/ms-marco-MiniLM-L-6-v2"
+        name = model_name or "BAAI/bge-reranker-base"
         return CrossEncoderReranker(model_name=name)
     return SimpleReranker()

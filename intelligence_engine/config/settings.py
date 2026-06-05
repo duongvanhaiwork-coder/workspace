@@ -7,11 +7,12 @@ class Settings(BaseSettings):
     model_config = SettingsConfigDict(env_prefix="AI_CORE_", env_file=".env", extra="ignore")
     projects_file: str = "projects.json"
     data_dir: str = "data"
-    embedding_dim: int = 384
+    embedding_dim: int = 768
+    embedding_model: str = "BAAI/bge-base-en-v1.5"  # "hash" for fast fallback
 
     # Reranker config
-    use_cross_encoder: bool = False
-    reranker_model: str = "cross-encoder/ms-marco-MiniLM-L-6-v2"
+    use_cross_encoder: bool = True
+    reranker_model: str = "BAAI/bge-reranker-base"
     reranker_top_k: int = 10
 
     # Graph pruning
