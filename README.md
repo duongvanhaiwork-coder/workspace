@@ -45,35 +45,44 @@ Python MCP Server + Codebase Intelligence Engine
 ## Retrieval Flow
 
 ```text
-search_code
+search_code (include_context=false — default)
   → vector search (bge-base-en-v1.5, top 50)
   → keyword search (BM25, top 50)
   → symbol index match
   → merge candidates
   → graph boost (callers, callees, DTO usage)
   → rerank (bge-reranker-base, top 30)
-  → return top 5-10
+  → return top 5-10 + next_recommended_tool
+
+search_code (include_context=true)
+  → same as above
+  → auto-call get_context internally
+  → return search results + full context inline
 
 get_context
-  → lấy results từ search_code
-  → mở rộng sang imports / references / callers / DTO / model / tests
-  → nén context theo token budget
-  → return structured context cho AI
+  → intent classification (search/explain/refactor/impact/debug/test/generate)
+  → retrieval plan (decides what data to fetch)
+  → search layer (hybrid search + rerank)
+  → graph layer (dependency paths, callers, impact)
+  → context builder (filter, rank, trim to token budget)
+  → return structured 6-layer context cho AI
 
 find_references
   → exact match (symbol index)
-  → AST traversal (tree-sitter)
   → graph edges (NetworkX)
+  → vector search fallback (text match)
+  → merge + deduplicate
 
 analyze_impact
   → graph reverse traversal
+  → pruning (remove noise: utils, helpers, loggers)
   → risk scoring
   → affected files + suggested actions
 
 explain_symbol
-  → symbol implementation
-  → callers + callees
-  → side effects + risks
+  → symbol implementation (from search)
+  → graph relationships (callers + callees + deps)
+  → build summary
 ```
 
 ### Scoring Formula
@@ -302,14 +311,96 @@ File: `.cursor/mcp.json` trong workspace
 
 ## MCP Tools
 
-| Tool              | Mục đích                                                     |
-| ----------------- | ------------------------------------------------------------ |
-| `search_code`     | Retrieve candidates: vector + BM25 + symbol + graph → rerank |
-| `get_context`     | Build final context cho AI: search → expand → token budget   |
-| `analyze_impact`  | Blast radius: graph traversal + risk scoring                 |
-| `find_references` | Tìm references: symbol index + graph edges                   |
-| `explain_symbol`  | Tóm tắt symbol: implementation + callers + side effects      |
-| `reindex_project` | Reload stores từ disk (sau khi chạy index_project.py)        |
+| Tool              | Mục đích                                                                                                  |
+| ----------------- | --------------------------------------------------------------------------------------------------------- |
+| `search_code`     | Tìm candidates: vector + BM25 + symbol + graph → rerank. Gợi ý `get_context` qua `next_recommended_tool`. |
+| `get_context`     | Load full context cho AI: search → expand → token budget. Dùng SAU search_code, TRƯỚC khi edit.           |
+| `analyze_impact`  | Blast radius: graph traversal + risk scoring                                                              |
+| `find_references` | Tìm references: symbol index + graph edges                                                                |
+| `explain_symbol`  | Tóm tắt symbol: implementation + callers + side effects                                                   |
+| `reindex_project` | Reload stores từ disk (sau khi chạy index_project.py)                                                     |
+
+### Tool Call Flow (search → context → edit)
+
+```text
+Agent cần sửa code:
+  1. search_code(query, project)     → tìm candidates, trả snippet ngắn + next_recommended_tool
+  2. get_context(query, project)     → load full implementation + imports + callers + DTO/model
+  3. Edit code                       → giờ agent có đủ context để sửa chính xác
+
+Agent chỉ cần tìm file:
+  1. search_code(query, project)     → đủ, không cần get_context
+
+Shortcut (gộp 1 call):
+  1. search_code(query, project, include_context=true)  → trả cả search results + full context
+```
+
+### search_code — Tool Design
+
+**Parameters:**
+
+| Param             | Type   | Default | Mô tả                                         |
+| ----------------- | ------ | ------- | --------------------------------------------- |
+| `query`           | string | —       | Natural language hoặc symbol name             |
+| `project`         | string | —       | Project name (last segment of workspace path) |
+| `top_k`           | int    | 10      | Số kết quả tối đa                             |
+| `include_context` | bool   | false   | Tự động gọi get_context inline                |
+| `max_tokens`      | int    | 12000   | Token budget khi include_context=true         |
+
+**Output (include_context=false):**
+
+```json
+{
+  "summary": "Found 3 result(s) for 'IntegrationJwtStrategy'...",
+  "results": [
+    {
+      "file": "src/core/auth/strategies/integration-jwt-strategy.service.ts",
+      "symbol": "IntegrationJwtStrategy",
+      "kind": "class",
+      "line_start": 12,
+      "line_end": 61,
+      "score": 0.788,
+      "reason": "Contains: auth, strategy, jwt",
+      "snippet": "export class IntegrationJwtStrategy extends PassportStrategy(...) { ... }"
+    }
+  ],
+  "next_recommended_tool": {
+    "name": "get_context",
+    "reason": "Use get_context to load full implementation, imports, references, and related files before editing.",
+    "input": {
+      "query": "IntegrationJwtStrategy",
+      "project": "business-lounge-api",
+      "max_tokens": 12000
+    }
+  },
+  "missing_context": [],
+  "confidence": 0.95
+}
+```
+
+**Output (include_context=true):**
+
+```json
+{
+  "summary": "Found 3 result(s)...",
+  "results": [{ "file", "symbol", "score", "snippet" }],
+  "context": {
+    "meta": { "intent": "search", "confidence": 0.86, "token_budget": { "max": 12000, "used": 4200 } },
+    "summary": "...",
+    "results": { "references": [...], "chunks": [...], "dependency_paths": [...] }
+  },
+  "missing_context": [],
+  "confidence": 0.95
+}
+```
+
+### Agent Guidance (3 lớp hướng dẫn)
+
+| Lớp | Cơ chế                      | Mô tả                                                                 |
+| --- | --------------------------- | --------------------------------------------------------------------- |
+| 1   | **Tool description**        | Ghi rõ "Do NOT edit based only on search_code results"                |
+| 2   | **`next_recommended_tool`** | Output tự gợi ý tool tiếp theo + input sẵn sàng copy-paste            |
+| 3   | **`include_context`**       | Fallback: gộp search + context trong 1 call khi agent không gọi riêng |
 
 ## Output Schema (get_context)
 
@@ -354,7 +445,19 @@ File: `.cursor/mcp.json` trong workspace
 1. IDE mở → đọc mcp.json
 2. Agent cần tìm code → IDE spawn: python -m mcp_server.server
 3. Agent gọi tool qua stdin (JSON-RPC):
-   search_code(query="batchCreateExceptionListShortTerm", project="business-lounge-api")
+
+   # Bước 1: Tìm candidates
+   search_code(query="IntegrationJwtStrategy", project="business-lounge-api")
+   → trả snippet ngắn + next_recommended_tool gợi ý get_context
+
+   # Bước 2: Load full context (nếu cần sửa code)
+   get_context(query="IntegrationJwtStrategy", project="business-lounge-api")
+   → trả full implementation + imports + callers + DTO/model
+
+   # Hoặc gộp 1 bước:
+   search_code(query="IntegrationJwtStrategy", project="business-lounge-api", include_context=true)
+   → trả cả search results + full context inline
+
 4. MCP server → hybrid search (vector + BM25 + symbol + graph) → rerank (bge-reranker-base)
 5. Trả kết quả qua stdout → Agent dùng để trả lời / edit code
 6. Process sống suốt IDE session, tự tắt khi đóng IDE
