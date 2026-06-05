@@ -81,3 +81,24 @@ Context gathering → Create docs/work/YYYY-MM-DD-<slug>/STATUS.md → Spec/Plan
 ```
 
 **Violation = critical error.** The user has explicitly flagged this as a recurring failure. Treat this rule with the same severity as security rules.
+
+## ⛔ HARD GATE — Unit tests BEFORE marking Code complete (L2–L4)
+
+**This is a non-negotiable enforcement rule.**
+
+When `/question-scope L2`…`L4` is active and new services/modules are created:
+
+1. **MUST** create unit test files (`.spec.ts`) for every new service before marking Code phase as complete.
+2. **MUST NOT** skip the Test step in L3/L4 pipelines. Tests come BEFORE Code is considered done.
+3. Minimum: happy path, error path, one edge case per public method.
+4. Mock external dependencies (Redis, HTTP, repositories) in unit tests.
+5. Run tests and confirm they pass before Verify phase.
+6. If tests are intentionally deferred, explicitly state the reason in `STATUS.md` and get user confirmation — do NOT silently skip.
+
+**Sequence (mandatory for L3):**
+
+```
+Spec → Plan → Test (write failing tests) → Code (make tests pass) → Verify
+```
+
+**Violation = critical error.** The user has explicitly flagged this as a recurring failure. Treat this rule with the same severity as the docs/work/ gate above.
