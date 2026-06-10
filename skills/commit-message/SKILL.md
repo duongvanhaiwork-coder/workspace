@@ -35,10 +35,10 @@ Not a pipeline phase; may run after **`finishing-a-development-branch`** on L3�
 
 ### Composition (quick ref)
 
-| ✅ Do | ❌ Don't |
-| ----- | -------- |
+| ✅ Do                                                                | ❌ Don't                                                      |
+| -------------------------------------------------------------------- | ------------------------------------------------------------- |
 | LINKID template from `templates/TEMPLATE.md` when user/repo requires | **`caveman-commit`** short Conventional format in same commit |
-| User asked for commit message / PR body | Create git commit unless user asked — **`code-standards`** |
+| User asked for commit message / PR body                              | Create git commit unless user asked — **`code-standards`**    |
 
 Shared ✅/❌: [invocation-anti-patterns](../references/invocation-anti-patterns.md).
 
@@ -59,12 +59,19 @@ Shared ✅/❌: [invocation-anti-patterns](../references/invocation-anti-pattern
 2. Extract `linkid-\d+` (case-insensitive) → normalize to `LINKID-6313`
 3. If missing: ask once for ticket, or `[NO-TICKET] - <title>`
 
+## ⛔ Do not
+
+- **Do not** generate the commit message from memory or assumed format. You **MUST read** `templates/TEMPLATE.md` (via `read_file`) **every time** before producing output — no exceptions.
+- **Do not** skip the template read step even if you "remember" the format from a previous turn or session.
+- **Do not** output Title or Description until the template file content is loaded in context.
+
 ## Workflow
 
-1. `git status --short`, `git diff --staged`, `git diff` if needed
-2. Infer intent: feature, fix, refactor, test, docs, chore
-3. Title: `[LINKID-XXXX] - <outcome-focused title>`
-4. Description: follow **`commit-message/templates/TEMPLATE.md`** exactly (self-assess AI Contribution honestly). Present the filled description in **one** fenced code block so the user gets a **Copy** button.
+1. **Read template:** open `templates/TEMPLATE.md` in this skill folder — confirm structure is in context.
+2. `git status --short`, `git diff --staged`, `git diff` if needed
+3. Infer intent: feature, fix, refactor, test, docs, chore
+4. Title: `[LINKID-XXXX] - <outcome-focused title>`
+5. Description: follow **`commit-message/templates/TEMPLATE.md`** exactly (self-assess AI Contribution honestly). Present the filled description in **one** fenced code block so the user gets a **Copy** button.
 
 ## Quality
 
